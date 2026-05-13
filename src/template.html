@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo</title>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>JUST to DO IT</h1>
+        <div class="header-action">
+          <button data-btn="add-project">Add project</button>
+          <button data-btn="add-task">Add task</button>
+        </div>
+        <div class="date">10 May 2026</div>
+      </div>
+    </header>
+    <main>
+      <section class="sidebar">
+        <div class="container">
+          <h2>Projects List</h2>
+          <div class="projects"></div>
+          <button class="sidebar__add-project-btn" data-btn="add-project">Add project</button>
+        </div>
+      </section>
+      <section class="dashboard"></section>
+    </main>
+    <dialog class="dialog" id="new-project">
+      <div class="dialog-container">
+        <h2>Project info</h2>
+        <button class="close-dialog" data-btn="close-dialog"
+          <span></span>
+          <span></span>
+        </button>
+        <form class="dialog-form" method="dialog">
+          <div class="dialog-field">
+            <label for="project-title">Title:</label>
+            <input type="text" name="project-title" id="project-title" required>
+          </div>
+          <div class="dialog-field">
+            <label for="project-description">Description:</label>
+            <input type="text" name="project-description" id="project-description" required>
+          </div>
+          <button class="dialog-btn btn" type="submit">Save the project</button>
+        </form>
+      </div>
+    </dialog>
+    <dialog class="dialog" id="new-task">
+      <div class="dialog-container">
+        <h2>Task info</h2>
+        <button class="close-dialog" data-btn="close-dialog">
+          <span></span>
+          <span></span>
+        </button>
+        <form class="dialog-form" method="dialog">
+          <div class="dialog-field">
+            <label for="task-title">Title</label>
+            <input type="text" name="task-title" id="task-title" required>
+          </div>
+          <div class="dialog-field">
+            <label for="task-description">Description</label>
+            <input type="text" name="task-description" id="task-description" required>
+          </div>
+          <div class="dialog-field">
+            <label for="task-due-date">Due Date</label>
+            <input type="date" name="task-due-date" id="task-due-date" required>
+          </div>
+          <div class="dialog-field">
+            <label for="task-status">Status</label>
+            <select name="task-status" id="task-status">
+              <option value="completed">Completed</option>
+              <option value="in-progress">In Progress</option>
+              <option value="pending" selected>Pending</option>
+            </select>
+          </div>
+          <div class="dialog-field">
+            <label for="task-priority">Priority</label>
+            <select name="task-priority" id="task-priority">
+              <option value="high" selected>High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <button class="dialog-btn btn" type="submit">Save the task</button>
+        </form>
+      </div>
+    </dialog>
+    <dialog class="dialog" id="todo-full"></dialog>
+  </body>
+</html>

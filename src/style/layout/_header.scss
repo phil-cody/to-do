@@ -1,0 +1,14 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+header {
+  padding: $spacing-md $spacing-xxl;
+  grid-column: 1 / -1;
+  grid-row: 1;
+
+  .container {
+    @include flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

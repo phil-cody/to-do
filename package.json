@@ -1,0 +1,45 @@
+{
+  "name": "to-do",
+  "mode": "development",
+  "version": "1.0.0",
+  "description": "Project: Todo list, JavaScript course, The Odin Project",
+  "keywords": [
+    "javascript",
+    "webpack",
+    "html",
+    "css",
+    "scss"
+  ],
+  "homepage": "https://github.com/phil-cody/to-do#readme",
+  "bugs": {
+    "url": "https://github.com/phil-cody/to-do/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phil-cody/to-do.git"
+  },
+  "license": "ISC",
+  "author": "Dmitrii Kachuk <antaress07@icloud.com>",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack",
+    "dev": "webpack --mode development",
+    "prod": "webpack --mode production",
+    "watch": "webpack-dev-server --mode development --open",
+    "deploy": "git subtree push --prefix dist origin gh-pages"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.4",
+    "date-fns": "^4.1.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.7",
+    "mini-css-extract-plugin": "^2.10.2",
+    "sass": "^1.99.0",
+    "sass-loader": "^16.0.7",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.106.2",
+    "webpack-cli": "^7.0.2",
+    "webpack-dev-server": "^5.2.3"
+  }
+}
