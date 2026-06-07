@@ -1,11 +1,12 @@
 import "@/style/main.scss";
 import { state } from "@/modules/state/projects";
 import { Project } from "@/modules/data/Project";
-import { findProjectIndexByID } from '@/modules/utils/findProjectIndexById';
+import { findProjectIndexByID } from '@/modules/utils/findIndexById';
 import { renderSidebar } from '@/modules/UI/renderSidebar';
 import { renderDashboard } from '@/modules/UI/renderDashboard';
 import { handlerClick } from '@/modules/handlers/click';
 import { handlerSubmit } from '@/modules/handlers/submit';
+import { renderTodayDate } from "@/modules/UI/renderTodayDate";
 import {
   format,
   parseISO,
@@ -22,15 +23,18 @@ import {
 } from "date-fns";
 
 const defaultFormProject = new FormData();
-defaultFormProject.set("project-title", "To-Do List");
-defaultFormProject.set("project-description", "Current To-Do List");
+defaultFormProject.set("project_title", "To-Do List");
+defaultFormProject.set("project_description", "Current To-Do List");
 
 const defaultProject = new Project(defaultFormProject);
 
 state.projects.push(defaultProject);
 state.selectedProjectId = state.projects[0].id;
 
-handlerClick();
-handlerSubmit();
+console.log(state)
+
+renderTodayDate();
 renderSidebar();
 renderDashboard();
+handlerClick();
+handlerSubmit();

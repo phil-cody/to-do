@@ -1,4 +1,4 @@
-import { TODO_STATUS, TODO_PRIORITY, DATASET_BTN } from '@/modules/utils/constants.js';
+import { DATASET_BTN } from '@/modules/utils/constants.js';
 
 export const renderProjectCard = (project) => {
   const projectItemDiv = document.createElement('div');
@@ -6,7 +6,7 @@ export const renderProjectCard = (project) => {
   projectItemDiv.id = project.id;
 
   const projectTitle = document.createElement('h3');
-  projectTitle.textContent = project.title;
+  projectTitle.textContent = project.project_title;
   const projectInfoDiv = document.createElement('div');
   projectInfoDiv.classList.add('project-item__info');
 

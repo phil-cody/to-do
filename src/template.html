@@ -13,7 +13,7 @@
           <button data-btn="add-project">Add project</button>
           <button data-btn="add-task">Add task</button>
         </div>
-        <div class="date">10 May 2026</div>
+        <p class="date"></p>
       </div>
     </header>
     <main>
@@ -21,7 +21,9 @@
         <div class="container">
           <h2>Projects List</h2>
           <div class="projects"></div>
-          <button class="sidebar__add-project-btn" data-btn="add-project">Add project</button>
+          <button class="sidebar__add-project-btn" data-btn="add-project">
+            Add project
+          </button>
         </div>
       </section>
       <section class="dashboard"></section>
@@ -29,18 +31,28 @@
     <dialog class="dialog" id="new-project">
       <div class="dialog-container">
         <h2>Project info</h2>
-        <button class="close-dialog" data-btn="close-dialog"
-          <span></span>
-          <span></span>
+        <button class="close-dialog" data-btn="close-dialog">
+          <span class="close__line" data-btn="close-dialog"></span>
+          <span class="close__line" data-btn="close-dialog"></span>
         </button>
-        <form class="dialog-form" method="dialog">
+        <form class="dialog-form" method="dialog" id="addProjectForm">
           <div class="dialog-field">
-            <label for="project-title">Title:</label>
-            <input type="text" name="project-title" id="project-title" required>
+            <label for="project_title">Title:</label>
+            <input
+              type="text"
+              name="project_title"
+              id="project_title"
+              required
+            />
           </div>
           <div class="dialog-field">
-            <label for="project-description">Description:</label>
-            <input type="text" name="project-description" id="project-description" required>
+            <label for="project_description">Description:</label>
+            <input
+              type="text"
+              name="project_description"
+              id="project_description"
+              required
+            />
           </div>
           <button class="dialog-btn btn" type="submit">Save the project</button>
         </form>
@@ -50,33 +62,43 @@
       <div class="dialog-container">
         <h2>Task info</h2>
         <button class="close-dialog" data-btn="close-dialog">
-          <span></span>
-          <span></span>
+          <span class="close__line" data-btn="close-dialog"></span>
+          <span class="close__line" data-btn="close-dialog"></span>
         </button>
-        <form class="dialog-form" method="dialog">
+        <form class="dialog-form" method="dialog" id="addTaskForm">
           <div class="dialog-field">
-            <label for="task-title">Title</label>
-            <input type="text" name="task-title" id="task-title" required>
+            <label for="task_title">Title</label>
+            <input type="text" name="task_title" id="task_title" required />
           </div>
           <div class="dialog-field">
-            <label for="task-description">Description</label>
-            <input type="text" name="task-description" id="task-description" required>
+            <label for="task_description">Description</label>
+            <input
+              type="text"
+              name="task_description"
+              id="task_description"
+              required
+            />
           </div>
           <div class="dialog-field">
-            <label for="task-due-date">Due Date</label>
-            <input type="date" name="task-due-date" id="task-due-date" required>
+            <label for="task_due_date">Due Date</label>
+            <input
+              type="date"
+              name="task_due_date"
+              id="task_due_date"
+              required
+            />
           </div>
           <div class="dialog-field">
-            <label for="task-status">Status</label>
-            <select name="task-status" id="task-status">
+            <label for="task_status">Status</label>
+            <select name="task_status" id="task_status">
               <option value="completed">Completed</option>
-              <option value="in-progress">In Progress</option>
+              <option value="in-process">In Process</option>
               <option value="pending" selected>Pending</option>
             </select>
           </div>
           <div class="dialog-field">
-            <label for="task-priority">Priority</label>
-            <select name="task-priority" id="task-priority">
+            <label for="task_priority">Priority</label>
+            <select name="task_priority" id="task_priority">
               <option value="high" selected>High</option>
               <option value="medium">Medium</option>
               <option value="low">Low</option>

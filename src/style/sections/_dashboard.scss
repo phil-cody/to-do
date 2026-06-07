@@ -32,11 +32,22 @@
   }
 }
 .todo {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: $spacing-md;
   max-width: 100%;
   width: 100%;
+  gap: $spacing-md;
+
+  &.grid {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 350px));
+  }
+
+  &.list {
+    @include flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 .todo-item {
   background-color: $background;
@@ -54,7 +65,8 @@
     width: 100%;
   }
 
-  .due-date, .status,
+  .due-date,
+  .status,
   .priority {
     @include flex;
     align-items: center;

@@ -2,7 +2,7 @@ import { renderTodoShort } from "@/modules/UI/renderTodoShort";
 import { renderProjectCard } from "@/modules/UI/renderProjectCard";
 import { renderDashboard } from "@/modules/UI/renderDashboard";
 import { state } from "@/modules/state/projects";
-import { findProjectIndexByID } from "@/modules/utils/findProjectIndexById";
+import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 import { clearSection } from "@/modules/UI/clearSection";
 
 export const renderSidebar = () => {
@@ -15,7 +15,9 @@ export const renderSidebar = () => {
 
   for (let project of state.projects) {
     const projectCard = renderProjectCard(project);
-    projectCard.classList.add("selected");
     sidebarProjectBox.appendChild(projectCard);
+    if (project.id === state.selectedProjectId) {
+      projectCard.classList.add("selected");
+    }
   }
 };

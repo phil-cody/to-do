@@ -1,8 +1,9 @@
 import { renderTodoShort } from "@/modules/UI/renderTodoShort";
 import { state } from "@/modules/state/projects";
 import { DASHBOARD_VIEW } from "@/modules/utils/constants.js";
-import { findProjectIndexByID } from "@/modules/utils/findProjectIndexById";
+import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 import { clearSection } from "@/modules/UI/clearSection";
+import { handlerChange } from "@/modules/handlers/change";
 
 export const renderDashboard = () => {
   const currentProjectIndex = findProjectIndexByID(state.selectedProjectId);
@@ -19,12 +20,12 @@ export const renderDashboard = () => {
 
   const dashboardHeaderTitle = document.createElement("h2");
   dashboardHeaderTitle.textContent = state.projects[currentProjectIndex]
-    ? state.projects[currentProjectIndex].title
+    ? state.projects[currentProjectIndex].project_title
     : "Place for your project";
 
   const dashboardHeaderDescription = document.createElement("p");
   dashboardHeaderDescription.textContent = state.projects[currentProjectIndex]
-    ? state.projects[currentProjectIndex].description
+    ? state.projects[currentProjectIndex].project_description
     : "You can add any tasks to the project";
 
   const dashboardView = document.createElement("div");
@@ -36,6 +37,7 @@ export const renderDashboard = () => {
 
   const dashboardViewSelect = document.createElement("select");
   dashboardViewSelect.setAttribute("name", "select-view");
+  handlerChange(dashboardViewSelect);
   dashboardViewSelect.id = "select-view";
 
   const dashboardViewOptionGrid = document.createElement("option");
@@ -47,7 +49,7 @@ export const renderDashboard = () => {
   dashboardViewOptionList.textContent = "List";
 
   const dashboardTodo = document.createElement("div");
-  dashboardTodo.classList.add("todo");
+  dashboardTodo.classList.add("todo", "grid");
 
   if (state.projects[currentProjectIndex]) {
     for (const todo of state.projects[currentProjectIndex].todoList) {

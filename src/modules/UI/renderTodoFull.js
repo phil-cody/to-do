@@ -1,16 +1,21 @@
 import { TODO_STATUS, TODO_PRIORITY, DATASET_BTN } from "@/modules/utils/constants.js";
 import { format, isToday, isTomorrow } from "date-fns";
+import { handlerChange } from "@/modules/handlers/change";
 
 export const renderTodoFull = (todo) => {
+  const todoContainer = document.createElement('div');
+  todoContainer.classList.add('dialog-container');
+
   const todoItemDiv = document.createElement("div");
   todoItemDiv.classList.add("todo-item");
-  todoItemDiv.id = todo.id;
+  todoItemDiv.id = todo.task_id;
+  todoContainer.appendChild(todoItemDiv);
 
   const todoHeaderDiv = document.createElement('div');
   todoHeaderDiv.classList.add('header');
 
   const todoTitle = document.createElement("h3");
-  todoTitle.textContent = todo.title;
+  todoTitle.textContent = todo.task_title;
   todoHeaderDiv.appendChild(todoTitle);
 
   const todoCloseBtn = document.createElement('button');
@@ -20,11 +25,15 @@ export const renderTodoFull = (todo) => {
 
   const closeBtnLineOne = document.createElement('span');
   todoCloseBtn.appendChild(closeBtnLineOne);
+  closeBtnLineOne.classList.add('close__line');
+  closeBtnLineOne.dataset.btn = DATASET_BTN.CLOSE_DIALOG;
   const closeBtnLineTwo = document.createElement('span');
   todoCloseBtn.appendChild(closeBtnLineTwo);
+  closeBtnLineTwo.classList.add('close__line');
+  closeBtnLineTwo.dataset.btn = DATASET_BTN.CLOSE_DIALOG;
 
   const todoDescription = document.createElement("p");
-  todoDescription.textContent = todo.description;
+  todoDescription.textContent = todo.task_description;
 
   const todoDueDateDiv = document.createElement("div");
   todoDueDateDiv.classList.add("due-date");
@@ -34,24 +43,25 @@ export const renderTodoFull = (todo) => {
   todoDueDateDiv.appendChild(todoDueDateTitle);
 
   const todoDueDateContent = document.createElement("p");
-  todoDueDateContent.textContent = isToday(todo.dueDate)
+  todoDueDateContent.textContent = isToday(todo.task_due_date)
     ? "Today"
-    : isTomorrow(todo.dueDate)
+    : isTomorrow(todo.task_due_date)
       ? "Tomorrow"
-      : format(todo.dueDate, "dd MMM yyyy");
+      : format(todo.task_due_date, "dd MMM yyyy");
   todoDueDateDiv.appendChild(todoDueDateContent);
 
   const todoStatusDiv = document.createElement("div");
   todoStatusDiv.classList.add("status");
 
   const todoStatusLabel = document.createElement("label");
-  todoStatusLabel.setAttribute("for", `status_${todo.id}`);
+  todoStatusLabel.setAttribute("for", `status_${todo.task_id}`);
   todoStatusLabel.textContent = "Status";
   todoStatusDiv.appendChild(todoStatusLabel);
 
   const todoStatusSelect = document.createElement("select");
   todoStatusSelect.setAttribute("name", "status");
-  todoStatusSelect.id = `status_${todo.id}`;
+  todoStatusSelect.id = `status_${todo.task_id}`;
+  handlerChange(todoStatusSelect, todo);
   todoStatusDiv.appendChild(todoStatusSelect);
 
   const todoStatusOptionCompleted = document.createElement("option");
@@ -70,7 +80,7 @@ export const renderTodoFull = (todo) => {
   todoStatusSelect.appendChild(todoStatusOptionPending);
   todoStatusSelect.appendChild(todoStatusOptionInProcess);
 
-  switch (todo.status) {
+  switch (todo.task_status) {
     case TODO_STATUS.COMPLETED:
       todoStatusOptionCompleted.setAttribute("selected", "");
       break;
@@ -86,13 +96,14 @@ export const renderTodoFull = (todo) => {
   todoPriorityDiv.classList.add("priority");
 
   const todoPriorityLabel = document.createElement("label");
-  todoPriorityLabel.setAttribute("for", `priority_${todo.id}`);
+  todoPriorityLabel.setAttribute("for", `priority_${todo.task_id}`);
   todoPriorityLabel.textContent = "Priority";
   todoPriorityDiv.appendChild(todoPriorityLabel);
 
   const todoPrioritySelect = document.createElement("select");
   todoPrioritySelect.setAttribute("name", "priority");
-  todoPrioritySelect.id = `priority_${todo.id}`;
+  todoPrioritySelect.id = `priority_${todo.task_id}`;
+  handlerChange(todoPrioritySelect, todo);
   todoPriorityDiv.appendChild(todoPrioritySelect);
 
   const todoPriorityOptionHigh = document.createElement("option");
@@ -111,7 +122,7 @@ export const renderTodoFull = (todo) => {
   todoPrioritySelect.appendChild(todoPriorityOptionMedium);
   todoPrioritySelect.appendChild(todoPriorityOptionLow);
 
-  switch (todo.priority) {
+  switch (todo.task_priority) {
     case TODO_PRIORITY.HIGH:
       todoPriorityOptionHigh.setAttribute("selected", "");
       break;
@@ -131,7 +142,7 @@ export const renderTodoFull = (todo) => {
   todoCreatedAtDiv.appendChild(todoCreatedAtTitle);
 
   const todoCreatedAtContent = document.createElement("p");
-  todoCreatedAtContent.textContent = format(todo.createdAt, "dd MMM yyyy");
+  todoCreatedAtContent.textContent = format(todo.task_createdAt, "dd MMM yyyy");
   todoCreatedAtDiv.appendChild(todoCreatedAtContent);
 
   const todoIdDiv = document.createElement('div');
@@ -140,10 +151,6 @@ export const renderTodoFull = (todo) => {
   const todoIdTitle = document.createElement('p');
   todoIdTitle.textContent = 'ID';
   todoIdDiv.appendChild(todoIdTitle);
-
-  const todoIdContent = document.createElement("p");
-  todoIdContent.textContent = todo.id;
-  todoIdDiv.appendChild(todoIdContent);
 
   const todoActionsDiv = document.createElement("div");
   todoActionsDiv.classList.add("actions");
@@ -166,8 +173,7 @@ export const renderTodoFull = (todo) => {
   todoItemDiv.appendChild(todoStatusDiv);
   todoItemDiv.appendChild(todoPriorityDiv);
   todoItemDiv.appendChild(todoCreatedAtDiv);
-  todoItemDiv.appendChild(todoIdDiv);
   todoItemDiv.appendChild(todoActionsDiv);
 
-  return todoItemDiv;
+  return todoContainer;
 };

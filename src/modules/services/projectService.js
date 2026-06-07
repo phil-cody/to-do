@@ -12,7 +12,8 @@ export const getTodoListByProjectId = (projectId) => {
 }
 
 export const getProjectById = (projectId) => {
-  return state.projects.find((project) => project.id === projectId);
+  const result = state.projects.find((project) => project.id === projectId);
+  return result;
 };
 
 export const getAllProjects = () => {
@@ -21,13 +22,10 @@ export const getAllProjects = () => {
 
 export const updateProject = (projectId, form) => {
   const project = getProjectById(projectId);
-  const updates = new FormData(form);
-
-  return Object.assign(project, updates);
+  const updates = Object.fromEntries(form);
+  return updates ? Object.assign(project, updates) : project;
 };
 
 export const deleteProject = (idToDelete) => {
-  state.projects = state.projects.filter((project) => {
-    project.id !== idToDelete;
-  });
+  state.projects = state.projects.filter((project) => project.id !== idToDelete);
 };
