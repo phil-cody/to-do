@@ -5,7 +5,7 @@ import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 export const createTodo = (projectIndex, form) => {  
   const todo = new Todo(form);
 
-  state.projects[projectIndex].todoList.push(todo);
+  return todo;
 };
 
 export const getTodoById = (projectIndex, todoId) => {

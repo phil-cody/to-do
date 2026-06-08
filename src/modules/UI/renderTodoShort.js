@@ -140,6 +140,6 @@ export const renderTodoShort = (todo) => {
   todoItemDiv.appendChild(todoStatusDiv);
   todoItemDiv.appendChild(todoPriorityDiv);
   todoItemDiv.appendChild(todoActionsDiv);
-
+  
   return todoItemDiv;
 };

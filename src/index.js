@@ -24,11 +24,11 @@ import {
 } from "date-fns";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
-import { defaultFormTodo } from "@/modules/utils/defaultTodo";
+import { defaultTodo } from "@/modules/utils/defaultTodo";
 
 if (localStorage.length === 0) {
   const defaultProject = Project.defaultProject();
-  defaultProject.todoList.push(new Todo(defaultFormTodo));
+  defaultProject.todoList.push(Todo.fromData(defaultTodo));
   state.projects.push(defaultProject);
 } else {
   pullOutLocalStorage();

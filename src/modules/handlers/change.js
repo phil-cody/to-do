@@ -10,10 +10,10 @@ import { renderDashboard } from "@/modules/UI/renderDashboard";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 
 export const handlerChange = (select, todo = null) => {
+  console.trace()
   if (todo) {
     select.addEventListener("change", (event) => {
       const target = event.target;
-      console.log(todo)
       switch (target.name) {
         case "status":
           todo.updateStatus(target.value);

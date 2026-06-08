@@ -52,7 +52,7 @@ export const renderDashboard = () => {
   dashboardTodo.classList.add("todo", "grid");
 
   if (state.projects[currentProjectIndex]) {
-    for (const todo of state.projects[currentProjectIndex].todoList) {
+    for (let todo of state.projects[currentProjectIndex].todoList) {
       dashboardTodo.appendChild(renderTodoShort(todo));
     }
   }

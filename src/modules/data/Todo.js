@@ -1,17 +1,30 @@
-import { state } from '@/modules/state/projects';
-import {
-  format
-} from "date-fns";
+import { state } from "@/modules/state/projects";
+import { format } from "date-fns";
 
 export class Todo {
   constructor(form) {
-    this.task_title = form.get('task_title');
-    this.task_description = form.get('task_description');
-    this.task_due_date = format(form.get('task_due_date'), 'yyyy-MM-dd');
-    this.task_status = form.get('task_status');
-    this.task_priority = form.get('task_priority');
-    this.task_createdAt = new Date();
-    this.task_id = crypto.randomUUID();
+    Object.assign(this, form);
+  }
+
+  static fromForm(form) {
+    const data = new FormData(form);
+    return new Todo({
+      task_title: data.get("task_title"),
+      task_description: data.get("task_description"),
+      task_due_date: data.get("task_due_date"),
+      task_status: data.get("task_status"),
+      task_priority: data.get("task_priority"),
+      task_createdAt: new Date(),
+      task_id: crypto.randomUUID(),
+    });
+  }
+
+  static fromData(data) {
+    return new Todo(data);
+  }
+
+  static fromStorage(data) {
+    return new Todo(data);
   }
 
   updateStatus(value) {

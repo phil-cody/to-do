@@ -35,6 +35,7 @@ export class Project {
   }
 
   update(updates) {
+    console.trace()
     Object.assign(this, updates);
   }
 
@@ -44,7 +45,6 @@ export class Project {
 
   get overdueTasks() {
     return this.todoList.filter((todo) => {
-      console.log(todo)
       filterOverdue(todo.task_due_date, todo.task_status)},
     ).length;
   }
