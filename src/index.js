@@ -1,11 +1,12 @@
 import "@/style/main.scss";
 import { state } from "@/modules/state/projects";
 import { Project } from "@/modules/data/Project";
-import { findProjectIndexByID } from '@/modules/utils/findIndexById';
-import { renderSidebar } from '@/modules/UI/renderSidebar';
-import { renderDashboard } from '@/modules/UI/renderDashboard';
-import { handlerClick } from '@/modules/handlers/click';
-import { handlerSubmit } from '@/modules/handlers/submit';
+import { Todo } from "@/modules/data/Todo";
+import { findProjectIndexByID } from "@/modules/utils/findIndexById";
+import { renderSidebar } from "@/modules/UI/renderSidebar";
+import { renderDashboard } from "@/modules/UI/renderDashboard";
+import { handlerClick } from "@/modules/handlers/click";
+import { handlerSubmit } from "@/modules/handlers/submit";
 import { renderTodayDate } from "@/modules/UI/renderTodayDate";
 import {
   format,
@@ -21,20 +22,26 @@ import {
   isThisWeek,
   isSameDay,
 } from "date-fns";
+import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
+import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
+import { defaultFormTodo } from "@/modules/utils/defaultTodo";
 
-const defaultFormProject = new FormData();
-defaultFormProject.set("project_title", "To-Do List");
-defaultFormProject.set("project_description", "Current To-Do List");
+if (localStorage.length === 0) {
+  const defaultProject = Project.defaultProject();
+  defaultProject.todoList.push(new Todo(defaultFormTodo));
+  state.projects.push(defaultProject);
+} else {
+  pullOutLocalStorage();
+}
 
-const defaultProject = new Project(defaultFormProject);
+state.selectedProjectId = state.projects[0].project_id;
 
-state.projects.push(defaultProject);
-state.selectedProjectId = state.projects[0].id;
-
-console.log(state)
+console.log(state);
 
 renderTodayDate();
 renderSidebar();
 renderDashboard();
 handlerClick();
 handlerSubmit();
+
+pushInLocalStorage(state.projects);

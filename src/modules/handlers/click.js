@@ -17,6 +17,8 @@ import {
 } from "@/modules/services/projectService";
 import { deleteTodo, getTodoById } from "@/modules/services/todoService";
 import { clearForm } from "@/modules/utils/clearForm";
+import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
+import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 
 export const handlerClick = () => {
   const dialogNewProject = document.querySelector("#new-project");
@@ -83,16 +85,18 @@ export const handlerClick = () => {
           break;
         case DATASET_BTN.DELETE_PROJECT:
           if (target.closest(".project-item").id === state.selectedProjectId) {
-            state.selectedProjectId = state.projects[0].id;
+            state.selectedProjectId = state.projects[0].project_id;
             toggleSelectedProject();
           }
           deleteProject(target.closest(".project-item").id);
+          localStorage.removeItem(target.closest(".project-item").id)
           renderDashboard();
           renderSidebar();
           break;
         case DATASET_BTN.DELETE_TASK:
           deleteTodo(state.selectedProjectId, target.closest(".todo-item").id);
           if (dialogFullTask.hasAttribute("open")) closeDialogs();
+          pushInLocalStorage(state.projects);
           renderSidebar();
           renderDashboard();
           break;

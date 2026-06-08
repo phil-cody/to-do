@@ -16,7 +16,7 @@ export const renderSidebar = () => {
   for (let project of state.projects) {
     const projectCard = renderProjectCard(project);
     sidebarProjectBox.appendChild(projectCard);
-    if (project.id === state.selectedProjectId) {
+    if (project.project_id === state.selectedProjectId) {
       projectCard.classList.add("selected");
     }
   }

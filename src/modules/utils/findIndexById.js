@@ -1,7 +1,7 @@
 import { state } from '@/modules/state/projects';
 
 export const findProjectIndexByID = (currentId) => {
-  const result = state.projects.findIndex(project => project.id === currentId);
+  const result = state.projects.findIndex(project => project.project_id === currentId);
   return result;
 }
 

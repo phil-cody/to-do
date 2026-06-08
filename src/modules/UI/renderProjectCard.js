@@ -3,7 +3,7 @@ import { DATASET_BTN } from '@/modules/utils/constants.js';
 export const renderProjectCard = (project) => {
   const projectItemDiv = document.createElement('div');
   projectItemDiv.classList.add('project-item');
-  projectItemDiv.id = project.id;
+  projectItemDiv.id = project.project_id;
 
   const projectTitle = document.createElement('h3');
   projectTitle.textContent = project.project_title;
