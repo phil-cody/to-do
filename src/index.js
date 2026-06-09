@@ -8,23 +8,10 @@ import { renderDashboard } from "@/modules/UI/renderDashboard";
 import { handlerClick } from "@/modules/handlers/click";
 import { handlerSubmit } from "@/modules/handlers/submit";
 import { renderTodayDate } from "@/modules/UI/renderTodayDate";
-import {
-  format,
-  parseISO,
-  compareAsc,
-  isToday,
-  isTomorrow,
-  isBefore,
-  startOfDay,
-  differenceInDays,
-  addDays,
-  formatDistanceToNow,
-  isThisWeek,
-  isSameDay,
-} from "date-fns";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { defaultTodo } from "@/modules/utils/defaultTodo";
+import { dynamicDateInForm } from "@/modules/utils/dynamicDateInForm";
 
 if (localStorage.length === 0) {
   const defaultProject = Project.defaultProject();
@@ -43,5 +30,6 @@ renderSidebar();
 renderDashboard();
 handlerClick();
 handlerSubmit();
+dynamicDateInForm();
 
 pushInLocalStorage(state.projects);

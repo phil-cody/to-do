@@ -1,12 +1,7 @@
 import { Todo } from "@/modules/data/Todo";
 import { state } from "@/modules/state/projects";
 import { findProjectIndexByID } from "@/modules/utils/findIndexById";
-
-export const createTodo = (projectIndex, form) => {  
-  const todo = new Todo(form);
-
-  return todo;
-};
+import { checkSameTodoTitle } from "@/modules/utils/checkSameTitle";
 
 export const getTodoById = (projectIndex, todoId) => {
   return state.projects[projectIndex].todoList.find(
@@ -16,9 +11,14 @@ export const getTodoById = (projectIndex, todoId) => {
 
 export const updateTodo = (projectIndex, todoId, form) => {
   const todo = getTodoById(projectIndex, todoId);
-  const updates = Object.fromEntries(form);
+  const checkResult = checkSameTodoTitle(projectIndex, todoId, Object.fromEntries(form));
 
-  return updates ? Object.assign(todo, updates) : todo;
+  if (!todo) return null;
+  if (!checkResult) return null;
+  
+  todo.update(Object.fromEntries(form));
+
+  return todo;
 };
 
 export const deleteTodo = (projectId, idToDelete) => {

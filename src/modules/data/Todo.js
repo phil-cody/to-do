@@ -1,6 +1,3 @@
-import { state } from "@/modules/state/projects";
-import { format } from "date-fns";
-
 export class Todo {
   constructor(form) {
     Object.assign(this, form);
@@ -25,6 +22,10 @@ export class Todo {
 
   static fromStorage(data) {
     return new Todo(data);
+  }
+
+  update(updates) {
+    Object.assign(this, updates);
   }
 
   updateStatus(value) {

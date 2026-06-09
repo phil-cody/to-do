@@ -3,6 +3,7 @@ import {
   filterToday,
   filterCompleted,
 } from "@/modules/utils/filterTasks";
+import { Todo } from "@/modules/data/Todo";
 
 export class Project {
   constructor(data) {
@@ -21,7 +22,10 @@ export class Project {
   }
 
   static fromStorage(data) {
-    return new Project(data);
+    return new Project({
+      ...data,
+      todoList: data.todoList.map(todo => Todo.fromStorage(todo)),
+    });
   }
 
   static defaultProject() {
@@ -35,7 +39,6 @@ export class Project {
   }
 
   update(updates) {
-    console.trace()
     Object.assign(this, updates);
   }
 

@@ -67,6 +67,5 @@ export const renderDashboard = () => {
   dashboardView.appendChild(dashboardViewSelect);
   dashboardViewSelect.appendChild(dashboardViewOptionGrid);
   dashboardViewSelect.appendChild(dashboardViewOptionList);
-
   return dashboardContainer;
 };
