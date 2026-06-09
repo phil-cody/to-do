@@ -15,6 +15,7 @@ import { clearForm } from "@/modules/utils/clearForm";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { checkSameProjectTitle, checkSameTodoTitle } from "@/modules/utils/checkSameTitle";
+import { sortTodos } from "@/modules/utils/sortTodos";
 
 export const handlerSubmit = () => {
 
@@ -66,7 +67,7 @@ Please try giving the task a different name`);
         return;
       }
     }
-    
+    sortTodos();
     closeDialogs();
     pushInLocalStorage(state.projects)
     renderSidebar();

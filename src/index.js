@@ -12,6 +12,7 @@ import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { defaultTodo } from "@/modules/utils/defaultTodo";
 import { dynamicDateInForm } from "@/modules/utils/dynamicDateInForm";
+import { sortTodos } from "@/modules/utils/sortTodos";
 
 if (localStorage.length === 0) {
   const defaultProject = Project.defaultProject();
@@ -22,8 +23,9 @@ if (localStorage.length === 0) {
 }
 
 state.selectedProjectId = state.projects[0].project_id;
-
 console.log(state);
+
+sortTodos();
 
 renderTodayDate();
 renderSidebar();

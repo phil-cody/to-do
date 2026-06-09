@@ -19,6 +19,7 @@ import { deleteTodo, getTodoById } from "@/modules/services/todoService";
 import { clearForm } from "@/modules/utils/clearForm";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
+import { sortTodos } from "@/modules/utils/sortTodos";
 
 export const handlerClick = () => {
   const dialogNewProject = document.querySelector("#new-project");
@@ -96,6 +97,7 @@ export const handlerClick = () => {
         case DATASET_BTN.DELETE_TASK:
           deleteTodo(state.selectedProjectId, target.closest(".todo-item").id);
           if (dialogFullTask.hasAttribute("open")) closeDialogs();
+          // sortTodos();
           pushInLocalStorage(state.projects);
           renderSidebar();
           renderDashboard();

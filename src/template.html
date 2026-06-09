@@ -42,16 +42,19 @@
               type="text"
               name="project_title"
               id="project_title"
+              placeholder="e.g., My to-do list"
               required
             />
           </div>
           <div class="dialog-field">
             <label for="project_description">Description:</label>
-            <input
+            <textarea
               type="text"
               name="project_description"
               id="project_description"
-            />
+              placeholder="Any details about the project"
+              rows="4" cols="50"
+            ></textarea>
           </div>
           <button class="dialog-btn btn" type="submit">Save the project</button>
         </form>
@@ -67,15 +70,23 @@
         <form class="dialog-form" method="dialog" id="addTaskForm">
           <div class="dialog-field">
             <label for="task_title">Title</label>
-            <input type="text" name="task_title" id="task_title" required />
+            <input
+              type="text"
+              name="task_title"
+              id="task_title"
+              placeholder="e.g., Write a to-do list"
+              required
+            />
           </div>
           <div class="dialog-field">
             <label for="task_description">Description</label>
-            <input
+            <textarea
               type="text"
               name="task_description"
               id="task_description"
-            />
+              placeholder="Any details about the task"
+              rows="4" cols="50"
+            ></textarea>
           </div>
           <div class="dialog-field">
             <label for="task_due_date">Due Date</label>
@@ -97,9 +108,9 @@
           <div class="dialog-field">
             <label for="task_priority">Priority</label>
             <select name="task_priority" id="task_priority">
-              <option value="high" selected>High</option>
+              <option value="high">High</option>
               <option value="medium">Medium</option>
-              <option value="low">Low</option>
+              <option value="low" selected>Low</option>
             </select>
           </div>
           <button class="dialog-btn btn" type="submit">Save the task</button>

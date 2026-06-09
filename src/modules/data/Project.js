@@ -4,6 +4,7 @@ import {
   filterCompleted,
 } from "@/modules/utils/filterTasks";
 import { Todo } from "@/modules/data/Todo";
+import { DASHBOARD_VIEW } from "@/modules/utils/constants.js";
 
 export class Project {
   constructor(data) {
@@ -15,6 +16,7 @@ export class Project {
     return new Project({
       project_title: data.get("project_title"),
       project_description: data.get("project_description"),
+      project_view: DASHBOARD_VIEW.GRID,
       todoList: [],
       createdAt: new Date(),
       project_id: crypto.randomUUID(),
@@ -32,10 +34,15 @@ export class Project {
     return new Project({
       project_title: "To-Do List",
       project_description: "Current To-Do List",
+      project_view: DASHBOARD_VIEW.GRID,
       todoList: [],
       createdAt: new Date(),
       project_id: crypto.randomUUID(),
     });
+  }
+
+  updateView(value) {
+    this.project_view = value;
   }
 
   update(updates) {

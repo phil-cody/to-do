@@ -48,8 +48,20 @@ export const renderDashboard = () => {
   dashboardViewOptionList.setAttribute("value", DASHBOARD_VIEW.LIST);
   dashboardViewOptionList.textContent = "List";
 
+  switch (state.projects[currentProjectIndex].project_view) {
+    case DASHBOARD_VIEW.GRID:
+      dashboardViewOptionGrid.setAttribute("selected", "");
+      break;
+    case DASHBOARD_VIEW.LIST:
+      dashboardViewOptionList.setAttribute("selected", "");
+      break;
+  }
+
   const dashboardTodo = document.createElement("div");
-  dashboardTodo.classList.add("todo", "grid");
+  dashboardTodo.classList.add(
+    "todo",
+    `${state.projects[currentProjectIndex].project_view}`,
+  );
 
   if (state.projects[currentProjectIndex]) {
     for (let todo of state.projects[currentProjectIndex].todoList) {
