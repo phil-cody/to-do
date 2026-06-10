@@ -1,6 +1,7 @@
 import {
   TODO_STATUS,
   TODO_PRIORITY,
+  DASHBOARD_FILTER,
   DATASET_BTN,
 } from "@/modules/utils/constants.js";
 import { Todo } from "@/modules/data/Todo";
@@ -34,9 +35,17 @@ export const handlerChange = (select, todo = null) => {
       const target = event.target;
 
       const box = document.querySelector(".todo");
-      console.log(state)
-      state.projects[findProjectIndexByID(state.selectedProjectId)].updateView(target.value);
-      box.className = `todo ${target.value}`;
+      if (target.id === "select-view") {
+        state.projects[
+          findProjectIndexByID(state.selectedProjectId)
+        ].updateView(target.value);
+        box.className = `todo ${target.value}`;
+      } else if (target.id === "select-filter") {
+        state.projects[
+          findProjectIndexByID(state.selectedProjectId)
+        ].updateFilter(target.value);
+        renderDashboard();
+      }
       pushInLocalStorage(state.projects);
     });
   }

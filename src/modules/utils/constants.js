@@ -15,6 +15,19 @@ export const DASHBOARD_VIEW = {
   LIST: 'list'
 }
 
+export const DASHBOARD_FILTER = {
+  ALL: 'all',
+  STATUS_COMPLETED: 'status-completed',
+  STATUS_PENDING: 'status-pending',
+  STATUS_IN_PROCESS: 'status-in-process',
+  PRIORITY_HIGH: 'priority-high',
+  PRIORITY_MEDIUM: 'priority-medium',
+  PRIORITY_LOW: 'priority-low',
+  DATE_TODAY: 'date-today',
+  DATE_TOMORROW: 'date-tomorrow',
+  DATE_THIS_WEEK: 'date-this-week',
+}
+
 export const DATASET_BTN = {
   ADD_PROJECT: 'add-project',
   EDIT_PROJECT: 'edit-project',

@@ -1,10 +1,21 @@
 import {
   filterOverdue,
   filterToday,
+  filterTomorrow,
+  filterThisWeek,
   filterCompleted,
+  filterInProcess,
+  filterPending,
+  filterPriorityHigh,
+  filterPriorityMedium,
+  filterPriorityLow,
 } from "@/modules/utils/filterTasks";
 import { Todo } from "@/modules/data/Todo";
-import { DASHBOARD_VIEW } from "@/modules/utils/constants.js";
+import {
+  DASHBOARD_VIEW,
+  DASHBOARD_FILTER,
+  TODO_STATUS,
+} from "@/modules/utils/constants.js";
 
 export class Project {
   constructor(data) {
@@ -17,6 +28,7 @@ export class Project {
       project_title: data.get("project_title"),
       project_description: data.get("project_description"),
       project_view: DASHBOARD_VIEW.GRID,
+      project_filter: DASHBOARD_FILTER.ALL,
       todoList: [],
       createdAt: new Date(),
       project_id: crypto.randomUUID(),
@@ -26,7 +38,7 @@ export class Project {
   static fromStorage(data) {
     return new Project({
       ...data,
-      todoList: data.todoList.map(todo => Todo.fromStorage(todo)),
+      todoList: data.todoList.map((todo) => Todo.fromStorage(todo)),
     });
   }
 
@@ -35,6 +47,7 @@ export class Project {
       project_title: "To-Do List",
       project_description: "Current To-Do List",
       project_view: DASHBOARD_VIEW.GRID,
+      project_filter: DASHBOARD_FILTER.ALL,
       todoList: [],
       createdAt: new Date(),
       project_id: crypto.randomUUID(),
@@ -45,8 +58,58 @@ export class Project {
     this.project_view = value;
   }
 
+  updateFilter(value) {
+    this.project_filter = value;
+  }
+
   update(updates) {
     Object.assign(this, updates);
+  }
+
+  showAllTasks() {
+    return this.todoList;
+  }
+
+  showCompletedTasks() {
+    return this.todoList.filter((todo) => filterCompleted(todo.task_status));
+  }
+
+  showPendingTasks() {
+    return this.todoList.filter((todo) => filterPending(todo.task_status));
+  }
+
+  showInProcessTasks() {
+    return this.todoList.filter((todo) => filterInProcess(todo.task_status));
+  }
+
+  showPriorityHighTasks() {
+    return this.todoList.filter((todo) =>
+      filterPriorityHigh(todo.task_priority),
+    );
+  }
+
+  showPriorityMediumTasks() {
+    return this.todoList.filter((todo) =>
+      filterPriorityMedium(todo.task_priority),
+    );
+  }
+
+  showPriorityLowTasks() {
+    return this.todoList.filter((todo) =>
+      filterPriorityLow(todo.task_priority),
+    );
+  }
+
+  showTodayTasks() {
+    return this.todoList.filter((todo) => filterToday(todo.task_due_date));
+  }
+
+  showTomorrowTasks() {
+    return this.todoList.filter((todo) => filterTomorrow(todo.task_due_date));
+  }
+
+  showThisWeekTasks() {
+    return this.todoList.filter((todo) => filterThisWeek(todo.task_due_date));
   }
 
   get allTasks() {
@@ -55,13 +118,16 @@ export class Project {
 
   get overdueTasks() {
     return this.todoList.filter((todo) => {
-      filterOverdue(todo.task_due_date, todo.task_status)},
-    ).length;
+      if (todo.task_status === TODO_STATUS.COMPLETED) return false;
+      return filterOverdue(todo.task_due_date);
+    }).length;
   }
 
   get todayTasks() {
-    return this.todoList.filter((todo) => filterToday(todo.task_due_date))
-      .length;
+    return this.todoList.filter((todo) => {
+      if (todo.task_status === TODO_STATUS.COMPLETED) return false;
+      return filterToday(todo.task_due_date);
+    }).length;
   }
 
   get completedTasks() {

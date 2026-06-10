@@ -33,7 +33,7 @@ export const handlerClick = () => {
       return;
     }
 
-    if (target.closest(".project-item") && target.tagName !== 'BUTTON') {
+    if (target.closest(".project-item") && target.tagName !== 'BUTTON' && target.closest(".project-item").id !== state.selectedProjectId) {
       state.selectedProjectId = target.closest(".project-item").id;
       renderSidebar();
       toggleSelectedProject(state.selectedProjectId);
