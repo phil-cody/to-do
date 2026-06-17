@@ -23,7 +23,6 @@ if (localStorage.length === 0) {
 }
 
 state.selectedProjectId = state.projects[0].project_id;
-console.log(state);
 
 sortTodos();
 

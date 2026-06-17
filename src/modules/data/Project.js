@@ -40,7 +40,7 @@ export class Project {
     return new Project({
       ...data,
       todoList: data.todoList.map((todo) => Todo.fromStorage(todo)),
-      project_priority: data.project_priority,
+      project_priority: Number(data.project_priority),
     });
   }
 
