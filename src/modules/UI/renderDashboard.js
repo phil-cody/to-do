@@ -148,6 +148,8 @@ export const renderDashboard = () => {
     case DASHBOARD_FILTER.OVERDUE:
       dashboardFilterOptionOverdue.setAttribute("selected", "");
       break;
+    case null: 
+      break;
   }
 
   const dashboardView = document.createElement("div");

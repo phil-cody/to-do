@@ -93,6 +93,10 @@ export const handlerClick = () => {
           );
           break;
         case DATASET_BTN.DELETE_PROJECT:
+          if (state.projects.length === 1) {
+            alert("Can't delete last project");
+            return;
+          }
           if (target.closest(".project-item").id === state.selectedProjectId) {
             state.selectedProjectId = state.projects[0].project_id;
             toggleSelectedProject();

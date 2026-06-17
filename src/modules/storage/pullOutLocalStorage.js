@@ -9,5 +9,6 @@ export function pullOutLocalStorage() {
   const projects = JSON.parse(raw);
   for (let project of projects) {
     state.projects.push(Project.fromStorage(project));
+    console.log(project)
   }
 }
