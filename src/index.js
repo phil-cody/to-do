@@ -14,12 +14,12 @@ import { defaultTodo } from "@/modules/utils/defaultTodo";
 import { dynamicDateInForm } from "@/modules/utils/dynamicDateInForm";
 import { sortTodos } from "@/modules/utils/sortTodos";
 
-if (localStorage.length === 0) {
+pullOutLocalStorage();
+
+if (state.projects.length === 0) {
   const defaultProject = Project.defaultProject();
   defaultProject.todoList.push(Todo.fromData(defaultTodo));
   state.projects.push(defaultProject);
-} else {
-  pullOutLocalStorage();
 }
 
 state.selectedProjectId = state.projects[0].project_id;
