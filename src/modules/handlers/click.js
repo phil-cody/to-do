@@ -14,12 +14,14 @@ import { renderTodoFull } from "@/modules/UI/renderTodoFull";
 import {
   deleteProject,
   getProjectById,
+  updatePriority,
 } from "@/modules/services/projectService";
 import { deleteTodo, getTodoById } from "@/modules/services/todoService";
 import { clearForm } from "@/modules/utils/clearForm";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { sortTodos } from "@/modules/utils/sortTodos";
+import { maxProjectPriority } from "@/modules/utils/maxProjectPriority";
 
 export const handlerClick = () => {
   const dialogNewProject = document.querySelector("#new-project");
@@ -33,7 +35,11 @@ export const handlerClick = () => {
       return;
     }
 
-    if (target.closest(".project-item") && target.tagName !== 'BUTTON' && target.closest(".project-item").id !== state.selectedProjectId) {
+    if (
+      target.closest(".project-item") &&
+      target.tagName !== "BUTTON" &&
+      target.closest(".project-item").id !== state.selectedProjectId
+    ) {
       state.selectedProjectId = target.closest(".project-item").id;
       renderSidebar();
       toggleSelectedProject(state.selectedProjectId);
@@ -44,6 +50,7 @@ export const handlerClick = () => {
       switch (target.dataset.btn) {
         case DATASET_BTN.ADD_PROJECT:
           state.currentAction = DATASET_BTN.ADD_PROJECT;
+          maxProjectPriority();
           closeDialogs();
           dialogNewProject.showModal();
           break;
@@ -54,7 +61,8 @@ export const handlerClick = () => {
           break;
         case DATASET_BTN.EDIT_PROJECT:
           state.currentAction = DATASET_BTN.EDIT_PROJECT;
-          state.targetProjectId = target.closest('.project-item').id;
+          maxProjectPriority();
+          state.targetProjectId = target.closest(".project-item").id;
           closeDialogs();
           dialogNewProject.showModal();
           Array.from(dialogNewProject.querySelector("form").elements).forEach(
@@ -89,8 +97,19 @@ export const handlerClick = () => {
             state.selectedProjectId = state.projects[0].project_id;
             toggleSelectedProject();
           }
+          const deleteProjectPriority =
+            state.projects[
+              findProjectIndexByID(target.closest(".project-item").id)
+            ].project_priority;
+
           deleteProject(target.closest(".project-item").id);
-          localStorage.removeItem(target.closest(".project-item").id)
+          state.projects.forEach((project) => {
+            if (project.project_priority >= deleteProjectPriority) {
+              project.project_priority = +project.project_priority - 1;
+            }
+          });
+          pushInLocalStorage(state.projects);
+          localStorage.removeItem(target.closest(".project-item").id);
           renderDashboard();
           renderSidebar();
           break;

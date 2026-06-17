@@ -1,7 +1,8 @@
 import { TODO_STATUS, TODO_PRIORITY } from '@/modules/utils/constants.js';
 import { isToday, isTomorrow, isThisWeek, isBefore, startOfDay } from "date-fns";
 
-export const filterOverdue = (date) => {
+export const filterOverdue = (date, status) => {
+  if (status === TODO_STATUS.COMPLETED) return;
   return (isBefore(startOfDay(date), startOfDay(new Date())));
 }
 

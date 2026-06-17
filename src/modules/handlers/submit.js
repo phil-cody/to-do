@@ -9,16 +9,22 @@ import {
   findTaskIndexByID,
 } from "@/modules/utils/findIndexById";
 import { DATASET_BTN } from "@/modules/utils/constants";
-import { updateProject, createProject } from "@/modules/services/projectService";
+import {
+  updateProject,
+  createProject,
+} from "@/modules/services/projectService";
 import { updateTodo, createTodo } from "@/modules/services/todoService";
 import { clearForm } from "@/modules/utils/clearForm";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
-import { checkSameProjectTitle, checkSameTodoTitle } from "@/modules/utils/checkSameTitle";
+import {
+  checkSameProjectTitle,
+  checkSameTodoTitle,
+} from "@/modules/utils/checkSameTitle";
 import { sortTodos } from "@/modules/utils/sortTodos";
+import { maxProjectPriority } from "@/modules/utils/maxProjectPriority";
 
 export const handlerSubmit = () => {
-
   const addProjectForm = document.querySelector("#addProjectForm");
   const addTaskForm = document.querySelector("#addTaskForm");
 
@@ -26,13 +32,19 @@ export const handlerSubmit = () => {
     e.preventDefault();
     const target = e.target;
 
-    const projectIndex = findProjectIndexByID(state.selectedProjectId);
     const form = new FormData(addProjectForm);
     if (state.currentAction === DATASET_BTN.EDIT_PROJECT) {
+      state.selectedProjectId = state.targetProjectId;
       updateProject(state.targetProjectId, form);
     } else if (state.currentAction === DATASET_BTN.ADD_PROJECT) {
-      let newProject = Project.fromForm(addProjectForm)
+      let newProject = Project.fromForm(addProjectForm);
       if (checkSameProjectTitle(newProject.project_id, newProject)) {
+        state.projects.forEach((project) => {
+          if (project.project_priority >= newProject.project_priority) {
+            project.project_priority = +project.project_priority + 1;
+          }
+        });
+        state.selectedProjectId = newProject.project_id;
         state.projects.push(newProject);
       } else {
         alert(`The project could not be created because a project with the same name already exists. 
@@ -40,12 +52,12 @@ Please try giving a different name to the project.`);
         return;
       }
     }
-    state.selectedProjectId = state.projects.at(-1).project_id;
-    pushInLocalStorage(state.projects)
+    pushInLocalStorage(state.projects);
     closeDialogs();
     renderSidebar();
     renderDashboard();
     clearForm(addProjectForm);
+    maxProjectPriority();
     state.currentAction = null;
   });
 
@@ -54,7 +66,7 @@ Please try giving a different name to the project.`);
 
     const projectIndex = findProjectIndexByID(state.selectedProjectId);
     const form = new FormData(addTaskForm);
-    
+
     if (state.currentAction === DATASET_BTN.EDIT_TASK) {
       updateTodo(projectIndex, state.selectedTodoId, form);
     } else if (state.currentAction === DATASET_BTN.ADD_TASK) {
@@ -69,7 +81,7 @@ Please try giving the task a different name`);
     }
     sortTodos();
     closeDialogs();
-    pushInLocalStorage(state.projects)
+    pushInLocalStorage(state.projects);
     renderSidebar();
     renderDashboard();
     clearForm(addTaskForm);

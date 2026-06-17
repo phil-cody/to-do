@@ -53,8 +53,20 @@
               name="project_description"
               id="project_description"
               placeholder="Any details about the project"
-              rows="4" cols="50"
+              rows="4"
+              cols="50"
             ></textarea>
+          </div>
+          <div class="dialog-field">
+            <label for="project_priority">Priority:</label>
+            <input
+              type="number"
+              name="project_priority"
+              id="project_priority"
+              placeholder="1"
+              min="1"
+              required
+            />
           </div>
           <button class="dialog-btn btn" type="submit">Save the project</button>
         </form>
@@ -85,7 +97,8 @@
               name="task_description"
               id="task_description"
               placeholder="Any details about the task"
-              rows="4" cols="50"
+              rows="4"
+              cols="50"
             ></textarea>
           </div>
           <div class="dialog-field">

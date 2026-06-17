@@ -32,7 +32,7 @@ export const renderTodoFull = (todo) => {
   closeBtnLineTwo.classList.add('close__line');
   closeBtnLineTwo.dataset.btn = DATASET_BTN.CLOSE_DIALOG;
 
-  const todoDescription = document.createElement("p");
+  const todoDescription = document.createElement("pre");
   todoDescription.textContent = todo.task_description;
 
   const todoDueDateDiv = document.createElement("div");

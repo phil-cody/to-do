@@ -107,6 +107,13 @@ export const renderDashboard = () => {
   );
   dashboardFilterOptionDateThisWeek.textContent = "This Week";
 
+  const dashboardFilterOptionOverdue = document.createElement("option");
+  dashboardFilterOptionOverdue.setAttribute(
+    "value",
+    DASHBOARD_FILTER.OVERDUE,
+  );
+  dashboardFilterOptionOverdue.textContent = "Overdue";
+
   switch (state.projects[currentProjectIndex].project_filter) {
     case DASHBOARD_FILTER.ALL:
       dashboardFilterOptionAll.setAttribute("selected", "");
@@ -137,6 +144,9 @@ export const renderDashboard = () => {
       break;
     case DASHBOARD_FILTER.DATE_THIS_WEEK:
       dashboardFilterOptionDateThisWeek.setAttribute("selected", "");
+      break;
+    case DASHBOARD_FILTER.OVERDUE:
+      dashboardFilterOptionOverdue.setAttribute("selected", "");
       break;
   }
 
@@ -208,6 +218,9 @@ export const renderDashboard = () => {
       case DASHBOARD_FILTER.DATE_THIS_WEEK:
         list = state.projects[currentProjectIndex].showThisWeekTasks();
         break;
+      case DASHBOARD_FILTER.OVERDUE:
+        list = state.projects[currentProjectIndex].showOverdueTasks();
+        break;
     }
     for (let todo of list) {
       dashboardTodo.appendChild(renderTodoShort(todo));
@@ -233,6 +246,7 @@ export const renderDashboard = () => {
   dashboardFilterSelect.appendChild(dashboardFilterOptionDateToday);
   dashboardFilterSelect.appendChild(dashboardFilterOptionDateTomorrow);
   dashboardFilterSelect.appendChild(dashboardFilterOptionDateThisWeek);
+  dashboardFilterSelect.appendChild(dashboardFilterOptionOverdue);
   dashboardView.appendChild(dashboardViewLabel);
   dashboardView.appendChild(dashboardViewSelect);
   dashboardViewSelect.appendChild(dashboardViewOptionGrid);

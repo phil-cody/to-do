@@ -27,6 +27,7 @@ export class Project {
     return new Project({
       project_title: data.get("project_title"),
       project_description: data.get("project_description"),
+      project_priority: +data.get("project_priority"),
       project_view: DASHBOARD_VIEW.GRID,
       project_filter: DASHBOARD_FILTER.ALL,
       todoList: [],
@@ -39,6 +40,7 @@ export class Project {
     return new Project({
       ...data,
       todoList: data.todoList.map((todo) => Todo.fromStorage(todo)),
+      project_priority: data.project_priority,
     });
   }
 
@@ -46,6 +48,7 @@ export class Project {
     return new Project({
       project_title: "To-Do List",
       project_description: "Current To-Do List",
+      project_priority: 1,
       project_view: DASHBOARD_VIEW.GRID,
       project_filter: DASHBOARD_FILTER.ALL,
       todoList: [],
@@ -80,6 +83,10 @@ export class Project {
 
   showInProcessTasks() {
     return this.todoList.filter((todo) => filterInProcess(todo.task_status));
+  }
+
+  showOverdueTasks() {
+    return this.todoList.filter((todo) => filterOverdue(todo.task_due_date, todo.task_status));
   }
 
   showPriorityHighTasks() {
@@ -118,8 +125,7 @@ export class Project {
 
   get overdueTasks() {
     return this.todoList.filter((todo) => {
-      if (todo.task_status === TODO_STATUS.COMPLETED) return false;
-      return filterOverdue(todo.task_due_date);
+      return filterOverdue(todo.task_due_date, todo.task_status);
     }).length;
   }
 

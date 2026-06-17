@@ -11,7 +11,7 @@ export const renderTodoShort = (todo) => {
   const todoTitle = document.createElement("h3");
   todoTitle.textContent = todo.task_title;
 
-  const todoDescription = document.createElement("p");
+  const todoDescription = document.createElement("pre");
   todoDescription.textContent = todo.task_description;
 
   const todoDueDateDiv = document.createElement("div");

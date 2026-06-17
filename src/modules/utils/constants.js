@@ -26,6 +26,7 @@ export const DASHBOARD_FILTER = {
   DATE_TODAY: 'date-today',
   DATE_TOMORROW: 'date-tomorrow',
   DATE_THIS_WEEK: 'date-this-week',
+  OVERDUE: 'overdue'
 }
 
 export const DATASET_BTN = {

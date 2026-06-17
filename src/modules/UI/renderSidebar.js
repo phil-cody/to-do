@@ -13,7 +13,9 @@ export const renderSidebar = () => {
     return;
   }
 
-  for (let project of state.projects) {
+  const sortProjects = [...state.projects].sort((a, b) => a.project_priority - b.project_priority);
+
+  for (let project of sortProjects) {
     const projectCard = renderProjectCard(project);
     sidebarProjectBox.appendChild(projectCard);
     if (project.project_id === state.selectedProjectId) {
