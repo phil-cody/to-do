@@ -1,0 +1,10 @@
+export const setFavicon = (url) => {
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.type = 'image/svg';
+    link.rel = 'icon';
+    document.head.appendChild(link);
+  }
+  link.href = url;
+}

@@ -1,7 +1,12 @@
 import "@/style/main.scss";
+
+import logo from "@/assets/image/favicon.svg";
+import { setFavicon } from "@/modules/utils/setFavicon";
+
 import { state } from "@/modules/state/projects";
 import { Project } from "@/modules/data/Project";
 import { Todo } from "@/modules/data/Todo";
+
 import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 import { renderSidebar } from "@/modules/UI/renderSidebar";
 import { renderDashboard } from "@/modules/UI/renderDashboard";
@@ -13,6 +18,8 @@ import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { defaultTodo } from "@/modules/utils/defaultTodo";
 import { dynamicDateInForm } from "@/modules/utils/dynamicDateInForm";
 import { sortTodos } from "@/modules/utils/sortTodos";
+
+setFavicon(logo);
 
 pullOutLocalStorage();
 
