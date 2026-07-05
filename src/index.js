@@ -7,7 +7,10 @@ import { state } from "@/modules/state/projects";
 import { Project } from "@/modules/data/Project";
 import { Todo } from "@/modules/data/Todo";
 
-import { findProjectIndexByID } from "@/modules/utils/findIndexById";
+import {
+  findProjectIndexByID,
+  findTaskIndexByID,
+} from "@/modules/utils/findIndexById";
 import { renderSidebar } from "@/modules/UI/renderSidebar";
 import { renderDashboard } from "@/modules/UI/renderDashboard";
 import { handlerClick } from "@/modules/handlers/click";

@@ -1,9 +1,13 @@
-import { TODO_STATUS, TODO_PRIORITY, DATASET_BTN } from "@/modules/utils/constants.js";
+import {
+  TODO_STATUS,
+  TODO_PRIORITY,
+  DATASET_BTN,
+} from "@/modules/utils/constants.js";
 import { format, isToday, isTomorrow } from "date-fns";
 import { handlerChange } from "@/modules/handlers/change";
 
 export const renderTodoShort = (todo) => {
-  
+
   const todoItemDiv = document.createElement("div");
   todoItemDiv.classList.add("todo-item");
   todoItemDiv.id = todo.task_id;
@@ -140,6 +144,6 @@ export const renderTodoShort = (todo) => {
   todoItemDiv.appendChild(todoStatusDiv);
   todoItemDiv.appendChild(todoPriorityDiv);
   todoItemDiv.appendChild(todoActionsDiv);
-  
+
   return todoItemDiv;
 };

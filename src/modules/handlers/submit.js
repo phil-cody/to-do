@@ -64,7 +64,7 @@ Please try giving a different name to the project.`);
   addTaskForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const projectIndex = findProjectIndexByID(state.selectedProjectId);
+    let projectIndex = findProjectIndexByID(state.selectedProjectId);
     const form = new FormData(addTaskForm);
 
     if (state.currentAction === DATASET_BTN.EDIT_TASK) {
@@ -72,6 +72,7 @@ Please try giving a different name to the project.`);
     } else if (state.currentAction === DATASET_BTN.ADD_TASK) {
       let newTodo = Todo.fromForm(addTaskForm);
       if (checkSameTodoTitle(projectIndex, newTodo.task_id, newTodo)) {
+        projectIndex = findProjectIndexByID(newTodo.task_project);
         state.projects[projectIndex].todoList.push(Todo.fromForm(addTaskForm));
       } else {
         alert(`The task could not be created because a task with the same name already exists. 

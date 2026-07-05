@@ -22,6 +22,7 @@ import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { sortTodos } from "@/modules/utils/sortTodos";
 import { maxProjectPriority } from "@/modules/utils/maxProjectPriority";
+import { renderProjectSelect } from "@/modules/UI/renderProjectSelect";
 
 export const handlerClick = () => {
   const dialogNewProject = document.querySelector("#new-project");
@@ -57,6 +58,7 @@ export const handlerClick = () => {
         case DATASET_BTN.ADD_TASK:
           state.currentAction = DATASET_BTN.ADD_TASK;
           closeDialogs();
+          renderProjectSelect();
           dialogNewTask.showModal();
           break;
         case DATASET_BTN.EDIT_PROJECT:
@@ -78,6 +80,7 @@ export const handlerClick = () => {
           state.selectedTodoId = target.closest(".todo-item").id;
           state.currentAction = DATASET_BTN.EDIT_TASK;
           closeDialogs();
+          renderProjectSelect();
           dialogNewTask.showModal();
           let currentTaskId = target.closest(".todo-item").id;
           Array.from(dialogNewTask.querySelector("form").elements).forEach(
@@ -120,7 +123,6 @@ export const handlerClick = () => {
         case DATASET_BTN.DELETE_TASK:
           deleteTodo(state.selectedProjectId, target.closest(".todo-item").id);
           if (dialogFullTask.hasAttribute("open")) closeDialogs();
-          // sortTodos();
           pushInLocalStorage(state.projects);
           renderSidebar();
           renderDashboard();
@@ -143,6 +145,7 @@ export const handlerClick = () => {
             ),
           );
           dialogFullTask.showModal();
+          console.log(state)
           break;
       }
     }

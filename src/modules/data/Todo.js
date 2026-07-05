@@ -11,6 +11,7 @@ export class Todo {
       task_due_date: data.get("task_due_date"),
       task_status: data.get("task_status"),
       task_priority: data.get("task_priority"),
+      task_project: data.get("task_project"),
       task_createdAt: new Date(),
       task_id: crypto.randomUUID(),
     });
@@ -34,5 +35,10 @@ export class Todo {
 
   updatePriority(value) {
     this.task_priority = value;
+    console.trace()
+  }
+
+  updateTodoProject(value) {
+    this.task_project = value;
   }
 }

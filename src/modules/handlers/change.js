@@ -12,6 +12,7 @@ import { renderDashboard } from "@/modules/UI/renderDashboard";
 import { pushInLocalStorage } from "@/modules/storage/pushInLocalStorage";
 import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 import { sortTodos } from "@/modules/utils/sortTodos";
+import { updateTodo } from "@/modules/services/todoService";
 
 export const handlerChange = (select, todo = null) => {
   if (todo) {
@@ -23,6 +24,13 @@ export const handlerChange = (select, todo = null) => {
           break;
         case "priority":
           todo.updatePriority(target.value);
+          break;
+        case "project":
+          const form = new FormData();
+          form.set('task_project', target.value);
+          let projectIndex = findProjectIndexByID(todo.task_project);
+          updateTodo(projectIndex, todo.task_id, form);
+          
           break;
       }
       sortTodos();

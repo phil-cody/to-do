@@ -1,8 +1,11 @@
 import { TODO_STATUS, TODO_PRIORITY, DATASET_BTN } from "@/modules/utils/constants.js";
 import { format, isToday, isTomorrow } from "date-fns";
 import { handlerChange } from "@/modules/handlers/change";
+import { state } from "@/modules/state/projects";
 
 export const renderTodoFull = (todo) => {
+  let data = JSON.parse(localStorage.todo_app);
+
   const todoContainer = document.createElement('div');
   todoContainer.classList.add('dialog-container');
 
@@ -34,6 +37,31 @@ export const renderTodoFull = (todo) => {
 
   const todoDescription = document.createElement("pre");
   todoDescription.textContent = todo.task_description;
+
+  const todoProjectDiv = document.createElement("div");
+  todoProjectDiv.classList.add("todo-project");
+
+  const todoProjectLabel = document.createElement("label");
+  todoProjectLabel.setAttribute("for", `project_${todo.task_id}`);
+  todoProjectLabel.textContent = "Project";
+  todoProjectDiv.appendChild(todoProjectLabel);
+
+  const todoProjectSelect = document.createElement("select");
+  todoProjectSelect.setAttribute("name", "project");
+  todoProjectSelect.id = `project_${todo.task_id}`;
+  handlerChange(todoProjectSelect, todo);
+  todoProjectDiv.appendChild(todoProjectSelect);
+
+  data.forEach((project) => {
+    const todoProjectOption = document.createElement("option");
+    todoProjectOption.setAttribute("value", project.project_id);
+    todoProjectOption.textContent = project.project_title;
+    todoProjectSelect.appendChild(todoProjectOption);
+
+    if (project.project_id === state.selectedProjectId) {
+      todoProjectOption.setAttribute("selected", "");
+    }
+  });
 
   const todoDueDateDiv = document.createElement("div");
   todoDueDateDiv.classList.add("due-date");
@@ -169,6 +197,7 @@ export const renderTodoFull = (todo) => {
 
   todoItemDiv.appendChild(todoHeaderDiv);
   todoItemDiv.appendChild(todoDescription);
+  todoItemDiv.appendChild(todoProjectDiv);
   todoItemDiv.appendChild(todoDueDateDiv);
   todoItemDiv.appendChild(todoStatusDiv);
   todoItemDiv.appendChild(todoPriorityDiv);
