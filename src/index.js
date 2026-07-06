@@ -33,7 +33,6 @@ if (state.projects.length === 0) {
   state.projects.push(defaultProject);
   state.selectedProjectId = state.projects[0].project_id;
 }
-// state.selectedProjectId = state.projects[0].project_id;
 
 state.selectedProjectId = JSON.parse(localStorage.getItem('todo_app')).selectedProjectId
 
