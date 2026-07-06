@@ -36,7 +36,7 @@ export const handlerChange = (select, todo = null) => {
       sortTodos();
       renderSidebar();
       renderDashboard();
-      pushInLocalStorage(state.projects);
+      pushInLocalStorage(state);
     });
   } else {
     select.addEventListener("change", (event) => {
@@ -54,7 +54,7 @@ export const handlerChange = (select, todo = null) => {
         ].updateFilter(target.value);
         renderDashboard();
       }
-      pushInLocalStorage(state.projects);
+      pushInLocalStorage(state);
     });
   }
 };

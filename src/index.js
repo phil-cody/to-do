@@ -21,6 +21,7 @@ import { pullOutLocalStorage } from "@/modules/storage/pullOutLocalStorage";
 import { defaultTodo } from "@/modules/utils/defaultTodo";
 import { dynamicDateInForm } from "@/modules/utils/dynamicDateInForm";
 import { sortTodos } from "@/modules/utils/sortTodos";
+import { closeModalByEsc } from "@/modules/utils/closeModalByEsc";
 
 setFavicon(logo);
 
@@ -30,9 +31,11 @@ if (state.projects.length === 0) {
   const defaultProject = Project.defaultProject();
   defaultProject.todoList.push(Todo.fromData(defaultTodo));
   state.projects.push(defaultProject);
+  state.selectedProjectId = state.projects[0].project_id;
 }
+// state.selectedProjectId = state.projects[0].project_id;
 
-state.selectedProjectId = state.projects[0].project_id;
+state.selectedProjectId = JSON.parse(localStorage.getItem('todo_app')).selectedProjectId
 
 sortTodos();
 
@@ -43,4 +46,10 @@ handlerClick();
 handlerSubmit();
 dynamicDateInForm();
 
-pushInLocalStorage(state.projects);
+pushInLocalStorage(state);
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    closeModalByEsc(event.target);
+  }
+});

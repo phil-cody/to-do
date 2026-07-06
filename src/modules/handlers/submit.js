@@ -52,7 +52,7 @@ Please try giving a different name to the project.`);
         return;
       }
     }
-    pushInLocalStorage(state.projects);
+    pushInLocalStorage(state);
     closeDialogs();
     renderSidebar();
     renderDashboard();
@@ -82,7 +82,7 @@ Please try giving the task a different name`);
     }
     sortTodos();
     closeDialogs();
-    pushInLocalStorage(state.projects);
+    pushInLocalStorage(state);
     renderSidebar();
     renderDashboard();
     clearForm(addTaskForm);

@@ -45,6 +45,7 @@ export const handlerClick = () => {
       renderSidebar();
       toggleSelectedProject(state.selectedProjectId);
       renderDashboard();
+      pushInLocalStorage(state);
     }
 
     if (target.closest("button")) {
@@ -115,7 +116,7 @@ export const handlerClick = () => {
               project.project_priority = +project.project_priority - 1;
             }
           });
-          pushInLocalStorage(state.projects);
+          pushInLocalStorage(state);
           localStorage.removeItem(target.closest(".project-item").id);
           renderDashboard();
           renderSidebar();
@@ -123,7 +124,7 @@ export const handlerClick = () => {
         case DATASET_BTN.DELETE_TASK:
           deleteTodo(state.selectedProjectId, target.closest(".todo-item").id);
           if (dialogFullTask.hasAttribute("open")) closeDialogs();
-          pushInLocalStorage(state.projects);
+          pushInLocalStorage(state);
           renderSidebar();
           renderDashboard();
           break;
