@@ -14,11 +14,12 @@ import {
 
 export const renderProjectSelect = () => {
   const selectBox = document.getElementById("task_project");
-  let data = JSON.parse(localStorage.getItem("todo_app"));
+  let data = JSON.parse(localStorage.getItem("todo_app")).projects;
 
   data.forEach((project) => {
     const todoProjectOption = document.createElement("option");
     todoProjectOption.setAttribute("value", project.project_id);
+    todoProjectOption.id = project.project_id;
     todoProjectOption.textContent = project.project_title;
     selectBox.appendChild(todoProjectOption);
 

@@ -7,6 +7,7 @@ export const clearForm = (form) => {
     if (item.type === "text") item.value = "";
     if (item.type === "text") item.textContent = "";
     if (item.type === "select-one") item.selectedIndex = 2;
+    if (item.id === "task_project") item.replaceChildren();
   });
   dynamicDateInForm();
 };
