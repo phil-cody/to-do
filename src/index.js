@@ -45,6 +45,8 @@ handlerClick();
 handlerSubmit();
 dynamicDateInForm();
 
+checkTheAvailabilityOfTheProjectAtTheTask();
+
 pushInLocalStorage(state);
 
 document.addEventListener('keydown', event => {
