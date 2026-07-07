@@ -16,12 +16,17 @@ export const renderProjectSelect = () => {
   const selectBox = document.getElementById("task_project");
   let data = JSON.parse(localStorage.getItem("todo_app")).projects;
 
-  data.forEach((project) => {
+  data.reverse().forEach((project) => {
     const todoProjectOption = document.createElement("option");
     todoProjectOption.setAttribute("value", project.project_id);
     todoProjectOption.id = project.project_id;
     todoProjectOption.textContent = project.project_title;
-    selectBox.appendChild(todoProjectOption);
+
+    if (project.project_title.toLowerCase() === 'Inbox'.toLowerCase()) {
+      selectBox.insertAdjacentElement('afterbegin', todoProjectOption)
+    } else {
+      selectBox.appendChild(todoProjectOption);
+    }
 
     if (project.project_id === state.selectedProjectId) {
       todoProjectOption.setAttribute("selected", "");
