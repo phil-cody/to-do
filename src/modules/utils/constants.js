@@ -40,4 +40,5 @@ export const DATASET_BTN = {
   CLOSE_DIALOG: 'close-dialog',
   ADD_PROJECT_DIALOG: 'add-project-dialog',
   ADD_TASK_DIALOG: 'add-task-dialog',
+  PIN_PROJECT: 'pin-project',
 }

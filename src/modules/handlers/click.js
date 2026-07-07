@@ -38,7 +38,7 @@ export const handlerClick = () => {
 
     if (
       target.closest(".project-item") &&
-      target.tagName !== "BUTTON" &&
+      target.closest("button")?.tagName.toLowerCase() !== "button" &&
       target.closest(".project-item").id !== state.selectedProjectId
     ) {
       state.selectedProjectId = target.closest(".project-item").id;
@@ -146,7 +146,17 @@ export const handlerClick = () => {
             ),
           );
           dialogFullTask.showModal();
-          console.log(state)
+          console.log(state);
+          break;
+        case DATASET_BTN.PIN_PROJECT:
+          state.projects[findProjectIndexByID(state.selectedProjectId)]
+            .project_pinned
+            ? (state.projects[
+                findProjectIndexByID(state.selectedProjectId)
+              ].project_pinned = false)
+            : (state.projects[
+                findProjectIndexByID(state.selectedProjectId)
+              ].project_pinned = true);
           break;
       }
     }

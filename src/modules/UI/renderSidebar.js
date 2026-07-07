@@ -4,6 +4,7 @@ import { renderDashboard } from "@/modules/UI/renderDashboard";
 import { state } from "@/modules/state/projects";
 import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 import { clearSection } from "@/modules/UI/clearSection";
+import { Project, isInbox } from "@/modules/data/Project";
 
 export const renderSidebar = () => {
   const sidebarProjectBox = document.querySelector(".sidebar .projects");
@@ -12,6 +13,8 @@ export const renderSidebar = () => {
   if (state.projects.length === 0) {
     return;
   }
+
+  const filteredUnpinnedProjects = [...state.projects].filter(project => project.project_pinned === false);
 
   const sortProjects = [...state.projects].sort((a, b) => a.project_priority - b.project_priority);
 

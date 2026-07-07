@@ -18,8 +18,10 @@ import {
 } from "@/modules/utils/constants.js";
 
 export class Project {
-  constructor(data) {
+  constructor(data, project_pinned = false, project_type = Project.TYPES.CUSTOM) {
     Object.assign(this, data);
+    this.project_pinned = project_pinned;
+    this.project_type = project_type;
   }
 
   static fromForm(form) {
@@ -30,6 +32,8 @@ export class Project {
       project_priority: +data.get("project_priority"),
       project_view: DASHBOARD_VIEW.GRID,
       project_filter: DASHBOARD_FILTER.ALL,
+      project_pinned: false,
+      project_type: Project.TYPES.CUSTOM,
       todoList: [],
       createdAt: new Date(),
       project_id: crypto.randomUUID(),
@@ -41,20 +45,37 @@ export class Project {
       ...data,
       todoList: data.todoList.map((todo) => Todo.fromStorage(todo)),
       project_priority: Number(data.project_priority),
+      project_pinned: data.project_pinned ?? false,
+      project_type: data.project_type ?? Project.TYPES.CUSTOM,
     });
   }
 
-  static defaultProject() {
+  static TYPES = {
+    CUSTOM: 'custom',
+    INBOX: 'inbox'
+  }
+
+  static inbox() {
     return new Project({
-      project_title: "To-Do List",
-      project_description: "Current To-Do List",
+      project_title: "Inbox",
+      project_description: "Quick tasks",
+
       project_priority: 1,
       project_view: DASHBOARD_VIEW.GRID,
       project_filter: DASHBOARD_FILTER.ALL,
+
+      project_pinned: true,
+      project_type: Project.TYPES.INBOX,
+
       todoList: [],
+
       createdAt: new Date(),
       project_id: crypto.randomUUID(),
     });
+  }
+
+  get isInbox() {
+    return this.project_type === Project.TYPES.INBOX;
   }
 
   updateView(value) {

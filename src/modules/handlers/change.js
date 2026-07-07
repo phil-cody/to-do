@@ -30,7 +30,6 @@ export const handlerChange = (select, todo = null) => {
           form.set('task_project', target.value);
           let projectIndex = findProjectIndexByID(todo.task_project);
           updateTodo(projectIndex, todo.task_id, form);
-          
           break;
       }
       sortTodos();

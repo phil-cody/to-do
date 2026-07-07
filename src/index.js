@@ -29,9 +29,9 @@ setFavicon(logo);
 pullOutLocalStorage();
 
 if (state.projects.length === 0) {
-  const defaultProject = Project.defaultProject();
-  defaultProject.todoList.push(Todo.fromData(defaultTodo));
-  state.projects.push(defaultProject);
+  const inbox = Project.inbox();
+  inbox.todoList.push(Todo.fromData(defaultTodo));
+  state.projects.push(inbox);
   state.selectedProjectId = state.projects[0].project_id;
 }
 
