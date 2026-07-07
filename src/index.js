@@ -35,7 +35,7 @@ if (state.projects.length === 0) {
   state.selectedProjectId = state.projects[0].project_id;
 }
 
-state.selectedProjectId = JSON.parse(localStorage.getItem('todo_app')).selectedProjectId
+if (localStorage.getItem('todo_app')) state.selectedProjectId = JSON.parse(localStorage.getItem('todo_app')).selectedProjectId
 
 sortTodos();
 
