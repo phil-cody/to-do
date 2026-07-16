@@ -1,23 +1,33 @@
-@use './abstracts/mixins';
-@use './abstracts/variables';
-@use './base/reset';
-@use './base/typography';
-@use './layout/header';
-@use './layout/footer';
-@use './layout/container';
-@use './sections/sidebar';
-@use './sections/dashboard';
-@use './sections/dialogs';
+@use "./abstracts/mixins";
+@use "./abstracts/variables" as *;
+@use "./base/reset";
+@use "./base/typography";
+@use "./layout/header";
+@use "./layout/footer";
+@use "./layout/container";
+@use "./sections/sidebar";
+@use "./sections/dashboard";
+@use "./sections/dialogs";
 
 body {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: 280px 1fr;
   grid-template-rows: min-content;
   gap: 0;
   grid-auto-rows: auto;
   height: 100dvh;
+  overflow: hidden;
+  background: $background;
 }
 
 main {
   display: contents;
+}
+
+.danger {
+  color: $danger;
+}
+
+.success {
+  color: $success;
 }

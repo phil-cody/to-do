@@ -35,7 +35,6 @@ export class Todo {
 
   updatePriority(value) {
     this.task_priority = value;
-    console.trace()
   }
 
   updateTodoProject(value) {

@@ -10,26 +10,33 @@ export const renderProjectCard = (project) => {
 
   const projectTitle = document.createElement("h3");
   projectTitle.textContent = project.project_title;
+
+  const projectDescription = document.createElement("p");
+  projectDescription.classList.add("project-item__description");
+  projectDescription.textContent = project.project_description;
+
   const projectInfoDiv = document.createElement("div");
   projectInfoDiv.classList.add("project-item__info");
 
   const projectAllTasksPara = document.createElement("p");
-  projectAllTasksPara.textContent = "All tasks:";
+  projectAllTasksPara.textContent = "Tasks:";
   const projectAllTasksSpan = document.createElement("span");
   projectAllTasksSpan.textContent = project.allTasks;
 
   const projectOverduePara = document.createElement("p");
-  projectOverduePara.textContent = "Overdue tasks:";
+  projectOverduePara.textContent = "Overdue:";
   const projectOverdueSpan = document.createElement("span");
+  projectOverdueSpan.classList.add("danger");
   projectOverdueSpan.textContent = project.overdueTasks;
 
   const projectTodayPara = document.createElement("p");
-  projectTodayPara.textContent = "Today tasks:";
+  projectTodayPara.textContent = "Today:";
   const projectTodaySpan = document.createElement("span");
+  projectTodaySpan.classList.add("success");
   projectTodaySpan.textContent = project.todayTasks;
 
   const projectCompletedPara = document.createElement("p");
-  projectCompletedPara.textContent = "Completed Tasks:";
+  projectCompletedPara.textContent = "Done:";
   const projectCompletedSpan = document.createElement("span");
   projectCompletedSpan.textContent = project.completedTasks;
 
@@ -38,22 +45,25 @@ export const renderProjectCard = (project) => {
 
   const projectEditBtn = document.createElement("button");
   projectEditBtn.dataset.btn = DATASET_BTN.EDIT_PROJECT;
+  projectEditBtn.classList.add("edit-btn");
   projectEditBtn.textContent = "Edit";
 
   const projectDeleteBtn = document.createElement("button");
   projectDeleteBtn.dataset.btn = DATASET_BTN.DELETE_PROJECT;
+  projectDeleteBtn.classList.add("delete-btn");
   projectDeleteBtn.textContent = "Delete";
 
   projectAllTasksPara.appendChild(projectAllTasksSpan);
   projectInfoDiv.appendChild(projectAllTasksPara);
   projectOverduePara.appendChild(projectOverdueSpan);
   projectInfoDiv.appendChild(projectOverduePara);
-  projectTodayPara.appendChild(projectTodaySpan);
-  projectInfoDiv.appendChild(projectTodayPara);
   projectCompletedPara.appendChild(projectCompletedSpan);
   projectInfoDiv.appendChild(projectCompletedPara);
+  projectTodayPara.appendChild(projectTodaySpan);
+  projectInfoDiv.appendChild(projectTodayPara);
   projectItemDiv.appendChild(projectHeader);
   projectHeader.appendChild(projectTitle);
+  projectItemDiv.appendChild(projectDescription);
   projectItemDiv.appendChild(projectInfoDiv);
   projectActionDiv.appendChild(projectEditBtn);
   projectActionDiv.appendChild(projectDeleteBtn);

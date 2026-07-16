@@ -2,24 +2,58 @@
 @use "../abstracts/variables" as *;
 
 .dialog {
+  padding: $spacing-md;
+  border: 1px solid $border;
+  border-radius: $radius-l;
+  background-color: $background;
+  box-shadow: 0 6px 14px rgba(45, 35, 26, 0.06);
+
   .dialog-container {
+    margin: 0 auto;
+    max-width: 840px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: $spacing-xs;
+  }
+
+  h2 {
+    order: 2;
+    color: $text-default;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.25;
   }
 
   .close-dialog {
     cursor: pointer;
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 30px;
     height: 30px;
     top: 20px;
     right: 20px;
+    @include flex-center;
+    border: 0;
+    border-radius: $radius-xs;
+    background: transparent;
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease,
+      box-shadow 160ms ease;
+
+    &:hover {
+      background: $primary-dark;
+
+      .close__line {
+        background: $background;
+      }
+    }
   }
 
   .close__line {
     position: absolute;
-    background: $text-default;
+    background: $primary-dark;
     width: 100%;
     height: 2px;
     border-radius: 20px;
@@ -35,5 +69,98 @@
     -webkit-transform: rotate(-45deg);
     -ms-transform: rotate(-45deg);
     transform: rotate(-45deg);
+  }
+
+  &-form {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    grid-auto-rows: auto;
+    gap: $spacing-xxs;
+
+    button {
+      padding: 8px 14px;
+      border: 1px solid $border;
+      border-radius: $radius-m;
+      background: $surface;
+      color: $primary-dark;
+      font-size: $text-lg;
+      line-height: 1.15;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 160ms ease;
+
+      &:hover,
+      &:focus {
+        border: 1px solid $primary-dark;
+        color: $surface;
+        background: $primary-dark;
+      }
+    }
+  }
+
+  &-field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xxxxs;
+
+    label {
+      color: $text-default;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    input,
+    textarea,
+    select {
+      color: $text-default;
+      font-size: $text-lg;
+      line-height: 1.5;
+    }
+
+    input,
+    textarea {
+      padding: $spacing-xxxs;
+      border: 1px solid $primary-dark;
+      border-radius: $radius-xs;
+    }
+
+    select {
+      height: 28px;
+      padding: 0 6px 0 0;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      color: $primary-dark;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: right;
+    }
+
+    & select:has(option[value="pending"]:checked),
+    & select:has(option[value="high"]:checked) {
+      color: $pending;
+    }
+
+    & select:has(option[value="in-process"]:checked),
+    & select:has(option[value="low"]:checked) {
+      color: $success;
+    }
+
+    & select:has(option[value="completed"]:checked) {
+      color: $text-low;
+    }
+
+    & select:has(option[value="medium"]:checked) {
+      color: $warning;
+    }
+  }
+
+  .field-row {
+    flex-direction: row;
+    justify-content: space-between;
   }
 }

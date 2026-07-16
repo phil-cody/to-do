@@ -2,44 +2,218 @@
 @use "../abstracts/variables" as *;
 
 .dashboard {
-  padding: $spacing-md $spacing-xxl;
-  grid-column: 4 / -1;
+  padding: 34px 48px 40px;
+  grid-column: 2 / -1;
   grid-row: 2 / -1;
-  background-color: $text-low;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background-color: $background;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .container {
     @include flex-start;
     flex-direction: column;
-    gap: $spacing-xxl;
+    gap: 16px;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
+    max-width: 960px;
+    margin: 0 auto;
   }
 
   &__header {
     display: grid;
-    grid-template-columns: 1fr max-content;
-    grid-template-rows: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 24px;
     width: 100%;
+    padding-bottom: 18px;
+    border-bottom: 1px solid $border;
 
-    h2,
+    h2 {
+      margin-top: 3px;
+      color: $text-default;
+      font-size: 47px;
+      font-weight: 800;
+      line-height: 1.05;
+    }
+
     p {
-      grid-column: 1;
+      max-width: 650px;
+      color: #574d42;
+      font-size: 19px;
+      line-height: 1.55;
     }
   }
+
+  &__intro {
+    min-width: 0;
+  }
+
+  &__stats {
+    align-self: start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 7px;
+    padding-top: 12px;
+    color: $text-muted;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.45;
+    text-transform: uppercase;
+
+    span:nth-child(-n + 2)::after {
+      content: "·";
+      margin-left: 7px;
+      color: $text-muted;
+    }
+
+    span:last-child {
+      flex-basis: 100%;
+    }
+  }
+
+  &__controls {
+    @include flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    min-height: 38px;
+    margin-bottom: 16px;
+  }
+
+  &__filter,
   &__view {
-    grid-column: 2;
-    grid-row: 1 / -1;
+    @include flex-center;
+    gap: 7px;
+    height: 38px;
+
+    label {
+      color: #4e443a;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    select {
+      height: 38px;
+      padding: 0 34px 0 14px;
+      border: 1px solid $border;
+      border-radius: $radius-xs;
+      background: $card;
+      color: $text-default;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  }
+
+  &__view {
+    label,
+    select {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+  }
+
+  &__view-segment {
+    @include flex-center;
+    gap: 2px;
+    flex: 0 0 auto;
+    width: 206px;
+    height: 38px;
+    padding: 3px;
+    border: 1px solid $border;
+    border-radius: $radius-xs;
+    background: $surface;
+
+    button {
+      @include flex-center;
+      gap: 5px;
+      height: 30px;
+      width: 99px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      color: #4f453a;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+
+      &.is-active {
+        background: $card;
+        color: $text-default;
+        box-shadow: 0 1px 2px rgba(45, 35, 26, 0.08);
+      }
+    }
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__filter {
+    position: relative;
+    flex: 0 0 auto;
+
+    label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    img {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid #5b5147;
+      border-bottom: 2px solid #5b5147;
+      pointer-events: none;
+      transform: translateY(-65%) rotate(45deg);
+    }
+
+    select {
+      width: 174px;
+      height: 38px;
+      padding-left: 36px;
+      padding-right: 36px;
+      appearance: none;
+      text-overflow: ellipsis;
+    }
   }
 }
 .todo {
   max-width: 100%;
   width: 100%;
-  gap: $spacing-md;
+  min-width: 0;
+  gap: 16px;
 
   &.grid {
     display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 350px));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   &.list {
@@ -47,22 +221,103 @@
     justify-content: flex-start;
     align-items: stretch;
     flex-direction: column;
+
+    .todo-add-card {
+      min-height: 160px;
+    }
   }
 }
-.todo-item {
-  background-color: $background;
-  padding: $spacing-sm;
-  border-radius: $radius-xs;
-  @include flex-start;
+
+.todo-add-card {
+  @include flex-center;
   flex-direction: column;
-  gap: $spacing-xxxs;
+  gap: 14px;
+  min-height: 194px;
+  width: 100%;
+  border: 2px dashed $border;
+  border-radius: $radius-xs;
+  background: transparent;
+  color: $primary-dark;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease,
+    background-color 140ms ease;
+
+  &__icon {
+    position: relative;
+    @include flex-center;
+    width: 54px;
+    height: 54px;
+    border: 4px solid currentColor;
+    border-radius: 50%;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      height: 5px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: translate(-50%, -50%);
+    }
+
+    &::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+  }
+
+  strong {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  &:hover {
+    border-color: $primary-dark;
+    background: $primary;
+    color: $primary-dark;
+  }
+}
+
+.todo-item {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto;
+  min-height: 194px;
+  min-width: 0;
+  background-color: $card;
+  padding: 58px 16px 15px;
+  border: 1px solid $border;
+  border-radius: $radius-xs;
+  box-shadow: 0 6px 14px rgba(45, 35, 26, 0.06);
+  gap: 8px;
+  overflow: hidden;
 
   h3 {
-    margin-bottom: $spacing-xxxs;
+    order: 2;
+    color: $text-default;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.25;
   }
 
   & > * {
     width: 100%;
+  }
+
+  pre {
+    order: 3;
+    display: -webkit-box;
+    min-height: 48px;
+    overflow: hidden;
+    color: #5d5348;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .due-date,
@@ -70,12 +325,189 @@
   .priority {
     @include flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
   }
 
+  .status,
+  .priority {
+    order: 1;
+    position: absolute;
+    top: 18px;
+    width: auto;
+
+    label {
+      display: none;
+    }
+
+    select {
+      height: 28px;
+      padding: 0 6px 0 0;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      color: $primary-dark;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+  }
+
+  .status {
+    left: 16px;
+
+    select {
+      color: $danger;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -15px;
+      width: 1px;
+      height: 18px;
+      background: #d8cabb;
+      transform: translateY(-50%);
+    }
+  }
+
+  .priority {
+    left: 157px;
+  }
+
+  .status--pending select,
+  .priority--high select {
+    color: $pending;
+  }
+
+  .status--in-process select,
+  .priority--low select {
+    color: $success;
+  }
+
+  .status--completed select {
+    color: $text-low;
+  }
+
+  .priority--medium select {
+    color: $warning;
+  }
+
+  .due-date {
+    order: 4;
+    align-self: end;
+    gap: 4px;
+    padding-top: 9px;
+    border-top: 1px solid #eee6dc;
+    color: #5b5249;
+    font-size: 12px;
+    font-weight: 700;
+
+    p:first-child {
+      display: none;
+    }
+
+    &::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border: 2px solid currentColor;
+      border-top-width: 3px;
+      border-radius: 2px;
+    }
+  }
+
+  &--overdue .due-date {
+    color: $danger;
+  }
+
+  &:has(.status select[value="completed"]),
+  &:has(.status select option[value="completed"]:checked) {
+    opacity: 0.66;
+
+    h3 {
+      text-decoration: line-through;
+    }
+
+    .status select {
+      color: $text-low;
+    }
+  }
+
+  .actions {
+    order: 5;
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
   button {
-    margin-top: $spacing-xxxs;
-    align-self: center;
+    opacity: 0.66;
+    padding: 8px 14px;
+    border: 1px solid $border;
+    border-radius: 4px;
+    background: $surface;
+    color: $text-default;
+    font-size: $text-lg;
+    line-height: 1.15;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease,
+      box-shadow 160ms ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .delete-btn {
+    color: $danger;
+    background-color: #fffdf9;
+  }
+}
+
+@media (max-width: 1000px) {
+  .dashboard {
+    padding: 28px 24px;
+  }
+
+  .todo.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  header,
+  .sidebar,
+  .dashboard {
+    grid-column: 1;
+  }
+
+  .sidebar {
+    grid-row: 2;
+    border-right: 0;
+    border-bottom: 1px solid $border;
+  }
+
+  .dashboard {
+    grid-row: 3;
+  }
+
+  .dashboard__header {
+    grid-template-columns: 1fr;
+  }
+
+  .todo.grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -79,7 +79,7 @@ export const renderTodoFull = (todo) => {
   todoDueDateDiv.appendChild(todoDueDateContent);
 
   const todoStatusDiv = document.createElement("div");
-  todoStatusDiv.classList.add("status");
+  todoStatusDiv.classList.add("status", `status--${todo.task_status}`);
 
   const todoStatusLabel = document.createElement("label");
   todoStatusLabel.setAttribute("for", `status_${todo.task_id}`);
@@ -121,7 +121,7 @@ export const renderTodoFull = (todo) => {
   }
 
   const todoPriorityDiv = document.createElement("div");
-  todoPriorityDiv.classList.add("priority");
+  todoPriorityDiv.classList.add("priority", `priority--${todo.task_priority}`);
 
   const todoPriorityLabel = document.createElement("label");
   todoPriorityLabel.setAttribute("for", `priority_${todo.task_id}`);

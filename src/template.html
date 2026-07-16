@@ -8,10 +8,10 @@
   <body>
     <header>
       <div class="container">
-        <h1>JUST to DO IT</h1>
+        <h1>JUST <span>to</span> DO IT</h1>
         <div class="header-action">
-          <button data-btn="add-project">Add project</button>
-          <button data-btn="add-task">Add task</button>
+          <button data-btn="add-project">Add Project</button>
+          <button data-btn="add-task">Add Task</button>
         </div>
         <p class="date"></p>
       </div>
@@ -19,11 +19,11 @@
     <main>
       <section class="sidebar">
         <div class="container">
-          <h2>Projects List</h2>
-          <div class="projects"></div>
+          <h2>Projects</h2>
           <button class="sidebar__add-project-btn" data-btn="add-project">
-            Add project
+            New Project
           </button>
+          <div class="projects"></div>
         </div>
       </section>
       <section class="dashboard"></section>
@@ -101,11 +101,11 @@
               cols="50"
             ></textarea>
           </div>
-          <div class="dialog-field">
+          <div class="dialog-field field-row">
             <label for="task_project">Project</label>
             <select name="task_project" id="task_project"></select>
           </div>
-          <div class="dialog-field">
+          <div class="dialog-field field-row">
             <label for="task_due_date">Due Date</label>
             <input
               type="date"
@@ -114,7 +114,7 @@
               required
             />
           </div>
-          <div class="dialog-field">
+          <div class="dialog-field field-row">
             <label for="task_status">Status</label>
             <select name="task_status" id="task_status">
               <option value="completed">Completed</option>
@@ -122,7 +122,7 @@
               <option value="pending" selected>Pending</option>
             </select>
           </div>
-          <div class="dialog-field">
+          <div class="dialog-field field-row">
             <label for="task_priority">Priority</label>
             <select name="task_priority" id="task_priority">
               <option value="high">High</option>

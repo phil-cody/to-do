@@ -2,18 +2,98 @@
 @use "../abstracts/variables" as *;
 
 header {
-  padding: $spacing-md $spacing-xxl;
+  padding: 14px 24px 14px;
   grid-column: 1 / -1;
   grid-row: 1;
+  background: $background;
+  border-bottom: 1px solid $border;
 
   .container {
     @include flex;
     justify-content: space-between;
     align-items: center;
+    gap: $spacing-md;
+    max-width: none;
+  }
+
+  h1 {
+    color: $logo;
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+
+    span {
+      color: $logo-secondary;
+      opacity: 0.55;
+      transition: opacity 160ms ease;
+    }
+
+    &:hover span {
+      opacity: 1;
+    }
+  }
+
+  .header-action {
+    @include flex-center;
+    gap: 16px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  button {
+    @include flex-center;
+    min-height: 30px;
+    padding: 5px 16px;
+    border: 1px solid $border;
+    border-radius: $radius-xs;
+    background: $card;
+    color: #4a4035;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      transform 140ms ease,
+      box-shadow 140ms ease;
+
+    &::before {
+      content: "+";
+      margin-right: 5px;
+      font-weight: 900;
+    }
+
+    &[data-btn="add-task"] {
+      border-color: $primary;
+      background: $primary;
+      color: #3f2d11;
+    }
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 16px rgba(138, 85, 0, 0.16);
+    }
   }
 
   .date {
-    max-width: 170px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 150px;
+    color: #928a82;
+    font-size: 14px;
+    line-height: 1.3;
+    text-align: right;
+
+    &__day {
+      color: $text-default;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    &__time {
+      color: #5f574f;
+      font-size: 18px;
+      font-weight: 600;
+    }
   }
 }

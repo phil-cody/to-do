@@ -5,11 +5,15 @@ import {
 } from "@/modules/utils/constants.js";
 import { format, isToday, isTomorrow } from "date-fns";
 import { handlerChange } from "@/modules/handlers/change";
+import { filterOverdue } from "@/modules/utils/filterTasks";
 
 export const renderTodoShort = (todo) => {
 
   const todoItemDiv = document.createElement("div");
   todoItemDiv.classList.add("todo-item");
+  if (filterOverdue(todo.task_due_date, todo.task_status)) {
+    todoItemDiv.classList.add("todo-item--overdue");
+  }
   todoItemDiv.id = todo.task_id;
 
   const todoTitle = document.createElement("h3");
@@ -34,7 +38,7 @@ export const renderTodoShort = (todo) => {
   todoDueDateDiv.appendChild(todoDueDateContent);
 
   const todoStatusDiv = document.createElement("div");
-  todoStatusDiv.classList.add("status");
+  todoStatusDiv.classList.add("status", `status--${todo.task_status}`);
 
   const todoStatusLabel = document.createElement("label");
   todoStatusLabel.setAttribute("for", `status_${todo.task_id}`);
@@ -76,7 +80,7 @@ export const renderTodoShort = (todo) => {
   }
 
   const todoPriorityDiv = document.createElement("div");
-  todoPriorityDiv.classList.add("priority");
+  todoPriorityDiv.classList.add("priority", `priority--${todo.task_priority}`);
 
   const todoPriorityLabel = document.createElement("label");
   todoPriorityLabel.setAttribute("for", `priority_${todo.task_id}`);

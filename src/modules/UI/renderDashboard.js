@@ -1,12 +1,20 @@
 import { renderTodoShort } from "@/modules/UI/renderTodoShort";
 import { state } from "@/modules/state/projects";
-import { DASHBOARD_VIEW, DASHBOARD_FILTER } from "@/modules/utils/constants.js";
+import {
+  DASHBOARD_VIEW,
+  DASHBOARD_FILTER,
+  DATASET_BTN,
+} from "@/modules/utils/constants.js";
 import { findProjectIndexByID } from "@/modules/utils/findIndexById";
 import { clearSection } from "@/modules/UI/clearSection";
 import { handlerChange } from "@/modules/handlers/change";
+import gridIcon from "@/assets/image/grid-icon.svg";
+import listIcon from "@/assets/image/list-icon.svg";
+import filterIcon from "@/assets/image/filter-icon.svg";
 
 export const renderDashboard = () => {
   const currentProjectIndex = findProjectIndexByID(state.selectedProjectId);
+  const currentProject = state.projects[currentProjectIndex];
 
   const dashboard = document.querySelector(".dashboard");
   clearSection(dashboard);
@@ -18,22 +26,44 @@ export const renderDashboard = () => {
   const dashboardHeader = document.createElement("div");
   dashboardHeader.classList.add("dashboard__header");
 
+  const dashboardHeaderContent = document.createElement("div");
+  dashboardHeaderContent.classList.add("dashboard__intro");
+
   const dashboardHeaderTitle = document.createElement("h2");
-  dashboardHeaderTitle.textContent = state.projects[currentProjectIndex]
-    ? state.projects[currentProjectIndex].project_title
+  dashboardHeaderTitle.textContent = currentProject
+    ? currentProject.project_title
     : "Place for your project";
 
   const dashboardHeaderDescription = document.createElement("p");
-  dashboardHeaderDescription.textContent = state.projects[currentProjectIndex]
-    ? state.projects[currentProjectIndex].project_description
+  dashboardHeaderDescription.textContent = currentProject
+    ? currentProject.project_description
     : "You can add any tasks to the project";
+
+  const dashboardStats = document.createElement("div");
+  dashboardStats.classList.add("dashboard__stats");
+  if (currentProject) {
+    dashboardStats.innerHTML = `
+      <span>${currentProject.allTasks} Tasks</span>
+      <span class="danger">${currentProject.overdueTasks} Overdue</span>
+      <span class="success">${currentProject.todayTasks} Today</span>
+      <span>Priority #${currentProject.project_priority}</span>
+    `;
+  }
+
+  const dashboardControls = document.createElement("div");
+  dashboardControls.classList.add("dashboard__controls");
 
   const dashboardFilter = document.createElement("div");
   dashboardFilter.classList.add("dashboard__filter");
 
   const dashboardFilterLabel = document.createElement("label");
   dashboardFilterLabel.setAttribute("for", "select-filter");
-  dashboardFilterLabel.textContent = "Select Filter";
+  dashboardFilterLabel.textContent = "Filter";
+
+  const dashboardFilterIcon = document.createElement("img");
+  dashboardFilterIcon.src = filterIcon;
+  dashboardFilterIcon.alt = "";
+  dashboardFilterIcon.setAttribute("aria-hidden", "true");
 
   const dashboardFilterSelect = document.createElement("select");
   dashboardFilterSelect.setAttribute("name", "select-filter");
@@ -114,7 +144,7 @@ export const renderDashboard = () => {
   );
   dashboardFilterOptionOverdue.textContent = "Overdue";
 
-  switch (state.projects[currentProjectIndex].project_filter) {
+  switch (currentProject.project_filter) {
     case DASHBOARD_FILTER.ALL:
       dashboardFilterOptionAll.setAttribute("selected", "");
       break;
@@ -157,12 +187,47 @@ export const renderDashboard = () => {
 
   const dashboardViewLabel = document.createElement("label");
   dashboardViewLabel.setAttribute("for", "select-view");
-  dashboardViewLabel.textContent = "Select View";
+  dashboardViewLabel.textContent = "View";
 
   const dashboardViewSelect = document.createElement("select");
   dashboardViewSelect.setAttribute("name", "select-view");
   handlerChange(dashboardViewSelect);
   dashboardViewSelect.id = "select-view";
+
+  const dashboardViewSegment = document.createElement("div");
+  dashboardViewSegment.classList.add("dashboard__view-segment");
+
+  const dashboardViewGridBtn = document.createElement("button");
+  dashboardViewGridBtn.type = "button";
+  dashboardViewGridBtn.dataset.view = DASHBOARD_VIEW.GRID;
+  dashboardViewGridBtn.innerHTML = `
+    <img src="${gridIcon}" alt="" aria-hidden="true">
+    <span>Grid</span>
+  `;
+
+  const dashboardViewListBtn = document.createElement("button");
+  dashboardViewListBtn.type = "button";
+  dashboardViewListBtn.dataset.view = DASHBOARD_VIEW.LIST;
+  dashboardViewListBtn.innerHTML = `
+    <img src="${listIcon}" alt="" aria-hidden="true">
+    <span>List</span>
+  `;
+
+  dashboardViewSegment.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+
+    dashboardViewSelect.value = button.dataset.view;
+    dashboardViewGridBtn.classList.toggle(
+      "is-active",
+      button.dataset.view === DASHBOARD_VIEW.GRID,
+    );
+    dashboardViewListBtn.classList.toggle(
+      "is-active",
+      button.dataset.view === DASHBOARD_VIEW.LIST,
+    );
+    dashboardViewSelect.dispatchEvent(new Event("change", { bubbles: true }));
+  });
 
   const dashboardViewOptionGrid = document.createElement("option");
   dashboardViewOptionGrid.setAttribute("value", DASHBOARD_VIEW.GRID);
@@ -172,56 +237,58 @@ export const renderDashboard = () => {
   dashboardViewOptionList.setAttribute("value", DASHBOARD_VIEW.LIST);
   dashboardViewOptionList.textContent = "List";
 
-  switch (state.projects[currentProjectIndex].project_view) {
+  switch (currentProject.project_view) {
     case DASHBOARD_VIEW.GRID:
       dashboardViewOptionGrid.setAttribute("selected", "");
+      dashboardViewGridBtn.classList.add("is-active");
       break;
     case DASHBOARD_VIEW.LIST:
       dashboardViewOptionList.setAttribute("selected", "");
+      dashboardViewListBtn.classList.add("is-active");
       break;
   }
 
   const dashboardTodo = document.createElement("div");
   dashboardTodo.classList.add(
     "todo",
-    `${state.projects[currentProjectIndex].project_view}`,
+    `${currentProject.project_view}`,
   );
 
-  if (state.projects[currentProjectIndex]) {
+  if (currentProject) {
     let list;
-    switch (state.projects[currentProjectIndex].project_filter) {
+    switch (currentProject.project_filter) {
       case DASHBOARD_FILTER.ALL:
-        list = state.projects[currentProjectIndex].showAllTasks();
+        list = currentProject.showAllTasks();
         break;
       case DASHBOARD_FILTER.STATUS_COMPLETED:
-        list = state.projects[currentProjectIndex].showCompletedTasks();
+        list = currentProject.showCompletedTasks();
         break;
       case DASHBOARD_FILTER.STATUS_IN_PROCESS:
-        list = state.projects[currentProjectIndex].showInProcessTasks();
+        list = currentProject.showInProcessTasks();
         break;
       case DASHBOARD_FILTER.STATUS_PENDING:
-        list = state.projects[currentProjectIndex].showPendingTasks();
+        list = currentProject.showPendingTasks();
         break;
       case DASHBOARD_FILTER.PRIORITY_HIGH:
-        list = state.projects[currentProjectIndex].showPriorityHighTasks();
+        list = currentProject.showPriorityHighTasks();
         break;
       case DASHBOARD_FILTER.PRIORITY_MEDIUM:
-        list = state.projects[currentProjectIndex].showPriorityMediumTasks();
+        list = currentProject.showPriorityMediumTasks();
         break;
       case DASHBOARD_FILTER.PRIORITY_LOW:
-        list = state.projects[currentProjectIndex].showPriorityLowTasks();
+        list = currentProject.showPriorityLowTasks();
         break;
       case DASHBOARD_FILTER.DATE_TODAY:
-        list = state.projects[currentProjectIndex].showTodayTasks();
+        list = currentProject.showTodayTasks();
         break;
       case DASHBOARD_FILTER.DATE_TOMORROW:
-        list = state.projects[currentProjectIndex].showTomorrowTasks();
+        list = currentProject.showTomorrowTasks();
         break;
       case DASHBOARD_FILTER.DATE_THIS_WEEK:
-        list = state.projects[currentProjectIndex].showThisWeekTasks();
+        list = currentProject.showThisWeekTasks();
         break;
       case DASHBOARD_FILTER.OVERDUE:
-        list = state.projects[currentProjectIndex].showOverdueTasks();
+        list = currentProject.showOverdueTasks();
         break;
     }
     for (let todo of list) {
@@ -229,14 +296,28 @@ export const renderDashboard = () => {
     }
   }
 
+  const addTaskCard = document.createElement("button");
+  addTaskCard.classList.add("todo-add-card");
+  addTaskCard.dataset.btn = DATASET_BTN.ADD_TASK;
+  addTaskCard.type = "button";
+  addTaskCard.innerHTML = `
+    <span class="todo-add-card__icon" aria-hidden="true"></span>
+    <strong>Create New Task</strong>
+  `;
+  dashboardTodo.appendChild(addTaskCard);
+
   dashboard.appendChild(dashboardContainer);
   dashboardContainer.appendChild(dashboardHeader);
+  dashboardContainer.appendChild(dashboardControls);
   dashboardContainer.appendChild(dashboardTodo);
-  dashboardHeader.appendChild(dashboardHeaderTitle);
-  dashboardHeader.appendChild(dashboardHeaderDescription);
-  dashboardHeader.appendChild(dashboardFilter);
-  dashboardHeader.appendChild(dashboardView);
+  dashboardHeader.appendChild(dashboardHeaderContent);
+  dashboardHeader.appendChild(dashboardStats);
+  dashboardHeaderContent.appendChild(dashboardHeaderTitle);
+  dashboardHeaderContent.appendChild(dashboardHeaderDescription);
+  dashboardControls.appendChild(dashboardView);
+  dashboardControls.appendChild(dashboardFilter);
   dashboardFilter.appendChild(dashboardFilterLabel);
+  dashboardFilter.appendChild(dashboardFilterIcon);
   dashboardFilter.appendChild(dashboardFilterSelect);
   dashboardFilterSelect.appendChild(dashboardFilterOptionAll);
   dashboardFilterSelect.appendChild(dashboardFilterOptionStatusCompleted);
@@ -251,6 +332,9 @@ export const renderDashboard = () => {
   dashboardFilterSelect.appendChild(dashboardFilterOptionOverdue);
   dashboardView.appendChild(dashboardViewLabel);
   dashboardView.appendChild(dashboardViewSelect);
+  dashboardView.appendChild(dashboardViewSegment);
+  dashboardViewSegment.appendChild(dashboardViewGridBtn);
+  dashboardViewSegment.appendChild(dashboardViewListBtn);
   dashboardViewSelect.appendChild(dashboardViewOptionGrid);
   dashboardViewSelect.appendChild(dashboardViewOptionList);
   return dashboardContainer;

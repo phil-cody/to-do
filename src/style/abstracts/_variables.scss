@@ -1,14 +1,24 @@
 // ===== ЦВЕТА
-$background: #fff;
-$surface: #f1f1f1;
+$background: #f3fcff;
+$surface: #e7f2f3;
+$card: #ffffff;
+$border: #ddd6ce;
 $text-inverse: #fff;
-$text-low: #9da1a8;
-$text-default: #120e1d;
-$primary: #637cf9;
-$gold: #f2b855;
+$text-muted: #6f675f;
+$text-low: #697074;
+$text-default: #1f1d1c;
+$primary: #94cdf4;
+$primary-dark: #1d5373;
+$danger: #d51414;
+$pending: #eea333;
+$success: #4f8a3d;
+$warning: #5FBDCE;
+$gold: #8a5500;
+$logo: #FFB000;
+$logo-secondary: #5FBDCE;
 
 // ===== СКРУГЛЕНИЯ
-$radius-xs: 10px;
+$radius-xs: 6px;
 $radius-s: 15px;
 $radius-m: 20px;
 $radius-l: 30px;
