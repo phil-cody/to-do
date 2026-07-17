@@ -80,6 +80,10 @@
           }
         }
       }
+      
+      & .project-item__description {
+        color: $text-inverse;
+      }
     }
 
     &.pinned {
