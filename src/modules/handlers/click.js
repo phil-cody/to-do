@@ -146,10 +146,8 @@ export const handlerClick = () => {
             ),
           );
           dialogFullTask.showModal();
-          console.log(state);
           break;
         case DATASET_BTN.PIN_PROJECT:
-          console.log(111)
           state.projects[findProjectIndexByID(state.selectedProjectId)]
             .project_pinned
             ? (state.projects[

@@ -1,8 +1,7 @@
 {
   "name": "to-do",
-  "mode": "development",
   "version": "1.0.0",
-  "description": "Project: Todo list, JavaScript course, The Odin Project",
+  "description": "Browser-based task and project planner with local persistence",
   "keywords": [
     "javascript",
     "webpack",
@@ -21,7 +20,6 @@
   "license": "ISC",
   "author": "Dmitrii Kachuk <antaress07@icloud.com>",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "start": "webpack",
     "dev": "webpack --mode development",
