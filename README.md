@@ -21,7 +21,9 @@ JavaScript (ES modules), HTML, SCSS, Webpack, date-fns.
 
 ```bash
 npm install
-npm run dev
+npm run watch
 ```
+
+Команда `npm run watch` поднимает локальный сервер разработки. Сборки для development и production доступны через `npm run dev` и `npm run prod`.
 
 Проект создан в рамках обучения The Odin Project и дорабатывался как самостоятельная практика работы с состоянием приложения, модулями и браузерным хранилищем.
