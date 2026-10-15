@@ -93,12 +93,6 @@
 }
 
 .task-drag-handle {
-  align-self: flex-end;
-  min-height: 44px;
-  padding: 6px 12px;
-  gap: 6px;
-  color: var(--muted);
-  background: transparent;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -106,9 +100,6 @@
 }
 .task-drag-handle:active {
   cursor: grabbing;
-}
-.task-drag-handle > span:first-child {
-  font-size: 24px;
 }
 .kanban-column.is-drop-target {
   outline: 2px solid var(--blue);

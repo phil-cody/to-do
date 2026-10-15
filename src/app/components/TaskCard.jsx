@@ -32,12 +32,6 @@ export default function TaskCard({
       onLostPointerCapture={dragHandleProps?.onLostPointerCapture}
       onDragStart={(e) => e.dataTransfer.setData("text/plain", task.task_id)}
     >
-      {dragHandleProps && (
-        <button type="button" className="task-drag-handle" {...dragHandleProps}>
-          <span aria-hidden="true">⠿</span>
-          <span>Move</span>
-        </button>
-      )}
       <div className="task-selects">
         <Select
           label="Status"
@@ -78,6 +72,15 @@ export default function TaskCard({
           Delete
         </button>
         <button onClick={() => onShow(task)}>Show more</button>
+        {dragHandleProps && (
+          <button
+            type="button"
+            className="task-drag-handle"
+            {...dragHandleProps}
+          >
+            Move
+          </button>
+        )}
       </div>
     </article>
   );
