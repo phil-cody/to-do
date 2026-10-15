@@ -1,0 +1,27 @@
+.wmde-markdown {
+  font-family: inherit !important;
+  background: transparent !important;
+  overflow-wrap: anywhere;
+}
+.wmde-markdown pre {
+  max-width: 100%;
+  overflow: auto;
+}
+.wmde-markdown img {
+  max-width: 100%;
+}
+.wmde-markdown table {
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+}
+.w-md-editor-toolbar {
+  height: auto !important;
+  min-height: 29px;
+  flex-shrink: 0;
+}
+.w-md-editor-toolbar ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}

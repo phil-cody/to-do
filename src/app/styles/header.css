@@ -1,0 +1,69 @@
+.header > p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-left: auto;
+}
+.header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 14px 24px;
+  gap: 20px;
+  background: #f3fcff;
+}
+.brand {
+  color: #5d3333;
+  white-space: nowrap;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.brand span {
+  color: #5fbdce;
+  opacity: 0.55;
+  font-style: normal;
+  font-weight: 800;
+}
+.brand:hover span {
+  opacity: 1;
+}
+.header-actions {
+  display: flex;
+  gap: 16px;
+  margin: 0 auto;
+}
+.header-actions button {
+  min-height: 30px;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4a4035;
+}
+.header-actions .primary {
+  color: #3f2d11;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.date__day {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+}
+.date__time {
+  color: #5f574f;
+  font-size: 18px;
+  font-weight: 600;
+}
+.header .date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 150px;
+  margin: 0;
+  color: #928a82;
+  font-size: 14px;
+  line-height: 1.3;
+  text-align: right;
+  margin-left: 0;
+}

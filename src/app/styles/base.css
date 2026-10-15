@@ -1,0 +1,251 @@
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: #1f1d1c;
+  background: #f3fcff;
+  font-synthesis: none;
+  --line: #ddd6ce;
+  --muted: #6f675f;
+  --blue: #1d5373;
+  --radius: 6px;
+  --surface: #e7f2f3;
+  --primary: #89c0e5;
+  --text: #1f1d1c;
+  --scrollbar-thumb: #a3bdc8;
+  --scrollbar-thumb-hover: #7d9ead;
+}
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+/* Для браузеров, использующих оформление скроллбаров WebKit. */
+*::-webkit-scrollbar,
+.app-shell .wmde-markdown pre > code::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb,
+.app-shell .wmde-markdown pre > code::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover,
+.app-shell .wmde-markdown pre > code::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+body {
+  margin: 0;
+}
+button:hover {
+  background: #e3f0f5;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #59aec8;
+  outline-offset: 3px;
+}
+a {
+  -webkit-tap-highlight-color: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+p {
+  margin: 0;
+}
+.primary {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+.primary:hover {
+  background: #286a8c;
+}
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.active {
+  background: #d0e6ed;
+  border-radius: 8px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.actions button {
+  font-size: 12px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px 0 14px;
+}
+.section-heading > button {
+  font-size: 12px;
+}
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+.card-heading > button:last-child {
+  background: transparent;
+  border: none;
+  color: #98712d;
+}
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  min-width: 0;
+}
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 24px 0;
+  text-align: center;
+}
+.loading {
+  padding: 60px 24px;
+  text-align: center;
+}
+.loading p {
+  margin: 24px auto;
+  max-width: 600px;
+}
+.loading h1 span {
+  color: #348ca1;
+}
+h1 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 20px;
+  letter-spacing: 0;
+}
+h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 19px;
+  letter-spacing: 0;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  min-width: 0;
+  letter-spacing: 0;
+}
+input {
+  -webkit-tap-highlight-color: transparent;
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  background: white;
+  color: #1f1d1c;
+  min-width: 0;
+  max-width: 100%;
+  font: inherit;
+  border-radius: var(--radius);
+}
+select {
+  -webkit-tap-highlight-color: transparent;
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  background: white;
+  color: #1f1d1c;
+  min-width: 0;
+  max-width: 100%;
+  letter-spacing: 0;
+  font: inherit;
+  border-radius: var(--radius);
+}
+.danger {
+  color: #d51414;
+}
+.success {
+  color: #4f8a3d;
+}
+.error {
+  position: sticky;
+  top: 0;
+  background: #fff0ed;
+  border-bottom: 1px solid #edc1b8;
+  padding: 12px 24px;
+  color: #973d37;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+.select-field select {
+  --select-inset: 12px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%231d5373' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 12px 8px;
+  background-position: right var(--select-inset) center;
+  padding-left: var(--select-inset);
+  padding-right: calc(var(--select-inset) + 20px);
+  text-overflow: ellipsis;
+}
+button {
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: 0;
+  font: inherit;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--blue);
+  padding: 9px 12px;
+  font-weight: 600;
+  transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  gap: 6px;
+  line-height: 1.25;
+}
+.button-icon {
+  display: block;
+  flex: 0 0 auto;
+  margin: 0;
+}

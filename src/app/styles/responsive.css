@@ -1,0 +1,244 @@
+@media (min-width: 1100px) {
+  .all-projects .project-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .header {
+    flex-wrap: wrap;
+  }
+  aside {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar-heading {
+    margin-bottom: 10px;
+  }
+  nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .project-nav {
+    flex: 0 0 180px;
+  }
+  .controls label {
+    flex: 1;
+  }
+  .controls select {
+    width: 100%;
+    min-width: 0;
+  }
+  .controls input {
+    flex-basis: 100%;
+  }
+  .form-fields,
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+  .error {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+  .header-actions {
+    margin-left: 0;
+  }
+  .wmde-markdown {
+    font-size: 14px !important;
+  }
+}
+@media (max-width: 1100px) {
+  .kanban-column {
+    min-height: 120px;
+  }
+  .kanban-column .task-card {
+    max-width: none;
+  }
+  .header > p {
+    display: none;
+  }
+  .header-actions {
+    margin-left: auto;
+  }
+  .workspace {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+  main {
+    padding: 28px 24px;
+  }
+  .dashboard-heading {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .stats span:last-child {
+    flex-basis: auto;
+  }
+  .controls {
+    gap: 12px;
+  }
+  .controls input {
+    flex-basis: 100%;
+  }
+}
+@media (min-width: 760px) and (max-width: 1100px) {
+  .kanban {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+  .sidebar-drawer[open] {
+    animation: none;
+  }
+}
+@media (max-width: 759.98px) {
+  aside {
+    padding: 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar-heading {
+    margin-bottom: 12px;
+  }
+  nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .project-nav {
+    flex: 0 0 240px;
+    align-content: start;
+  }
+  .date__day {
+    font-size: 12px;
+  }
+  .date__time {
+    font-size: 16px;
+  }
+  main {
+    padding: 24px 16px;
+  }
+  .dashboard-heading h1 {
+    font-size: 34px;
+  }
+  .dashboard-heading .wmde-markdown {
+    font-size: 16px !important;
+  }
+  .stats {
+    font-size: 12px;
+  }
+  .stats span:last-child {
+    flex-basis: 100%;
+  }
+  .controls {
+    gap: 12px;
+  }
+  .controls .filter-select {
+    flex: 1;
+  }
+  .filter-select select {
+    width: 100%;
+  }
+  .controls input {
+    flex-basis: 100%;
+  }
+  .view-segment {
+    max-width: 100%;
+  }
+  .view-segment button {
+    padding: 0 10px;
+    font-size: 14px;
+  }
+  dialog {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
+  .workspace,
+  .kanban {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .task-card .actions button {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  .header {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+  .brand {
+    font-size: 28px;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .header .date {
+    min-width: 120px;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    margin: 0;
+  }
+  .header-actions {
+    order: 3;
+    gap: 16px;
+    flex: 1;
+    grid-column: 1/-1;
+    grid-row: 2;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+  }
+  .main-navigation {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 16px;
+  }
+  .mobile-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin: 0 -16px 24px;
+    padding: 0 16px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .mobile-actions > button {
+    flex: 1;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 40px;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .mobile-actions .primary {
+    background: var(--primary);
+    color: #3f2d11;
+    border-color: var(--primary);
+  }
+}
+@media (max-width: 398.98px) {
+  .mobile-actions {
+    flex-direction: column;
+  }
+  .mobile-actions > button {
+    flex: none;
+    width: 100%;
+  }
+}
+@media (min-width: 399px) and (max-width: 479px) {
+  .mobile-actions > button {
+    padding-inline: 6px;
+    font-size: 12px;
+  }
+  .mobile-actions > button > span {
+    white-space: nowrap;
+  }
+}

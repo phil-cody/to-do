@@ -1,0 +1,143 @@
+import React from "react";
+import Icon from "./Icon.jsx";
+import { matches } from "../model.js";
+export default function Sidebar({
+  projects,
+  selected,
+  isAll,
+  taskCount,
+  busy,
+  onChoose,
+  onPin,
+  onDeleteProject,
+  onAddProject,
+  onEditProject,
+  onShowProjects,
+}) {
+  return (
+    <aside>
+      <div className="sidebar-heading">
+        <h2>Projects</h2>
+      </div>
+      <div className="workspace-links">
+        <button
+          className={`nav-item ${isAll ? "active" : ""}`}
+          disabled={busy}
+          onClick={() => onChoose("all")}
+        >
+          <span>All tasks & projects</span>
+          <small>{taskCount}</small>
+        </button>
+        <button
+          className="nav-item"
+          aria-label="▦ Project dashboard"
+          onClick={onShowProjects}
+        >
+          <Icon name="grid" />
+          <span>Project dashboard</span>
+        </button>
+      </div>
+      <button
+        className="new-project primary"
+        aria-label="+ New Project"
+        onClick={onAddProject}
+      >
+        <Icon name="plus" />
+        <span>New Project</span>
+      </button>
+      <nav aria-label="Projects">
+        {[
+          [
+            "pinned",
+            "Pinned projects",
+            projects.filter((p) => p.project_pinned),
+          ],
+          [
+            "other",
+            "Other projects",
+            projects.filter((p) => !p.project_pinned),
+          ],
+        ].map(([key, title, groupProjects]) => (
+          <section
+            className="project-group"
+            key={key}
+            aria-labelledby={`group-${key}`}
+          >
+            <h3 id={`group-${key}`} className="project-group-title">
+              {title}
+            </h3>
+            {!groupProjects.length && (
+              <p className="muted group-empty">No projects</p>
+            )}
+            {groupProjects.map((p) => (
+              <div
+                className={`project-nav ${selected === p ? "active" : ""}`}
+                key={p.project_id}
+              >
+                <button
+                  disabled={busy}
+                  className="nav-item"
+                  onClick={() => onChoose(p.project_id)}
+                >
+                  <span>{p.project_title}</span>
+                </button>
+                <button
+                  className="pin"
+                  disabled={busy}
+                  aria-pressed={p.project_pinned}
+                  aria-label={`${p.project_pinned ? "Unpin" : "Pin"} ${p.project_title}`}
+                  onClick={() => onPin(p)}
+                >
+                  <Icon name="star" filled={p.project_pinned} />
+                </button>
+                <p className="project-nav-description">
+                  {p.project_description}
+                </p>
+                <div className="project-nav-stats">
+                  <span>Tasks: {p.todoList.length}</span>
+                  <span>
+                    Overdue:{" "}
+                    <b className="danger">
+                      {p.todoList.filter((t) => matches(t, "overdue")).length}
+                    </b>
+                  </span>
+                  <span>
+                    Done:{" "}
+                    {
+                      p.todoList.filter((t) => t.task_status === "completed")
+                        .length
+                    }
+                  </span>
+                  <span>
+                    Today:{" "}
+                    <b className="success">
+                      {
+                        p.todoList.filter(
+                          (t) =>
+                            matches(t, "date-today") &&
+                            t.task_status !== "completed",
+                        ).length
+                      }
+                    </b>
+                  </span>
+                </div>
+                <div className="actions">
+                  <button onClick={() => onEditProject(p)}>Edit</button>
+                  {p.project_type !== "inbox" && projects.length > 1 && (
+                    <button
+                      className="danger"
+                      disabled={busy}
+                      onClick={() => onDeleteProject(p)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </section>
+        ))}
+      </nav>
+    </aside>
+  );
+}

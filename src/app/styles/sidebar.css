@@ -1,0 +1,228 @@
+.nav-item span {
+  overflow-wrap: anywhere;
+}
+.nav-item small {
+  color: var(--muted);
+}
+.pin {
+  border: none;
+  background: transparent;
+  padding: 10px;
+  color: #98712d;
+}
+.new-project {
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.project-nav {
+  align-items: center;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 23px;
+  gap: 10px 8px;
+  width: 100%;
+  min-height: 108px;
+  padding: 16px 17px;
+  margin-bottom: 8px;
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.project-nav.active {
+  background: var(--primary);
+  box-shadow: inset 4px 0 0 var(--blue);
+}
+.project-nav .pin {
+  width: 23px;
+  height: 23px;
+  padding: 0;
+  border-radius: 4px;
+  background: #8a55001a;
+  color: var(--blue);
+}
+.project-nav-description {
+  grid-column: 1/-1;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #6f6257;
+  overflow-wrap: anywhere;
+}
+.project-nav.active .project-nav-description {
+  color: white;
+}
+.project-nav-stats {
+  grid-column: 1/-1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 7px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #554b41;
+}
+.project-nav-stats span:not(:last-child)::after {
+  content: "·";
+  margin-left: 7px;
+  color: var(--muted);
+}
+.project-nav .actions {
+  grid-column: 1/-1;
+}
+.project-nav .actions .danger {
+  color: #d51414;
+}
+.sidebar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+  min-height: 22px;
+}
+.sidebar-heading h2 {
+  color: var(--blue);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.project-nav-stats > span:last-child {
+  flex-basis: 100%;
+}
+.project-nav-stats b {
+  font-weight: 700;
+}
+.project-nav-stats > span:nth-last-child(2)::after {
+  content: none;
+}
+.project-nav .actions button {
+  padding: 8px 14px;
+  font-size: 16px;
+  font-weight: 800;
+  background: #fffdf9;
+  border-radius: 4px;
+  color: #5a4b3c;
+  opacity: 0.66;
+}
+.project-nav .actions button:hover {
+  opacity: 1;
+}
+.sidebar-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  margin: 0;
+  width: min(280px, calc(100vw - 40px));
+  height: 100dvh;
+  max-height: none;
+  padding: 52px 0 0;
+  border: 0;
+  border-radius: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  background: #f3fcff;
+}
+.sidebar-drawer[open] {
+  animation: sidebar-enter 180ms ease-out;
+}
+.sidebar-drawer aside {
+  padding: 4px 16px 24px;
+  border: 0;
+  min-width: 0;
+}
+.sidebar-drawer nav {
+  display: block;
+  overflow: visible;
+  padding: 0;
+}
+.sidebar-drawer .project-nav {
+  width: 100%;
+}
+.sidebar-drawer .sidebar-heading {
+  margin-bottom: 16px;
+}
+@keyframes sidebar-enter {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  justify-content: center;
+  text-align: center;
+}
+.project-nav .nav-item {
+  min-width: 0;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #3b332b;
+  justify-content: center;
+  text-align: center;
+}
+.workspace-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.workspace-links .nav-item {
+  background: var(--surface);
+}
+.workspace-links .nav-item.active {
+  background: var(--primary);
+  box-shadow: inset 4px 0 0 var(--blue);
+}
+.project-group-title {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px;
+}
+.group-empty {
+  font-size: 12px;
+  margin: 0 0 16px;
+}
+.menu-toggle {
+  width: 38px;
+  height: 32px;
+  padding: 0;
+  font-size: 22px;
+  flex-shrink: 0;
+  order: initial;
+}
+.pin .button-icon {
+  width: 16px;
+  height: 16px;
+}
+.menu-toggle .button-icon {
+  width: 22px;
+  height: 22px;
+}
+.drawer-close {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  font-size: 24px;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+}

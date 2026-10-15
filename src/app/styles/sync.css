@@ -1,0 +1,57 @@
+.sync-panel {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 13px;
+}
+.sync-summary,
+.sync-conflict,
+.account-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.sync-summary > span {
+  margin-right: auto;
+}
+.sync-summary button,
+.account-actions button {
+  font-size: 12px;
+}
+.sync-conflict {
+  padding-top: 12px;
+}
+.sync-conflict p {
+  flex-basis: 100%;
+}
+.account-settings {
+  margin-top: 16px;
+  max-width: 560px;
+}
+.account-settings p {
+  line-height: 1.5;
+}
+.checkbox-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.checkbox-label input {
+  min-height: auto;
+}
+.login-panel h2 {
+  margin-top: 24px;
+}
+.telegram-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  background: var(--blue);
+  color: white;
+  border-radius: var(--radius);
+}
