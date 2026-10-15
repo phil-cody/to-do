@@ -1,6 +1,7 @@
 import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
+import Description from "./Markdown.jsx";
 import { matches } from "../model.js";
 export default function Sidebar({
   projects,
@@ -91,9 +92,11 @@ export default function Sidebar({
                 >
                   <Icon name="star" filled={p.project_pinned} />
                 </button>
-                <p className="project-nav-description">
-                  {p.project_description}
-                </p>
+                {p.project_description && (
+                  <div className="project-nav-description">
+                    <Description value={p.project_description} />
+                  </div>
+                )}
                 <div className="project-nav-stats">
                   <span>
                     {t("Tasks:")} {p.todoList.length}

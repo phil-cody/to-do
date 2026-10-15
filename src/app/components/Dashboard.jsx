@@ -4,7 +4,7 @@ import Icon from "./Icon.jsx";
 import Kanban from "./Kanban.jsx";
 import Select from "./Select.jsx";
 import Description from "./Markdown.jsx";
-import ProjectDescription from "./ProjectDescription.jsx";
+import DescriptionAccordion from "./DescriptionAccordion.jsx";
 import { filters } from "../constants.js";
 import { matches } from "../model.js";
 import filterIcon from "../../assets/image/filter-icon.svg";
@@ -36,9 +36,11 @@ export default function Dashboard({
         <div>
           <h1>{selected?.project_title || t("All tasks & projects")}</h1>
           {selected ? (
-            <ProjectDescription
+            <DescriptionAccordion
               key={selected.project_id}
               value={selected.project_description}
+              label={t("Project description")}
+              className="project-description"
             />
           ) : (
             <Description

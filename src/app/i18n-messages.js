@@ -1,4 +1,5 @@
 export const messages = {
+  "Task description": "Описание задачи",
   Projects: "Проекты",
   "All tasks & projects": "Все задачи и проекты",
   "Everything you’re working on, in one place.":

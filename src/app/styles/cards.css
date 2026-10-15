@@ -151,8 +151,6 @@
   min-height: 48px;
   display: block;
   white-space: normal;
-  max-height: 120px;
-  overflow: hidden;
 }
 .task-excerpt .wmde-markdown {
   font-size: 16px;
@@ -161,10 +159,6 @@
 }
 .task-excerpt .wmde-markdown > :last-child {
   margin-bottom: 0;
-}
-.tasks.list .task-excerpt {
-  max-height: none;
-  overflow: visible;
 }
 .task-selects {
   display: flex;

@@ -36,6 +36,18 @@ test("touch drag moves a task to a collapsed column and persists its status", as
   await expect(page.locator(".column-in-process")).toHaveClass(
     /is-drop-target/,
   );
+  const restingScroll = await page
+    .locator("main")
+    .evaluate((element) => element.scrollTop);
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  expect(
+    await page.locator("main").evaluate((element) => element.scrollTop),
+  ).toBe(restingScroll);
   await touch(client, "touchEnd");
   await expect(page.locator(".column-in-process .task-card")).toContainText(
     "Legacy task",

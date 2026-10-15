@@ -45,9 +45,7 @@
 }
 .project-nav-description {
   grid-column: 1/-1;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  max-height: 1.35em;
   overflow: hidden;
   font-size: 13px;
   line-height: 1.35;
@@ -225,4 +223,25 @@
   padding: 0;
   width: 32px;
   height: 32px;
+}
+.project-nav-description .wmde-markdown {
+  font-size: 13px !important;
+  line-height: inherit;
+  color: inherit;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.project-nav-description .wmde-markdown > * {
+  margin: 0;
+}
+.project-nav-description .wmde-markdown :is(h1, h2, h3, h4, h5, h6) {
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  border: 0;
+}
+.project-nav-description .wmde-markdown :is(ul, ol) {
+  padding-left: 20px;
 }

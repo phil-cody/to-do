@@ -1,7 +1,7 @@
 import { t } from "../i18n.js";
 import React from "react";
 import Select from "./Select.jsx";
-import Description from "./Markdown.jsx";
+import DescriptionAccordion from "./DescriptionAccordion.jsx";
 import { statuses, priorities, matches, formatDueDate } from "../model.js";
 export default function TaskCard({
   task,
@@ -52,11 +52,11 @@ export default function TaskCard({
         />
       </div>
       <h3>{task.task_title}</h3>
-      <div className="task-excerpt">
-        <Description
-          value={task.task_description || t("No description yet.")}
-        />
-      </div>
+      <DescriptionAccordion
+        className="task-excerpt"
+        label={t("Task description")}
+        value={task.task_description || t("No description yet.")}
+      />
       {isAll && (
         <button
           className="project-link"

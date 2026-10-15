@@ -8,10 +8,10 @@ export default function useKanbanDrag(onDrop) {
     frame = useRef(null),
     drop = useRef(onDrop);
   drop.current = onDrop;
+  const columnAt = (x, y) =>
+    document.elementFromPoint(x, y)?.closest("[data-kanban-status]");
   const targetAt = (x, y) => {
-    const column = document
-      .elementFromPoint(x, y)
-      ?.closest("[data-kanban-status]");
+    const column = columnAt(x, y);
     const status = column?.dataset.kanbanStatus;
     return status && status !== "overdue" ? status : null;
   };
@@ -40,7 +40,13 @@ export default function useKanbanDrag(onDrop) {
           ? Math.min(16, (current.y - bounds.bottom + edge) / 4)
           : 0;
     if (current.moved) {
-      main.scrollTop += delta;
+      // Keep a small collapsed drop target under the finger until release.
+      const column = columnAt(current.x, current.y);
+      if (!(
+        column?.classList.contains("is-collapsed") &&
+        column.dataset.kanbanStatus !== "overdue"
+      ))
+        main.scrollTop += delta;
       setDrag({
         title: current.title,
         x: current.x,
