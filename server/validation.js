@@ -1,4 +1,11 @@
-import { normalize } from "../src/app/model.js";
+import {
+  normalize,
+  statuses,
+  priorities,
+  views,
+  workspaceLimits,
+  isDueDate,
+} from "../src/app/model.js";
 export class ApiError extends Error {
   constructor(status, message) {
     super(message);
@@ -17,7 +24,7 @@ export function validateSnapshot(input) {
     !input ||
     !Array.isArray(input.projects) ||
     !input.projects.length ||
-    input.projects.length > 300
+    input.projects.length > workspaceLimits.projects
   )
     fail("Нужно от 1 до 300 проектов.");
   let count = 0;
@@ -29,13 +36,17 @@ export function validateSnapshot(input) {
     if (!p.project_id || projects.has(p.project_id))
       fail("ID проектов должны быть уникальными.");
     projects.add(p.project_id);
-    text(p.project_title, 200, "название проекта");
+    text(p.project_title, workspaceLimits.title, "название проекта");
     if (!p.project_title.trim()) fail("Название проекта не может быть пустым.");
-    text(p.project_description, 100000, "описание проекта");
+    text(
+      p.project_description,
+      workspaceLimits.description,
+      "описание проекта",
+    );
     if (
       !Number.isInteger(p.project_priority) ||
       p.project_priority < 1 ||
-      p.project_priority > 999999
+      p.project_priority > workspaceLimits.projectOrder
     )
       fail("Некорректный порядок проекта.");
     if (
@@ -43,11 +54,10 @@ export function validateSnapshot(input) {
       !Number.isSafeInteger(p.project_pin_position ?? 0)
     )
       fail("Некорректное закрепление.");
-    if (!["grid", "list", "kanban"].includes(p.project_view))
-      fail("Неизвестный вид.");
+    if (!views.includes(p.project_view)) fail("Неизвестный вид.");
     if (!Array.isArray(p.todoList)) fail("Некорректный список задач.");
     for (const t of p.todoList) {
-      if (++count > 10000) fail("Лимит — 10000 задач.");
+      if (++count > workspaceLimits.tasks) fail("Лимит — 10000 задач.");
       if (!t || typeof t !== "object") fail("Некорректная задача.");
       text(t.task_id, 100, "ID задачи");
       if (!t.task_id || tasks.has(t.task_id))
@@ -55,23 +65,15 @@ export function validateSnapshot(input) {
       tasks.add(t.task_id);
       if (t.task_project !== p.project_id)
         fail("Неверная принадлежность задачи.");
-      text(t.task_title, 200, "название задачи");
+      text(t.task_title, workspaceLimits.title, "название задачи");
       if (!t.task_title.trim()) fail("Название задачи не может быть пустым.");
-      text(t.task_description, 100000, "описание задачи");
+      text(t.task_description, workspaceLimits.description, "описание задачи");
       if (
-        !["pending", "in-process", "completed"].includes(t.task_status) ||
-        !["low", "medium", "high"].includes(t.task_priority)
+        !Object.keys(statuses).includes(t.task_status) ||
+        !Object.keys(priorities).includes(t.task_priority)
       )
         fail("Некорректный статус или приоритет.");
-      if (
-        typeof t.task_due_date !== "string" ||
-        (t.task_due_date &&
-          (!/^\d{4}-\d{2}-\d{2}$/.test(t.task_due_date) ||
-            !Number.isFinite(Date.parse(t.task_due_date)) ||
-            new Date(t.task_due_date).toISOString().slice(0, 10) !==
-              t.task_due_date))
-      )
-        fail("Некорректный срок.");
+      if (!isDueDate(t.task_due_date)) fail("Некорректный срок.");
     }
   }
   // Normalize into a known schema; copy only declared fields, never arbitrary JSON.
@@ -102,6 +104,11 @@ export function validateSnapshot(input) {
       ),
     ),
   }));
+  if (
+    Buffer.byteLength(JSON.stringify(data), "utf8") >
+    workspaceLimits.snapshotBytes
+  )
+    fail("Данные рабочей области превышают 2 МБ.");
   return data;
 }
 export function validateSettings(input) {

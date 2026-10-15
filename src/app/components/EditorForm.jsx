@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 import { markdownComponents } from "../markdown.jsx";
-import { statuses, priorities } from "../model.js";
+import { statuses, priorities, workspaceLimits } from "../model.js";
 import Select from "./Select.jsx";
 import { MDEditor } from "./Markdown.jsx";
 export default function EditorForm({ kind, item, projects, onSave, busy }) {
@@ -25,7 +25,7 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
         <input
           autoFocus
           required
-          maxLength={200}
+          maxLength={workspaceLimits.title}
           value={draft[`${prefix}_title`]}
           onChange={(e) => set(`${prefix}_title`, e.target.value)}
           placeholder={
@@ -88,7 +88,7 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
               required
               type="number"
               min="1"
-              max="999999"
+              max={workspaceLimits.projectOrder}
               value={draft.project_priority}
               onChange={(e) => set("project_priority", Number(e.target.value))}
             />

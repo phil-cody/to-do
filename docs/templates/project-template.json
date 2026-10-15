@@ -1,0 +1,25 @@
+{
+  "format": "just-to-do-it/project",
+  "version": 1,
+  "project": {
+    "title": "Мой новый проект",
+    "description": "## Цель проекта\n\nОпишите ожидаемый результат. Поддерживается **Markdown**.",
+    "view": "kanban",
+    "tasks": [
+      {
+        "title": "Подготовить план",
+        "description": "- [ ] Определить шаги\n- [ ] Проверить сроки",
+        "dueDate": "",
+        "status": "pending",
+        "priority": "high"
+      },
+      {
+        "title": "Выполнить первый этап",
+        "description": "Добавьте подробности задачи.",
+        "dueDate": "",
+        "status": "in-process",
+        "priority": "medium"
+      }
+    ]
+  }
+}

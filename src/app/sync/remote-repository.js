@@ -30,6 +30,10 @@ export class RemoteRepository extends HttpRepository {
         redirect: "error",
         cache: "no-store",
         ...options,
+        headers: {
+          ...options.headers,
+          ...(this.user ? { "X-Account-ID": this.user.id } : {}),
+        },
       });
     } catch (error) {
       error.network = true;
@@ -53,7 +57,13 @@ export class RemoteRepository extends HttpRepository {
       error.status = response.status;
       throw error;
     }
-    return response.json();
+    const result = await response.json();
+    if (epoch !== this.epoch) throw new AuthenticationRequired();
+    if (this.user && result.user && result.user.id !== this.user.id) {
+      await this.forget();
+      throw new AuthenticationRequired();
+    }
+    return result;
   }
   key() {
     return `user:${this.user.id}`;

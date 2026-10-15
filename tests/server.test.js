@@ -183,6 +183,7 @@ test("HTTP API enforces session ownership, Origin, optimistic writes and one-tim
       headers: {
         Origin: "http://127.0.0.1:4018",
         "Content-Type": "application/json",
+        ...(options.method === "PUT" ? { "X-Account-ID": "11" } : {}),
         ...options.headers,
       },
     });
@@ -246,6 +247,46 @@ test("HTTP API enforces session ownership, Origin, optimistic writes and one-tim
     assert.notEqual(
       other.snapshot.projects[0].project_id,
       data.snapshot.projects[0].project_id,
+    );
+    for (const [route, method] of [
+      ["/api/workspace", "GET"],
+      ["/api/me", "GET"],
+      ["/api/settings", "PUT"],
+      ["/api/auth/logout", "POST"],
+      ["/api/workspace", "PUT"],
+    ]) {
+      const rejected = await request(route, {
+        method,
+        headers: { Cookie: foreignCookie, "X-Account-ID": "11" },
+        ...(method !== "GET" ? { body: JSON.stringify(data.snapshot) } : {}),
+      });
+      assert.equal(rejected.status, 401, `${method} ${route}`);
+      assert.equal((await rejected.json()).snapshot, undefined);
+    }
+    assert.equal(store.workspace("22").revision, other.revision);
+    assert.ok(store.authenticate(foreignCookie.split("=")[1]));
+    const unbound = await fetch("http://127.0.0.1:4018/api/workspace", {
+      method: "PUT",
+      headers: {
+        Cookie: session,
+        Origin: "http://127.0.0.1:4018",
+        "Content-Type": "application/json",
+        "If-Match": String(data.revision),
+        "X-Operation-ID": "operation-unbound1234",
+      },
+      body: JSON.stringify(data.snapshot),
+    });
+    assert.equal(unbound.status, 428);
+    assert.equal(store.workspace("11").revision, data.revision);
+    assert.equal(
+      (
+        await request("/api/workspace", {
+          method: "PUT",
+          headers: { Cookie: session, "X-Account-ID": "" },
+          body: JSON.stringify(data.snapshot),
+        })
+      ).status,
+      401,
     );
     data.snapshot.projects[0].project_title = "Only mine";
     response = await request("/api/workspace", {
@@ -334,6 +375,41 @@ test("Telegram form command preserves the HTTPS port, provides a safe link and c
     assert.equal(store.workspace("11").snapshot.projects[0].todoList.length, 0);
     bot.processUpdate(message(3, 11, "Task from plain text"));
     assert.equal(store.workspace("11").snapshot.projects[0].todoList.length, 1);
+  } finally {
+    store.close();
+  }
+});
+
+test("Telegram cannot grow a workspace beyond the same byte limit as file import", async () => {
+  const { store, bot, sent } = setup();
+  try {
+    store.ensureUser({ id: 11 }, 11);
+    const { snapshot, revision } = store.workspace("11");
+    const project = snapshot.projects[0];
+    project.todoList = Array.from({ length: 20 }, (_, index) => ({
+      task_id: `large-${index}`,
+      task_project: project.project_id,
+      task_title: `Task ${index}`,
+      task_description: "a".repeat(100000),
+      task_status: "pending",
+      task_priority: "low",
+      task_due_date: "",
+      task_createdAt: "",
+    }));
+    const reduction =
+      Buffer.byteLength(JSON.stringify(snapshot), "utf8") - 2_000_000 + 1000;
+    project.todoList.at(-1).task_description = project.todoList
+      .at(-1)
+      .task_description.slice(0, -reduction);
+    const saved = store.save("11", snapshot, revision, "size-check-operation");
+    bot.processUpdate(message(999, 11, "Task too large\n" + "b".repeat(4000)));
+    assert.equal(store.workspace("11").revision, saved.revision);
+    assert.equal(
+      store.workspace("11").snapshot.projects[0].todoList.length,
+      20,
+    );
+    await bot.deliver();
+    assert.ok(sent.some((payload) => payload.text.includes("2 МБ")));
   } finally {
     store.close();
   }

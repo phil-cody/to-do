@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { normalize } from "../model.js";
-import { importLocalSnapshot } from "../sync/merge.js";
 import TimezoneSelect from "./TimezoneSelect.jsx";
+import { downloadJson } from "../files.js";
 export default function SyncPanel({ workspace }) {
-  const { repository, sync, data } = workspace;
+  const { repository, sync } = workspace;
   const [settings, setSettings] = useState(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
-  if (!repository.remote || !repository.user) return null;
+  if (!repository.remote || !repository.user)
+    return (
+      <section className="sync-panel" aria-label="Импорт данных">
+        <button disabled={workspace.busy} onClick={workspace.showImport}>
+          Импорт проектов и задач
+        </button>
+      </section>
+    );
   async function action(fn) {
     setBusy(true);
     setError("");
@@ -20,17 +26,7 @@ export default function SyncPanel({ workspace }) {
     }
   }
   async function download() {
-    const draft = await repository.exportDraft(),
-      url = URL.createObjectURL(
-        new Blob([JSON.stringify(draft, null, 2)], {
-          type: "application/json",
-        }),
-      ),
-      link = document.createElement("a");
-    link.href = url;
-    link.download = "todo_app.backup.json";
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadJson(await repository.exportDraft(), "todo_app.backup.json");
   }
   return (
     <section className="sync-panel" aria-label="Синхронизация">
@@ -55,6 +51,12 @@ export default function SyncPanel({ workspace }) {
           }
         >
           Telegram и аккаунт
+        </button>
+        <button
+          disabled={busy || workspace.busy}
+          onClick={workspace.showImport}
+        >
+          Импорт проектов и задач
         </button>
         <button
           disabled={busy}
@@ -151,24 +153,7 @@ export default function SyncPanel({ workspace }) {
             <button
               disabled={busy}
               type="button"
-              onClick={() =>
-                action(async () => {
-                  if (
-                    !confirm(
-                      "Перенести локальные проекты и задачи в этот аккаунт? Исходные данные останутся в localStorage. Повторный импорт создаст новые копии.",
-                    )
-                  )
-                    return;
-                  const raw = localStorage.getItem("todo_app");
-                  if (!raw)
-                    throw new Error("На этом адресе нет локальных задач.");
-                  const next = importLocalSnapshot(
-                    data,
-                    normalize(JSON.parse(raw)),
-                  );
-                  await repository.save(next, data);
-                })
-              }
+              onClick={workspace.showImport}
             >
               Перенести локальные задачи
             </button>

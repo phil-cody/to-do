@@ -15,7 +15,6 @@ const cities = {
   "Asia/Magadan": "Магадан",
   "Asia/Kamchatka": "Камчатка",
   "Europe/Minsk": "Минск",
-  "Europe/Kiev": "Киев",
   "Europe/Kyiv": "Киев",
   "Europe/London": "Лондон",
   "Europe/Berlin": "Берлин",
@@ -27,12 +26,9 @@ const cities = {
   "Asia/Tashkent": "Ташкент",
   "Asia/Dubai": "Дубай",
   "Asia/Kolkata": "Дели",
-  "Asia/Calcutta": "Дели",
   "Asia/Kathmandu": "Катманду",
-  "Asia/Katmandu": "Катманду",
   "Asia/Bangkok": "Бангкок",
   "Asia/Ho_Chi_Minh": "Хошимин, Вьетнам",
-  "Asia/Saigon": "Хошимин, Вьетнам",
   "Asia/Singapore": "Сингапур",
   "Asia/Shanghai": "Пекин, Шанхай",
   "Asia/Tokyo": "Токио",
@@ -68,7 +64,8 @@ function label(zone, now) {
     ? `UTC${match[1]}${match[2].padStart(2, "0")}:${match[3] || "00"}`
     : "UTC+00:00";
   const city =
-    cities[zone] || zone.replaceAll("_", " ").split("/").reverse().join(" · ");
+    cities[canonical(zone)] ||
+    zone.replaceAll("_", " ").split("/").reverse().join(" · ");
   return `${city} (${utc})`;
 }
 

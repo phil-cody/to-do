@@ -33,6 +33,62 @@ async function addTask(page, title) {
   ).toBeVisible();
 }
 
+test("Switching the shared session cannot upload an old account's offline queue to another account", async ({
+  browser,
+  request,
+}) => {
+  const first = await browser.newContext(),
+    second = await browser.newContext(),
+    oldTab = await first.newPage(),
+    newAccount = await second.newPage();
+  try {
+    await login(oldTab, 9001, request);
+    await login(newAccount, 9002, request);
+    await addTask(newAccount, "Second account private task");
+    await first.setOffline(true);
+    await addTask(oldTab, "First account offline draft");
+    // Cookies are shared by tabs; emulate signing into another account while
+    // this tab retains its original workspace and durable queue.
+    await first.addCookies(await second.cookies());
+    await first.setOffline(false);
+    await expect(
+      oldTab.getByRole("heading", { name: "Вход через Telegram" }),
+    ).toBeVisible();
+    await expect(
+      oldTab.getByRole("heading", { name: "Second account private task" }),
+    ).toHaveCount(0);
+    const response = await second.request.get(base + "/api/workspace");
+    const data = await response.json();
+    expect(
+      data.snapshot.projects
+        .flatMap((project) => project.todoList)
+        .map((task) => task.task_title),
+    ).toEqual(["Second account private task"]);
+    const saved = await oldTab.evaluate(async () => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open("todo-sync-v1", 1);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction("state", "readonly"),
+          request = tx.objectStore("state").get("user:9001");
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+        tx.oncomplete = () => db.close();
+      });
+    });
+    expect(saved.queue).toHaveLength(1);
+    expect(JSON.stringify(saved)).not.toContain("Second account private task");
+    expect(JSON.stringify(saved.queue)).toContain(
+      "First account offline draft",
+    );
+  } finally {
+    await first.close();
+    await second.close();
+  }
+});
+
 test("Telegram login isolates users, bot messages update live, logout requires reauthentication", async ({
   browser,
   request,
@@ -299,5 +355,82 @@ test("timezone is selected by city, persists after saving and fits a mobile scre
     ).toBe(true);
   } finally {
     await context.close();
+  }
+});
+
+test("local task migration previews before saving, preserves its source and stays within the account", async ({
+  browser,
+  request,
+}) => {
+  const first = await browser.newContext(),
+    second = await browser.newContext();
+  const page = await first.newPage(),
+    other = await second.newPage();
+  try {
+    await login(page, 8001, request);
+    await addTask(page, "Existing server task");
+    const raw = JSON.stringify({
+      projects: [
+        {
+          project_title: "Inbox",
+          project_type: "inbox",
+          todoList: [
+            {
+              task_title: "Migrated Inbox task",
+              task_description: "**Keep notes**",
+            },
+          ],
+        },
+        {
+          project_title: "Prepared project",
+          todoList: [
+            { task_title: "Migrated project task", task_priority: "high" },
+          ],
+        },
+      ],
+    });
+    await page.evaluate((raw) => localStorage.setItem("todo_app", raw), raw);
+    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
+    await page
+      .getByRole("button", { name: "Перенести локальные задачи" })
+      .click();
+    const dialog = page.getByRole("dialog", {
+      name: "Импорт проектов и задач",
+    });
+    await dialog
+      .getByRole("button", { name: "Прочитать локальные задачи" })
+      .click();
+    await expect(dialog.getByLabel("Предпросмотр импорта")).toContainText(
+      "Задач: 2",
+    );
+    let response = await first.request.get(base + "/api/workspace");
+    expect((await response.json()).snapshot.projects).toHaveLength(1);
+    await dialog
+      .getByRole("button", { name: "Добавить проекты и задачи" })
+      .click();
+    await expect(dialog).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Existing server task", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Migrated project task", exact: true }),
+    ).toBeVisible();
+    expect(await page.evaluate(() => localStorage.getItem("todo_app"))).toBe(
+      raw,
+    );
+    response = await first.request.get(base + "/api/workspace");
+    const snapshot = (await response.json()).snapshot;
+    expect(snapshot.projects).toHaveLength(2);
+    expect(
+      snapshot.projects.find((p) => p.project_type === "inbox").todoList,
+    ).toHaveLength(2);
+    await login(other, 8002, request);
+    const isolated = await second.request.get(base + "/api/workspace");
+    expect((await isolated.json()).snapshot.projects[0].todoList).toHaveLength(
+      0,
+    );
+  } finally {
+    await first.close();
+    await second.close();
   }
 });

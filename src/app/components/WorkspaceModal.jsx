@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "./Modal.jsx";
+import ImportForm from "./ImportForm.jsx";
 import EditorForm from "./EditorForm.jsx";
 import TaskDetails from "./TaskDetails.jsx";
 export default function WorkspaceModal({
@@ -21,17 +22,31 @@ export default function WorkspaceModal({
           (project) => project.project_id === modal.item?.project_id,
         );
   const title =
-    modal.kind === "projects"
-      ? "Project dashboard"
-      : modal.kind === "details"
-        ? detail?.task_title || "Task"
-        : `${existing ? "Edit" : "New"} ${modal.kind}`;
+    modal.kind === "import"
+      ? "Импорт проектов и задач"
+      : modal.kind === "projects"
+        ? "Project dashboard"
+        : modal.kind === "details"
+          ? detail?.task_title || "Task"
+          : `${existing ? "Edit" : "New"} ${modal.kind}`;
   return (
     <Modal title={title} onClose={workspace.closeModal}>
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
+      )}
+      {modal.kind === "import" && (
+        <ImportForm
+          busy={busy}
+          remote={workspace.repository.remote}
+          onImport={workspace.importProjects}
+          exportData={() =>
+            workspace.repository.exportDraft
+              ? workspace.repository.exportDraft()
+              : Promise.resolve(workspace.data)
+          }
+        />
       )}
       {["task", "project"].includes(modal.kind) && (
         <EditorForm

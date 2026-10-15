@@ -2,6 +2,7 @@ import http from "node:http";
 import { isIP } from "node:net";
 import path from "node:path";
 import { readFile } from "node:fs/promises";
+import { workspaceLimits } from "../src/app/model.js";
 import { ApiError, validateSettings } from "./validation.js";
 import { hash } from "./store.js";
 const cookieMap = (req) =>
@@ -17,7 +18,7 @@ async function body(req) {
   const chunks = [];
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 2 * 1024 * 1024)
+    if (size > workspaceLimits.requestBytes)
       throw new ApiError(413, "Слишком большой запрос.");
     chunks.push(chunk);
   }
@@ -157,6 +158,12 @@ export function createApp({
         const user = store.authenticate(cookies[sessionName]);
         if (!user || !allowed(user.id))
           throw new ApiError(401, "Войдите через Telegram.");
+        const accountId = req.headers["x-account-id"];
+        if (accountId !== undefined && accountId !== user.id)
+          throw new ApiError(401, "Аккаунт изменился. Войдите повторно.");
+        // A stale tab must never send its offline draft into a new session.
+        if (pathname === "/api/workspace" && req.method === "PUT" && !accountId)
+          throw new ApiError(428, "Обновите приложение перед сохранением.");
         if (pathname === "/api/auth/logout" && req.method === "POST") {
           store.revoke(cookies[sessionName]);
           res.setHeader("Set-Cookie", cookie(sessionName, "", 0));

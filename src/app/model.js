@@ -1,4 +1,22 @@
 import { normalizeDescription } from "./description.js";
+export const workspaceLimits = Object.freeze({
+  projects: 300,
+  tasks: 10000,
+  title: 200,
+  description: 100000,
+  projectOrder: 999999,
+  snapshotBytes: 2_000_000,
+  requestBytes: 2 * 1024 * 1024,
+});
+export function isDueDate(value) {
+  return (
+    typeof value === "string" &&
+    (value === "" ||
+      (/^\d{4}-\d{2}-\d{2}$/.test(value) &&
+        Number.isFinite(Date.parse(value)) &&
+        new Date(value).toISOString().slice(0, 10) === value))
+  );
+}
 export const statuses = {
   pending: "Pending",
   "in-process": "In progress",

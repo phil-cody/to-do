@@ -2,8 +2,8 @@ import { normalize } from "../model.js";
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const clone = (value) => structuredClone(value);
 function flatten(snapshot) {
-  const projects = {},
-    tasks = {};
+  const projects = Object.create(null),
+    tasks = Object.create(null);
   for (const project of snapshot.projects) {
     const { todoList, ...fields } = project;
     projects[project.project_id] = fields;
@@ -101,30 +101,4 @@ export function pendingSnapshot(state) {
   for (const edit of state.queue)
     snapshot = mergeEdit(edit.base, edit.next, snapshot, { force: true });
   return snapshot;
-}
-export function importLocalSnapshot(remote, local) {
-  const next = clone(remote),
-    inbox = next.projects.find((p) => p.project_type === "inbox");
-  for (const project of local.projects) {
-    const id =
-      project.project_type === "inbox" && inbox
-        ? inbox.project_id
-        : crypto.randomUUID();
-    const tasks = project.todoList.map((t) => ({
-      ...t,
-      task_id: crypto.randomUUID(),
-      task_project: id,
-    }));
-    if (project.project_type === "inbox" && inbox)
-      inbox.todoList.push(...tasks);
-    else
-      next.projects.push({
-        ...project,
-        project_id: id,
-        project_pinned: false,
-        project_type: "custom",
-        todoList: tasks,
-      });
-  }
-  return next;
 }

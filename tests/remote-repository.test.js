@@ -23,13 +23,18 @@ function setup() {
     revision = 1,
     offline = false,
     lostReply = false,
-    unauthorized = false;
+    unauthorized = false,
+    account = "11",
+    switchOnWrite = false;
   const repo = new RemoteRepository("/api/workspace", {
     store,
     request: async (url, options) => {
       if (offline) throw new TypeError("network unavailable");
       if (unauthorized)
         return Response.json({ error: "Вход нужен" }, { status: 401 });
+      if (switchOnWrite && options.method === "PUT") account = "22";
+      if (switchOnWrite && options.headers["X-Account-ID"] !== account)
+        return Response.json({ error: "Аккаунт изменился" }, { status: 401 });
       if (url.includes("/operations/"))
         return Response.json({
           applied: operations.has(url.split("/").at(-1)),
@@ -54,7 +59,7 @@ function setup() {
       return Response.json({
         snapshot,
         revision,
-        user: { id: "11", name: "Test" },
+        user: { id: account, name: "Test" },
       });
     },
   });
@@ -73,6 +78,10 @@ function setup() {
     revoke() {
       unauthorized = true;
     },
+    switchAccount(onWrite = false) {
+      if (onWrite) switchOnWrite = true;
+      else account = "22";
+    },
   };
 }
 test("Remote repository sends a durable edit and reports successful online synchronization", async () => {
@@ -86,6 +95,28 @@ test("Remote repository sends a durable edit and reports successful online synch
   assert.equal(f.repo.status.pending, 0);
   assert.equal((await f.store.read("user:11")).queue.length, 0);
 });
+
+for (const onWrite of [false, true]) {
+  test(`Account switch ${onWrite ? "between read and write" : "before refresh"} preserves the old draft without sending it to the new account`, async () => {
+    const f = setup(),
+      base = await f.repo.load(),
+      next = structuredClone(base);
+    next.projects[0].project_title = "Private offline draft";
+    f.offline(true);
+    await f.repo.save(next, base);
+    f.offline(false);
+    f.switchAccount(onWrite);
+    await assert.rejects(f.repo.flush(), (error) => error.authentication);
+    assert.equal(f.repo.user, null);
+    assert.equal(await f.store.read("active"), undefined);
+    assert.equal((await f.store.read("user:11")).queue.length, 1);
+    assert.equal(await f.store.read("user:22"), undefined);
+    assert.notEqual(
+      f.snapshot.projects[0].project_title,
+      "Private offline draft",
+    );
+  });
+}
 test("Lost save response is retried idempotently and does not overwrite a later server change", async () => {
   const f = setup(),
     base = await f.repo.load(),

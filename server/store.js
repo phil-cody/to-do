@@ -2,7 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { mkdirSync, chmodSync } from "node:fs";
 import path from "node:path";
-import { normalize } from "../src/app/model.js";
+import { normalize, workspaceLimits } from "../src/app/model.js";
 import { ApiError, validateSnapshot } from "./validation.js";
 export const token = () => randomBytes(32).toString("base64url");
 export const hash = (value) => createHash("sha256").update(value).digest("hex");
@@ -168,7 +168,7 @@ export class Store {
       snapshot.projects.push(inbox);
     }
     const lines = text.trim().split("\n");
-    const title = lines[0].slice(0, 200);
+    const title = lines[0].slice(0, workspaceLimits.title);
     inbox.todoList.push({
       task_id: randomUUID(),
       task_project: inbox.project_id,
@@ -176,7 +176,7 @@ export class Store {
       task_description:
         lines.length > 1
           ? lines.slice(1).join("\n")
-          : text.trim().length > 200
+          : text.trim().length > workspaceLimits.title
             ? text.trim()
             : "",
       task_due_date: "",

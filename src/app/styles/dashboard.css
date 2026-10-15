@@ -62,14 +62,12 @@ main {
 }
 .dashboard-heading .wmde-markdown {
   max-width: 650px;
-  font-size: 15px;
   margin-top: 10px;
   font-size: 19px !important;
   line-height: 1.55;
   color: #574d42;
 }
 .stats {
-  grid-template-columns: auto auto;
   align-content: start;
   flex-shrink: 0;
   display: flex;

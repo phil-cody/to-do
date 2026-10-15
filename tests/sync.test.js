@@ -1,11 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { normalize } from "../src/app/model.js";
-import {
-  mergeEdit,
-  MergeConflict,
-  importLocalSnapshot,
-} from "../src/app/sync/merge.js";
+import { mergeEdit, MergeConflict } from "../src/app/sync/merge.js";
 const initial = () =>
   normalize({
     projects: [
@@ -26,6 +22,23 @@ const initial = () =>
       },
     ],
   });
+test("Special object property names remain ordinary project and task IDs during synchronization", () => {
+  for (const id of ["__proto__", "constructor", "toString"]) {
+    const base = initial();
+    base.projects[0].project_id = id;
+    base.projects[0].todoList[0].task_id = id;
+    base.projects[0].todoList[0].task_project = id;
+    const mine = structuredClone(base);
+    mine.projects[0].todoList[0].task_title = "Preserved edit";
+    const result = mergeEdit(base, mine, base);
+    assert.equal(result.projects.length, 1);
+    assert.equal(result.projects[0].project_id, id);
+    assert.equal(result.projects[0].todoList.length, 1);
+    assert.equal(result.projects[0].todoList[0].task_id, id);
+    assert.equal(result.projects[0].todoList[0].task_title, "Preserved edit");
+    assert.equal(Object.prototype.task_title, undefined);
+  }
+});
 test("Merge preserves independent fields and additions on another device", () => {
   const base = initial(),
     mine = structuredClone(base),
@@ -68,13 +81,4 @@ test("Deletion conflicts with concurrent editing and with new tasks in deleted p
     task_id: "new",
   });
   assert.throws(() => mergeEdit(base, empty, remote), MergeConflict);
-});
-test("Import generates new IDs and never mutates the source data", () => {
-  const base = initial(),
-    original = structuredClone(base),
-    result = importLocalSnapshot(base, base);
-  assert.equal(result.projects.length, 2);
-  assert.notEqual(result.projects[1].project_id, "p");
-  assert.notEqual(result.projects[1].todoList[0].task_id, "t");
-  assert.deepEqual(base, original);
 });

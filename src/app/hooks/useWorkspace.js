@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createRepository } from "../repository.js";
+import { appendProjectImport } from "../import-project.js";
 import { orderedProjects, upsertTask } from "../model.js";
 import {
   newTask,
@@ -150,6 +151,15 @@ export default function useWorkspace() {
       if (!saving.current) setModal(null);
     },
     showProjects: () => openModal({ kind: "projects" }),
+    showImport: () => openModal({ kind: "import" }),
+    importProjects: async (imported) => {
+      const saved = await commit(
+        (current) => appendProjectImport(current, imported),
+        true,
+      );
+      if (saved) setSearch("");
+      return saved;
+    },
     showTask: (task) => openModal({ kind: "details", id: task.task_id }),
     addTask: () =>
       openModal({

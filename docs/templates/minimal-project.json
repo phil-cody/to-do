@@ -1,0 +1,12 @@
+{
+  "format": "just-to-do-it/project",
+  "version": 1,
+  "project": {
+    "title": "Новый проект",
+    "tasks": [
+      {
+        "title": "Первая задача"
+      }
+    ]
+  }
+}

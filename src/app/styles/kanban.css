@@ -11,10 +11,6 @@
   border-radius: 5px;
   padding: 3px 7px;
 }
-.kanban .actions button {
-  padding: 7px;
-  font-size: 11px;
-}
 .kanban-add {
   margin-top: 20px;
 }

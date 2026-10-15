@@ -58,6 +58,7 @@ export default function useKanbanDrag(onDrop) {
         if (disabled || !event.isPrimary || active.current) return;
         event.preventDefault();
         event.currentTarget.setPointerCapture(event.pointerId);
+        const main = event.currentTarget.closest("main");
         active.current = {
           id: task.task_id,
           title: task.task_title,
@@ -66,7 +67,8 @@ export default function useKanbanDrag(onDrop) {
           y: event.clientY,
           startX: event.clientX,
           startY: event.clientY,
-          main: event.currentTarget.closest("main"),
+          main,
+          startScrollTop: main.scrollTop,
           moved: false,
         };
         frame.current = requestAnimationFrame(scroll);
@@ -78,7 +80,7 @@ export default function useKanbanDrag(onDrop) {
         current.y = event.clientY;
         current.moved ||=
           Math.hypot(current.x - current.startX, current.y - current.startY) >
-          8;
+            8 || Math.abs(current.main.scrollTop - current.startScrollTop) > 8;
       },
       onPointerUp: (event) => finish(event),
       onPointerCancel: (event) => finish(event, true),

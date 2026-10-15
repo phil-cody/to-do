@@ -13,7 +13,9 @@ src/app/
   hooks/useDay.js            обновление при смене локального дня
   hooks/useMediaQuery.js      границы адаптивности
   hooks/useDialog.js          native dialog и backdrop
-  model.js                   нормализация, сортировка, фильтры, перенос задач
+  model.js                   нормализация, общие лимиты/даты, сортировка и фильтры
+  import-project.js          проверка файла и добавление копий в снимок
+  files.js                   единое локальное скачивание JSON
   workspace.js               чистые функции изменения снимка
   selectors.js               данные текущего представления
   description.js             совместимость старых Markdown-описаний
@@ -37,6 +39,7 @@ scripts/
   lib/static-server.mjs      общая раздача локальных файлов
   service-worker.mjs         генерация production service worker
   check-visuals.mjs          локальное сравнение геометрии и стилей
+  release.mjs                подготовка, передача и установка точного коммита
 deploy/                      Nginx, systemd, backup/проверка/восстановление
 tests/                       модель, сервер, синхронизация и браузерные сценарии
 ```

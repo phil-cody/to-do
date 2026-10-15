@@ -30,6 +30,8 @@
 
 ## 1. Сохранить существующие задачи
 
+В текущем интерфейсе сначала используйте «Импорт проектов и задач» → «Скачать текущие задачи». Файл включает текущий снимок, а в серверном аккаунте — и ожидающие отправки правки. Ниже оставлен способ через Console для старой версии, в которой ещё нет этой кнопки.
+
 **Где: браузер на прежнем `http://localhost:4000`.** Данные зависят от протокола, хоста, порта и профиля браузера. Не подменяйте localhost на 127.0.0.1 и не очищайте хранилище перед переносом.
 
 Откройте инструменты разработчика → Console и выполните:
@@ -171,6 +173,14 @@ git rev-parse HEAD
 
 ## 4. Получить VPS и настроить SSH
 
+### Если VPS уже используется
+
+При работающем SSH-доступе не нужно заново создавать ключ, пользователя или добавлять .pub в панель провайдера. Используйте существующего пользователя с sudo и SSH-псевдоним; для команд release он задаётся аргументом `-- my-vps`. Создание deploy ниже нужно только если решили завести отдельного пользователя.
+
+В authorized_keys нового deploy добавляется публичный ключ **Mac → VPS**. Ключ для доступа **VPS → GitHub** его не заменяет. Если новый ключ ещё не разрешён, первый root-вход может происходить по паролю; не отключайте текущий доступ до проверки нового пользователя в отдельном терминале.
+
+Основной способ доставки собирает код на Mac и не требует GitHub-ключа на VPS. Рабочий бот или VPN на сервере не останавливается для установки Todo. Сначала проверьте занятые порты в разделе 6.
+
 ### 4.1. Первое подключение
 
 Нужен сервер с Ubuntu 24.04 LTS, публичным IPv4, доступом sudo и исходящим HTTPS. Практический стартовый ориентир для небольшого личного использования — 1–2 ГБ RAM; это не результат нагрузочного теста. Основной способ собирает проект на Mac, поэтому память VPS не расходуется на Webpack/Playwright.
@@ -288,9 +298,20 @@ A-запись должна вернуть IPv4 VPS. AAAA может быть п
 
 **Где: VPS, deploy.**
 
+Перед установкой на уже используемый VPS проверьте существующие службы и инструменты:
+
+```sh
+node --version
+command -v node
+sudo ss -ltnp | grep -E ':(80|443|8443)\b'
+sudo systemctl status nginx --no-pager
+```
+
+Отсутствие Node/Nginx на этом этапе допустимо. Если системный Node 24 или Nginx уже установлен, соответствующую установку повторять не нужно. Не заменяйте runtime другой службы вслепую. Если 443 занимает VPN/контейнер, используйте отдельный свободный 8443 по альтернативе раздела 10; порты чужой службы не меняйте. Если занят 80, сначала согласуйте общий HTTP-прокси — команды ниже предполагают доступный для Nginx порт 80.
+
 ```sh
 sudo apt update
-sudo apt install ca-certificates curl xz-utils nginx snapd ufw dnsutils nano cron
+sudo apt install ca-certificates curl xz-utils nginx snapd ufw dnsutils nano cron util-linux
 sudo systemctl enable --now nginx
 ```
 
@@ -493,6 +514,7 @@ Backend остаётся доступен для существующих сес
 todo_domain='my-todo-unique.duckdns.org'
 sed "s/server_name todo.example.com;/server_name $todo_domain;/" /opt/todo/current/deploy/todo-server.nginx.conf | sudo tee /etc/nginx/sites-available/todo > /dev/null
 sudo ln -s /etc/nginx/sites-available/todo /etc/nginx/sites-enabled/todo
+sudo install -d -m 755 /var/www/letsencrypt/.well-known/acme-challenge
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -508,6 +530,8 @@ curl -I http://my-todo-unique.duckdns.org
 Должен отвечать ваш сайт/Nginx. До выпуска сертификата HTTP нужен для проверки владения доменом, а не для переноса личных данных. Если видна стандартная страница Nginx вместо Todo, проверьте server_name и загруженную конфигурацию; вывод `sudo nginx -T` помогает найти дубли.
 
 ### 10.2. Сертификат Let's Encrypt
+
+Этот основной путь требует свободный 443. Если 443 занят VPN/другим сервисом, **пропустите этот подраздел** и используйте вариант 8443 ниже. Не запускайте certbot --nginx по умолчанию поверх занятого 443.
 
 Перед выпуском ещё раз проверьте DNS, публичные порты 80/443 и отсутствие ошибочной AAAA-записи. На VPS:
 
@@ -582,11 +606,75 @@ sudo /snap/bin/certbot renew --cert-name my-todo-unique.duckdns.org --dry-run --
 
 `reconfigure` проверяет новые параметры на тестовом центре сертификации и сохраняет их только при успехе; deploy-hook применяет обновлённый сертификат через reload Nginx. Ожидается успешная симуляция продления. Таймер Snap остаётся прежним; состояние `inactive (timer-activated)` между запусками нормально. [Официальная инструкция по изменению параметров продления](https://eff-certbot.readthedocs.io/en/stable/using.html#modifying-the-renewal-configuration-of-existing-certificates).
 
-### Нестандартный HTTPS-порт и ошибка «Неверный адрес приложения»
+### Вариант HTTPS на 8443, если 443 занят VPN
 
-Если 443 занят другим сервисом (например, VPN), Todo можно разместить на свободном 8443. В HTTPS-блоке замените оба `listen 443` на `listen 8443`, в HTTP-перенаправлении используйте `https://$host:8443$request_uri`, а в `/etc/todo.env` задайте `APP_ORIGIN=https://ВАШ-ДОМЕН:8443`. Разрешите TCP 8443 в действующих firewall. HTTP-проверка сертификата остаётся на 80, webroot не меняется.
+Это альтернатива основному выпуску сертификата, а не дополнительный второй сайт. Сначала нужен HTTP-блок Nginx из 10.1 с доступным 80 и location для ACME. Если уже есть неработающий TLS-блок на 443, временно верните только HTTP-конфигурацию из 10.1, сохранив её копию. Не трогайте Docker/VPN. Проверьте, что 8443 свободен: `sudo ss -ltnp | grep ':8443\b'`.
 
-В proxy-блоке обязательно используйте `proxy_set_header Host $http_host;`: `$host` убирает порт, из-за чего backend отклоняет запрос при сравнении с APP_ORIGIN. После изменений выполните `sudo nginx -t && sudo systemctl reload nginx`, затем `sudo systemctl restart todo`. Проверьте `curl -fsS https://ВАШ-ДОМЕН:8443/api/health`. Не освобождайте занятый 443 остановкой чужой службы.
+На VPS создайте и проверьте тестовый файл:
+
+```sh
+printf '%s\n' 'todo-acme-ok' | sudo tee /var/www/letsencrypt/.well-known/acme-challenge/todo-check > /dev/null
+curl -fsS http://my-todo-unique.duckdns.org/.well-known/acme-challenge/todo-check
+```
+
+Повторите curl на Mac. Оба запроса должны вернуть todo-acme-ok. Если нет — не продолжайте выпуск, проверьте DNS/HTTP/Nginx. Для **нового** сертификата на VPS:
+
+```sh
+todo_domain='my-todo-unique.duckdns.org'
+sudo /snap/bin/certbot certonly --webroot -w /var/www/letsencrypt -d "$todo_domain" --deploy-hook '/usr/sbin/nginx -t && /usr/bin/systemctl reload nginx'
+```
+
+Если действующий сертификат для этого имени уже есть, повторный выпуск не нужен; при необходимости сохраните webroot через reconfigure из предыдущего подраздела.
+
+Откройте `/etc/nginx/sites-available/todo` и замените конфигурацию этого сайта следующей, подставив **свой домен во всех местах** (server_name в двух блоках и каталог сертификата в двух путях):
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name my-todo-unique.duckdns.org;
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        default_type text/plain;
+        try_files $uri =404;
+    }
+    location / { return 301 https://$host:8443$request_uri; }
+}
+server {
+    listen 8443 ssl;
+    listen [::]:8443 ssl;
+    server_name my-todo-unique.duckdns.org;
+    ssl_certificate /etc/letsencrypt/live/my-todo-unique.duckdns.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/my-todo-unique.duckdns.org/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    server_tokens off;
+    client_max_body_size 2m;
+    location ~ /\. { return 404; }
+    location / {
+        proxy_pass http://127.0.0.1:4001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+        proxy_buffering off;
+        proxy_read_timeout 75s;
+    }
+}
+```
+
+В `/etc/todo.env` задайте `APP_ORIGIN=https://my-todo-unique.duckdns.org:8443` (со своим доменом). На VPS:
+
+```sh
+sudo ufw allow 8443/tcp
+sudo nginx -t && sudo systemctl reload nginx
+sudo systemctl restart todo
+sudo /snap/bin/certbot renew --cert-name "$todo_domain" --dry-run --run-deploy-hooks
+```
+
+Разрешите TCP 8443 и в firewall провайдера, если он включён. Порт 80 остаётся доступным для продления, 443 продолжает обслуживать VPN. Итоговый адрес — `https://my-todo-unique.duckdns.org:8443`; используйте его во всех дальнейших браузерных проверках и curl вместо примера без порта.
+
+Если приложение отвечает «Неверный адрес приложения», проверьте APP_ORIGIN и `proxy_set_header Host $http_host;`: переменная $host убирает нестандартный порт. Успешный nginx -t проверяет только синтаксис; после reload также проверьте `sudo ss -ltnp` и error.log на ошибки bind. Reload может оставить старую рабочую конфигурацию при занятом порте.
 
 ### Если у бота ранее был webhook
 
@@ -637,33 +725,15 @@ curl -I https://my-todo-unique.duckdns.org/package.json
 
 ### Старый localStorage → свой серверный аккаунт
 
-На новом домене локальное хранилище пустое. У публикации нет доступа к localStorage localhost. Для переноса:
+На новом домене локальное хранилище пустое; у VPS нет доступа к localStorage localhost. Для переноса:
 
-1. Сохраните исходную копию из раздела 1.
-2. Войдите в **нужный Telegram-аккаунт** на окончательном HTTPS-домене.
-3. На этом HTTPS-адресе откройте Console и выберите файл резервной копии следующим кодом:
+1. Сохраните исходную копию по разделу 1 на Mac.
+2. Войдите в нужный Telegram-аккаунт на окончательном HTTPS-адресе приложения (включая :8443, если используете этот порт).
+3. Нажмите «Импорт проектов и задач», выберите файл todo_app.backup.json и проверьте предпросмотр.
+4. Нажмите «Добавить проекты и задачи», дождитесь синхронизации и проверьте данные на втором устройстве.
+5. Сохраните исходную копию до завершения проверки.
 
-```js
-const todoRestoreInput = document.createElement("input");
-todoRestoreInput.type = "file";
-todoRestoreInput.accept = ".json,application/json";
-todoRestoreInput.onchange = async () => {
-  const file = todoRestoreInput.files[0];
-  if (!file) return;
-  const raw = await file.text();
-  const parsed = JSON.parse(raw);
-  if (!Array.isArray(parsed.projects)) throw new Error("Неверный файл");
-  if (!confirm("Записать копию в localStorage этого адреса?")) return;
-  localStorage.setItem("todo_app", raw);
-  console.log("Локальная копия подготовлена; выполните импорт в аккаунте");
-};
-todoRestoreInput.click();
-```
-
-4. Откройте «Telegram и аккаунт» → «Перенести локальные задачи», подтвердите импорт, дождитесь «Синхронизировано».
-5. Проверьте данные на втором устройстве и сохраните копию до завершения проверки.
-
-Выбор файла читает его локально; на сервер задачи отправляются после явного импорта. Исходный localhost не меняется. Повторный импорт создаёт новые копии, поэтому не выполняйте его повторно вместо обновления страницы. Уже существующие серверные задачи сохраняются, импорт добавляет новые.
+Загружать файл в localStorage через Console больше не нужно. Исходный localhost и файл не меняются; существующие серверные задачи сохраняются. Если старый localStorage находится на текущем адресе, его можно прочитать через «Telegram и аккаунт» → «Перенести локальные задачи» → «Прочитать локальные задачи». Повторный импорт создаёт копии. [Подробности и шаблон проекта](import.md).
 
 ## 12. Настроить резервные копии SQLite
 
@@ -703,6 +773,8 @@ sudo crontab -e
 
 **При каждом обновлении на Mac:** дождитесь отправки офлайн-очередей, выполните проверки проекта, коммит и push. Затем в папке проекта:
 
+После установки обновления безопасности от 15.10.2026 закройте старые вкладки и окна приложения, затем откройте снова. Старый клиент без X-Account-ID не сможет сохранять данные (428); это защита от отправки очереди в чужой аккаунт при смене общей сессии. Не очищайте хранилище с неотправленными изменениями: сначала сохраните копию и войдите в исходный аккаунт для синхронизации.
+
 ```sh
 npm run release:prepare
 npm run release:upload
@@ -717,7 +789,7 @@ npm run release:install
 
 База, `/etc/todo.env`, настройки Nginx, сертификат и VPN при обновлении не заменяются. Адрес с портом 8443 берётся из APP_ORIGIN при проверке backend. Текущий установщик рассчитан на существующую установку по этой инструкции: Ubuntu 24.04, системный Node в /usr/local/bin, абсолютный DATABASE_PATH, служба todo на loopback 4001. Для первой установки используйте разделы 8–10.
 
-Если менялся todo.service, установите его из нового current/deploy и выполните daemon-reload/restart отдельно. Изменения Nginx объединяйте с действующей конфигурацией, сохраняя свой порт и HTTPS. Скрипт специально не подменяет эти системные настройки. Резервные копии и старые ассеты накапливаются: перенос внешних копий и срок хранения задайте отдельно.
+Если менялся todo.service, установите его из нового current/deploy и выполните daemon-reload/restart отдельно. Изменения Nginx объединяйте с действующей конфигурацией, сохраняя свой порт и HTTPS. Скрипт специально не подменяет эти системные настройки. Клиент получает только публичные файлы dist. Серверный архив также содержит server, общую модель с description.js, deploy, package-файлы и REVISION; шаблоны импорта уже встроены в клиент при сборке. Папка docs на VPS для работы формы не нужна. Резервные копии и старые ассеты накапливаются: перенос внешних копий и срок хранения задайте отдельно.
 
 При ошибке любой команды остановитесь. Не переходите к install, если prepare/upload не завершились успешно. Старый архив нельзя исправить переименованием или правкой REVISION — нужна новая сборка из нужного коммита.
 
@@ -740,7 +812,7 @@ sudo systemctl restart todo
 )
 ```
 
-Откат кода не откатывает задачи. Перед будущими изменениями схемы проверяйте совместимость старой версии с новой базой. Старый service worker может ждать закрытия вкладок; проверяйте релиз также в новом браузерном сеансе.
+Откат кода не откатывает задачи. Перед будущими изменениями схемы проверяйте совместимость старой версии с новой базой. Автоматический возврат кода в update.sh не является откатом миграции базы; перед такими релизами нужен отдельный план восстановления. Старый service worker может ждать закрытия вкладок; проверяйте релиз также в новом браузерном сеансе.
 
 ### Восстановление базы
 
