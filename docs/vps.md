@@ -359,62 +359,26 @@ sudo /snap/bin/certbot --version
 
 ## 7. Собрать точный коммит и доставить релиз
 
-### Сборка из Git, а не из случайных локальных файлов
-
-**Где: Mac, исходная папка проекта.** Сначала убедитесь, что push раздела 3 завершён. Основной путь собирает релиз из Git-коммита в отдельной временной папке: ignored .env, личные файлы и незакоммиченные правки в него не попадут.
+**Где: Mac, папка проекта.** Сначала выполните проверки, коммит и push из разделов 2–3. Команды релиза находятся в репозитории, их не нужно каждый раз переписывать.
 
 ```sh
-cd /Users/dmitrij/Documents/development/to-do
-git fetch origin main
-git status --short
-git rev-parse HEAD
-git rev-parse origin/main
+npm run release:prepare
+npm run release:upload
 ```
 
-Оба SHA должны совпасть, а status быть пустым. Если после push меняли исходники или инструкцию, сначала сделайте следующий коммит/push.
+Первая команда проверяет чистоту рабочей папки, получает актуальный origin/main и требует совпадения с HEAD. Затем она собирает **именно этот коммит** в отдельной временной папке и создаёт `.cache/releases/ПОЛНЫЙ_SHA/todo-server.tgz`, checksum и универсальный update.sh. Архив не содержит .env, базы, node_modules и незакоммиченных файлов. Внутри есть REVISION, backend, общая модель, production dist и deploy. Расширенные атрибуты macOS исключаются.
+
+Вторая команда снова проверяет Git, checksum и REVISION и передаёт файлы через SSH-псевдоним todo-vps в `/tmp/todo-release-ПОЛНЫЙ_SHA/` на VPS. Она возвращает вас в терминал Mac и **не устанавливает релиз**. Готовому backend не нужен npm ci на VPS: зависимости интерфейса включены в сборку, сервер использует встроенные модули Node.
+
+Для другого SSH-псевдонима укажите его аргументом:
 
 ```sh
-(
-set -eu
-test -z "$(git status --porcelain)"
-test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
-todo_revision=$(git rev-parse HEAD)
-todo_build_dir=$(mktemp -d "${TMPDIR:-/tmp}/todo-build.XXXXXX")
-trap 'rm -rf "$todo_build_dir"' EXIT
-git archive --format=tar -o "$todo_build_dir/source.tar" HEAD
-tar -xf "$todo_build_dir/source.tar" -C "$todo_build_dir"
-rm "$todo_build_dir/source.tar"
-cd "$todo_build_dir"
-npm ci
-npm run build
-printf '%s\n' "$todo_revision" > REVISION
-tar -czf /tmp/todo-server.tgz package.json package-lock.json server src/app/model.js src/app/description.js dist deploy REVISION
-(cd /tmp && shasum -a 256 todo-server.tgz > todo-server.tgz.sha256)
-tar -tzf /tmp/todo-server.tgz
-)
+npm run release:upload -- my-vps
 ```
 
-В архиве должны быть backend, общая модель, весь production dist, конфигурации deploy и REVISION. Сервер использует встроенные модули Node: готовому релизу **не нужен npm ci на VPS**. Клиентские npm-зависимости уже включены в dist. Одного main.js для запуска недостаточно.
+Идентификатор коммита напечатан в результате подготовки; для первого запуска он нужен в разделе 8. Для обновления уже работающего приложения используйте раздел 13.
 
-### Передача
-
-**На Mac:**
-
-```sh
-scp /tmp/todo-server.tgz /tmp/todo-server.tgz.sha256 todo-vps:/tmp/
-ssh todo-vps
-```
-
-Если используете другой SSH-порт, он уже задан в псевдониме todo-vps. Без псевдонима у scp порт задаётся флагом `-P`, у ssh — `-p`.
-
-**На VPS под deploy:**
-
-```sh
-(cd /tmp && sha256sum -c todo-server.tgz.sha256)
-tar -tzf /tmp/todo-server.tgz
-```
-
-Продолжайте только после `OK` и проверки состава архива. Контрольная сумма подтверждает целостность передачи, а соответствие кода коммиту обеспечивается сборкой из Git и файлом REVISION.
+Не используйте старые `/tmp/todo-server.tgz` и `/tmp/todo-update.sh`: это файлы предыдущего ручного способа, push не обновляет их. Успешный checksum подтверждает целостность, но не новизну; новые команды дополнительно сверяют архив с ожидаемым коммитом. Если после подготовки сделали новый коммит, повторите prepare: для нового SHA нужен новый архив.
 
 ## 8. Установить релиз и задать настройки
 
@@ -425,13 +389,17 @@ tar -tzf /tmp/todo-server.tgz
 ```sh
 (
 set -eu
+todo_revision='ВСТАВЬТЕ_ПОЛНЫЙ_SHA_ИЗ_RELEASE_PREPARE'
+todo_incoming="/tmp/todo-release-$todo_revision"
+(cd "$todo_incoming" && sha256sum -c todo-server.tgz.sha256)
+test "$(tar -xOf "$todo_incoming/todo-server.tgz" REVISION)" = "$todo_revision"
 test ! -e /opt/todo/current
 test ! -L /opt/todo/current
 test ! -e /opt/todo/current.next
 test ! -L /opt/todo/current.next
 todo_release="/opt/todo/releases/$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir "$todo_release"
-tar -xzf /tmp/todo-server.tgz -C "$todo_release"
+tar --no-same-owner -xzf "$todo_incoming/todo-server.tgz" -C "$todo_release"
 test -f "$todo_release/server/index.js"
 test -f "$todo_release/deploy/todo.service"
 test -f "$todo_release/dist/sw.js"
@@ -731,48 +699,27 @@ sudo crontab -e
 
 ## 13. Обновлять приложение без потери данных
 
-**Перед каждым обновлением:** дождитесь отправки офлайн-очередей и сделайте копию базы по разделу 12.
+**Один раз перед использованием новых команд:** закоммитьте и отправьте в GitHub файлы `scripts/release.mjs`, `deploy/update.sh`, изменения package.json и документации. Не запускайте подготовку с незакоммиченными файлами: команда намеренно остановится.
 
-**На Mac:** измените исходники → повторите проверки → коммит/push → соберите точный коммит по разделу 7 → передайте новый архив и checksum тем же scp. Не передавайте `.env` и базу поверх серверных.
-
-**На VPS:**
+**При каждом обновлении на Mac:** дождитесь отправки офлайн-очередей, выполните проверки проекта, коммит и push. Затем в папке проекта:
 
 ```sh
-(cd /tmp && sha256sum -c todo-server.tgz.sha256)
-readlink -f /opt/todo/current
-cat /opt/todo/current/REVISION
+npm run release:prepare
+npm run release:upload
+npm run release:install
 ```
 
-Запишите полный путь текущего релиза для отката. Затем:
+Все три команды запускаются **на Mac**. Install сама подключается по SSH с терминалом и запрашивает пароль sudo пользователя VPS. Отдельно заходить на сервер и вставлять длинный блок больше не нужно. Для другого SSH-псевдонима передайте `-- my-vps` и upload, и install.
 
-```sh
-(
-set -eu
-test -L /opt/todo/current
-test ! -e /opt/todo/current.next
-test ! -L /opt/todo/current.next
-todo_release="/opt/todo/releases/$(date -u +%Y%m%dT%H%M%SZ)"
-mkdir "$todo_release"
-tar -xzf /tmp/todo-server.tgz -C "$todo_release"
-test -f "$todo_release/server/index.js"
-test -f "$todo_release/dist/sw.js"
-grep -q 'Content-Security-Policy' "$todo_release/dist/index.html"
-cp -an /opt/todo/current/dist/. "$todo_release/dist/"
-find "$todo_release" -type d -exec chmod 755 {} +
-find "$todo_release" -type f -exec chmod 644 {} +
-ln -s "$todo_release" /opt/todo/current.next
-mv -Tf /opt/todo/current.next /opt/todo/current
-sudo systemctl restart todo
-)
-cat /opt/todo/current/REVISION
-sudo systemctl status todo --no-pager
-```
+Установщик получает ожидаемый SHA автоматически, сверяет checksum и REVISION **до переключения**, проверяет защиту от параллельной установки, создаёт резервную копию SQLite в `/var/backups/todo/` и атомарно переключает ссылку current. Старые публичные ассеты сохраняются для открытых вкладок. После перезапуска проверяется `/api/health`; если запуск не прошёл, возвращается предыдущий код. Данные при откате кода не откатываются. Если этот SHA уже установлен, повторная установка не нужна и скрипт завершится соответствующим сообщением.
 
-База остаётся в `/var/lib/todo`; переключается только код. Копирование `cp -an` оставляет старые хешированные ассеты для уже открытых вкладок и не перезаписывает новые index.html/sw.js. Старые ассеты накапливаются: очищайте их позже, когда старые вкладки закрыты и новый релиз проверен.
+В конце ожидаются `{"ok":true}`, статус active (running), **новый полный SHA** и путь предыдущего релиза. Откройте приложение, проверьте функции. Если интерфейс остался прежним, закройте все старые вкладки/окна ярлыка и откройте снова, чтобы активировался новый service worker.
 
-Если менялся todo.service, установите его из нового `current/deploy`, выполните `sudo systemctl daemon-reload` и `sudo systemctl restart todo`. Если менялся Nginx, сравните изменения с действующей конфигурацией и сохраните секции HTTPS, добавленные Certbot: не заменяйте готовую HTTPS-конфигурацию начальным HTTP-шаблоном вслепую. Сертификат заново выпускать при обычном обновлении не нужно.
+База, `/etc/todo.env`, настройки Nginx, сертификат и VPN при обновлении не заменяются. Адрес с портом 8443 берётся из APP_ORIGIN при проверке backend. Текущий установщик рассчитан на существующую установку по этой инструкции: Ubuntu 24.04, системный Node в /usr/local/bin, абсолютный DATABASE_PATH, служба todo на loopback 4001. Для первой установки используйте разделы 8–10.
 
-Сверьте REVISION с новым коммитом и повторите health/вход/создание задачи. Старый релиз не удаляйте до проверки. Незавершённая ссылка current.next после ошибки требует проверки `readlink`; удаляйте только эту временную ссылку, не рабочую директорию current.
+Если менялся todo.service, установите его из нового current/deploy и выполните daemon-reload/restart отдельно. Изменения Nginx объединяйте с действующей конфигурацией, сохраняя свой порт и HTTPS. Скрипт специально не подменяет эти системные настройки. Резервные копии и старые ассеты накапливаются: перенос внешних копий и срок хранения задайте отдельно.
+
+При ошибке любой команды остановитесь. Не переходите к install, если prepare/upload не завершились успешно. Старый архив нельзя исправить переименованием или правкой REVISION — нужна новая сборка из нужного коммита.
 
 ## 14. Откат кода и восстановление данных
 

@@ -32,7 +32,10 @@
     "build:dev": "webpack --mode development",
     "format:check": "prettier --check src/app src/index.js src/template.html tests webpack.config.js playwright.config.js scripts server deploy/*.mjs README.md docs package.json",
     "test:visual": "node scripts/check-visuals.mjs",
-    "server": "node --env-file-if-exists=.env server/index.js"
+    "server": "node --env-file-if-exists=.env server/index.js",
+    "release:prepare": "node scripts/release.mjs prepare",
+    "release:upload": "node scripts/release.mjs upload",
+    "release:install": "node scripts/release.mjs install"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.0",
