@@ -6,6 +6,7 @@ import {
   workspaceLimits,
   isDueDate,
 } from "../src/app/model.js";
+import { validLanguage } from "../src/app/i18n.js";
 export class ApiError extends Error {
   constructor(status, message) {
     super(message);
@@ -112,6 +113,8 @@ export function validateSnapshot(input) {
   return data;
 }
 export function validateSettings(input) {
+  if (input?.language !== undefined && !validLanguage(input.language))
+    fail("Выберите язык: en или ru.");
   if (
     !input ||
     typeof input.enabled !== "boolean" ||
@@ -125,5 +128,10 @@ export function validateSettings(input) {
   }
   if (typeof input.timezone !== "string" || input.timezone.length > 100)
     fail("Некорректный часовой пояс.");
-  return { enabled: input.enabled, time: input.time, timezone: input.timezone };
+  return {
+    enabled: input.enabled,
+    time: input.time,
+    timezone: input.timezone,
+    ...(input.language !== undefined ? { language: input.language } : {}),
+  };
 }

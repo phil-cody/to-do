@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 import { workspaceLimits } from "../src/app/model.js";
 import { ApiError, validateSettings } from "./validation.js";
 import { hash } from "./store.js";
+import { translate } from "../src/app/i18n.js";
 const cookieMap = (req) =>
   Object.fromEntries(
     (req.headers.cookie || "").split(";").map((v) => v.trim().split("=")),
@@ -175,11 +176,15 @@ export function createApp({
           return json(res, 200, {
             id: user.id,
             name: user.name,
-            settings: JSON.parse(user.settings),
+            settings: store.settings(user.id),
           });
         if (pathname === "/api/settings" && req.method === "PUT") {
-          const settings = validateSettings(await body(req));
+          const settings = validateSettings({
+            ...store.settings(user.id),
+            ...(await body(req)),
+          });
           store.transaction(() => store.setSettings(user.id, settings));
+          notify(user.id);
           return json(res, 200, settings);
         }
         if (pathname.startsWith("/api/operations/") && req.method === "GET") {
@@ -195,7 +200,11 @@ export function createApp({
           res.setHeader("ETag", `"${data.revision}"`);
           return json(res, 200, {
             ...data,
-            user: { id: user.id, name: user.name },
+            user: {
+              id: user.id,
+              name: user.name,
+              language: store.settings(user.id).language,
+            },
           });
         }
         if (pathname === "/api/workspace" && req.method === "PUT") {
@@ -291,11 +300,14 @@ export function createApp({
         return;
       }
       json(res, error.status || (error.code === "ENOENT" ? 404 : 500), {
-        error: error.status
-          ? error.message
-          : error.code === "ENOENT"
-            ? "Файл не найден."
-            : "Внутренняя ошибка сервера.",
+        error: translate(
+          error.status
+            ? error.message
+            : error.code === "ENOENT"
+              ? "Файл не найден."
+              : "Внутренняя ошибка сервера.",
+          req.headers["accept-language"]?.startsWith("en") ? "en" : "ru",
+        ),
       });
     }
   });

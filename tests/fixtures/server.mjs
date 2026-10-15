@@ -32,7 +32,7 @@ const controls = http.createServer(async (req, res) => {
       bot.processUpdate({
         update_id: ++sequence,
         message: {
-          from: { id: user, first_name: "Tester" },
+          from: { id: user, first_name: "Tester", language_code: "en" },
           chat: { id: user, type: "private" },
           text: `/start login_${challenge}`,
         },
@@ -41,7 +41,7 @@ const controls = http.createServer(async (req, res) => {
         update_id: ++sequence,
         callback_query: {
           id: String(sequence),
-          from: { id: user },
+          from: { id: user, language_code: "en" },
           data: `approve:${challenge}`,
           message: { chat: { id: user, type: "private" } },
         },
@@ -50,7 +50,7 @@ const controls = http.createServer(async (req, res) => {
       bot.processUpdate({
         update_id: ++sequence,
         message: {
-          from: { id: user, first_name: "Tester" },
+          from: { id: user, first_name: "Tester", language_code: "en" },
           chat: { id: user, type: "private" },
           text,
         },

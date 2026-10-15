@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import { useEffect, useRef, useState } from "react";
 import { createRepository } from "../repository.js";
 import { appendProjectImport } from "../import-project.js";
@@ -102,7 +103,11 @@ export default function useWorkspace() {
       if (close) setModal(null);
       return true;
     } catch (error) {
-      setError(`Changes could not be saved: ${error.message}`);
+      setError(
+        t("Changes could not be saved: {message}", {
+          message: t(error.message),
+        }),
+      );
       return false;
     } finally {
       saving.current = false;
@@ -122,13 +127,16 @@ export default function useWorkspace() {
       setSidebarOpen(false);
   }
   function deleteTask(task) {
-    if (window.confirm(`Delete “${task.task_title}”?`))
+    if (window.confirm(t("Delete “{title}”?", { title: task.task_title })))
       return commit((data) => removeTask(data, task.task_id), true);
   }
   function deleteProject(project) {
     if (
       window.confirm(
-        `Delete “${project.project_title}” and its ${project.todoList.length} tasks?`,
+        t("Delete “{title}” and its {count} tasks?", {
+          title: project.project_title,
+          count: project.todoList.length,
+        }),
       )
     )
       return commit((data) => removeProject(data, project.project_id), true);

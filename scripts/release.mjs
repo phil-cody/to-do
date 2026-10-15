@@ -89,6 +89,8 @@ function prepare(sha, folder) {
         "server",
         "src/app/model.js",
         "src/app/description.js",
+        "src/app/i18n.js",
+        "src/app/i18n-messages.js",
         "dist",
         "deploy",
         "REVISION",

@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import { useEffect, useRef, useState } from "react";
 
 // Касание захватывается только ручкой: сама карточка остаётся прокручиваемой.
@@ -52,8 +53,8 @@ export default function useKanbanDrag(onDrop) {
   function handleProps(task, disabled) {
     return {
       disabled,
-      "aria-label": `Move ${task.task_title}`,
-      title: "Drag to a status column; use arrow keys to change status",
+      "aria-label": t("Move {title}", { title: task.task_title }),
+      title: t("Drag to a status column; use arrow keys to change status"),
       onPointerDown(event) {
         if (disabled || !event.isPrimary || active.current) return;
         event.preventDefault();

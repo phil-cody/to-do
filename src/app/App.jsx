@@ -1,8 +1,10 @@
+import { t } from "./i18n.js";
 import TelegramLogin from "./components/TelegramLogin.jsx";
 import SyncPanel from "./components/SyncPanel.jsx";
 import React, { useEffect } from "react";
 import useWorkspace from "./hooks/useWorkspace.js";
 import useDay from "./hooks/useDay.js";
+import useLanguage from "./hooks/useLanguage.js";
 import useMediaQuery from "./hooks/useMediaQuery.js";
 import { MOBILE_QUERY, COMPACT_QUERY } from "./constants.js";
 import { selectDashboard } from "./selectors.js";
@@ -16,6 +18,7 @@ import TaskCard from "./components/TaskCard.jsx";
 import WorkspaceModal from "./components/WorkspaceModal.jsx";
 
 export default function App() {
+  useLanguage();
   const workspace = useWorkspace(),
     day = useDay();
   const mobile = useMediaQuery(MOBILE_QUERY),
@@ -33,11 +36,11 @@ export default function App() {
         </h1>
         {workspace.error ? (
           <>
-            <p role="alert">{workspace.error}</p>
-            <button onClick={workspace.reload}>Try again</button>
+            <p role="alert">{t(workspace.error)}</p>
+            <button onClick={workspace.reload}>{t("Try again")}</button>
           </>
         ) : (
-          <p>Loading your workspace…</p>
+          <p>{t("Loading your workspace…")}</p>
         )}
       </div>
     );
@@ -100,8 +103,8 @@ export default function App() {
         />
         {workspace.error && !workspace.modal && (
           <div className="error" role="alert">
-            {workspace.error}
-            <button onClick={workspace.dismissError}>Dismiss</button>
+            {t(workspace.error)}
+            <button onClick={workspace.dismissError}>{t("Dismiss")}</button>
           </div>
         )}
         <div className="workspace" aria-busy={workspace.busy}>

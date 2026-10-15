@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import useDialog, { isBackdropClick } from "../hooks/useDialog.js";
@@ -17,7 +18,7 @@ export default function Modal({ title, onClose, children }) {
     >
       <div className="modal-heading">
         <h2 id="modal-title">{title}</h2>
-        <button aria-label="Close dialog" onClick={onClose}>
+        <button aria-label={t("Close dialog")} onClick={onClose}>
           <Icon name="close" />
         </button>
       </div>
@@ -31,7 +32,7 @@ export function SidebarDrawer({ open, onClose, children }) {
     <dialog
       className="sidebar-drawer"
       id="project-sidebar"
-      aria-label="Project navigation"
+      aria-label={t("Project navigation")}
       ref={ref}
       onCancel={(event) => {
         event.preventDefault();
@@ -43,7 +44,7 @@ export function SidebarDrawer({ open, onClose, children }) {
     >
       <button
         className="drawer-close"
-        aria-label="Close project menu"
+        aria-label={t("Close project menu")}
         onClick={onClose}
       >
         <Icon name="close" />

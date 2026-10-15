@@ -4,6 +4,7 @@ import { mkdirSync, chmodSync } from "node:fs";
 import path from "node:path";
 import { normalize, workspaceLimits } from "../src/app/model.js";
 import { ApiError, validateSnapshot } from "./validation.js";
+import { accountLanguage, translate } from "../src/app/i18n.js";
 export const token = () => randomBytes(32).toString("base64url");
 export const hash = (value) => createHash("sha256").update(value).digest("hex");
 export class Store {
@@ -45,15 +46,31 @@ export class Store {
     return this.db.prepare("SELECT * FROM users WHERE id=?").get(String(id));
   }
   setSettings(id, settings) {
+    const previous = this.settings(id);
+    settings = { ...previous, ...settings };
     this.db
       .prepare("UPDATE users SET settings=? WHERE id=?")
       .run(JSON.stringify(settings), id);
+    if (settings.language !== previous.language)
+      this.queueCommands(id, settings.language);
     if (!settings.enabled)
       this.db
         .prepare("DELETE FROM outbox WHERE chat_id=? AND id LIKE ?")
         .run(id, `digest:${id}:%`);
   }
+  settings(id) {
+    const settings = JSON.parse(this.user(id).settings);
+    return { ...settings, language: accountLanguage(settings) };
+  }
+  queueCommands(id, language) {
+    this.db
+      .prepare(
+        "INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+      )
+      .run(`commands:${id}`, JSON.stringify({ chat: String(id), language }));
+  }
   ensureUser(from, chatId) {
+    const existing = this.user(from.id);
     const id = String(from.id),
       name = String(from.first_name || from.username || "Telegram").slice(
         0,
@@ -61,9 +78,23 @@ export class Store {
       );
     this.db
       .prepare(
-        "INSERT INTO users(id,name,chat_id) VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,chat_id=excluded.chat_id",
+        "INSERT INTO users(id,name,chat_id,settings) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,chat_id=excluded.chat_id",
       )
-      .run(id, name, String(chatId));
+      .run(
+        id,
+        name,
+        String(chatId),
+        JSON.stringify({
+          enabled: false,
+          time: "09:00",
+          timezone: "UTC",
+          language:
+            from.language_code && !from.language_code.startsWith("ru")
+              ? "en"
+              : "ru",
+        }),
+      );
+    if (!existing) this.queueCommands(id, this.settings(id).language);
     if (!this.db.prepare("SELECT 1 FROM workspaces WHERE user_id=?").get(id))
       this.db
         .prepare("INSERT INTO workspaces VALUES(?,1,?)")
@@ -190,7 +221,13 @@ export class Store {
         "UPDATE workspaces SET revision=revision+1,snapshot=? WHERE user_id=?",
       )
       .run(JSON.stringify(validated), id);
-    this.enqueue(`task:${messageId}`, id, `Добавлено в Inbox: ${title}`);
+    this.enqueue(
+      `task:${messageId}`,
+      id,
+      translate("Added to Inbox: {title}", this.settings(id).language, {
+        title,
+      }),
+    );
   }
   close() {
     this.db.close();

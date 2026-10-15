@@ -2,6 +2,7 @@ import { normalize } from "../model.js";
 import { HttpRepository } from "./http-repository.js";
 import { ClientStore } from "./client-store.js";
 import { mergeEdit, pendingSnapshot } from "./merge.js";
+import { getLanguage, setLanguage, validLanguage } from "../i18n.js";
 export class AuthenticationRequired extends Error {
   constructor() {
     super("Войдите через Telegram.");
@@ -32,6 +33,7 @@ export class RemoteRepository extends HttpRepository {
         ...options,
         headers: {
           ...options.headers,
+          "Accept-Language": getLanguage(),
           ...(this.user ? { "X-Account-ID": this.user.id } : {}),
         },
       });
@@ -63,6 +65,7 @@ export class RemoteRepository extends HttpRepository {
       await this.forget();
       throw new AuthenticationRequired();
     }
+    if (validLanguage(result.user?.language)) setLanguage(result.user.language);
     return result;
   }
   key() {
@@ -93,6 +96,7 @@ export class RemoteRepository extends HttpRepository {
         remote: normalize(result.snapshot),
         revision: result.revision,
         queue: old?.queue || [],
+        language: result.user.language,
       }));
       await this.flush();
       return pendingSnapshot((await this.store.read(this.key())) || state);
@@ -104,6 +108,7 @@ export class RemoteRepository extends HttpRepository {
       this.user = { id: active.id, name: "Telegram" };
       const state = await this.store.read(this.key());
       if (!state) throw error;
+      if (validLanguage(state.language)) setLanguage(state.language);
       this.status = {
         online: false,
         pending: state.queue.length,
@@ -187,6 +192,7 @@ export class RemoteRepository extends HttpRepository {
           remote: normalize(remote.snapshot),
           revision: remote.revision,
           queue: current?.queue || [],
+          language: remote.user?.language || current?.language,
         }));
         let retries = 0;
         while (state?.queue.length) {
@@ -330,5 +336,21 @@ export class RemoteRepository extends HttpRepository {
   }
   async exportDraft() {
     return pendingSnapshot(await this.store.read(this.key()));
+  }
+  async updateSettings(patch) {
+    const result = await this.api("/api/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    if (validLanguage(result.language)) {
+      setLanguage(result.language);
+      await this.store.change(this.key(), (state) => ({
+        ...state,
+        language: result.language,
+      }));
+    }
+    this.channel?.postMessage("changed");
+    return result;
   }
 }

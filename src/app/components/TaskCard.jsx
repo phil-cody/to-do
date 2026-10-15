@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Select from "./Select.jsx";
 import Description from "./Markdown.jsx";
@@ -34,21 +35,27 @@ export default function TaskCard({
     >
       <div className="task-selects">
         <Select
-          label="Status"
+          label={t("Status")}
           value={task.task_status}
-          options={statuses}
+          options={Object.fromEntries(
+            Object.entries(statuses).map(([key, label]) => [key, t(label)]),
+          )}
           onChange={(v) => onUpdate(task, { task_status: v })}
         />
         <Select
-          label="Priority"
+          label={t("Priority")}
           value={task.task_priority}
-          options={priorities}
+          options={Object.fromEntries(
+            Object.entries(priorities).map(([key, label]) => [key, t(label)]),
+          )}
           onChange={(v) => onUpdate(task, { task_priority: v })}
         />
       </div>
       <h3>{task.task_title}</h3>
       <div className="task-excerpt">
-        <Description value={task.task_description || "No description yet."} />
+        <Description
+          value={task.task_description || t("No description yet.")}
+        />
       </div>
       {isAll && (
         <button
@@ -63,22 +70,22 @@ export default function TaskCard({
         {formatDueDate(task.task_due_date)}
       </p>
       <div className="actions">
-        <button onClick={() => onEdit(task)}>Edit</button>
+        <button onClick={() => onEdit(task)}>{t("Edit")}</button>
         <button
           className="danger"
           disabled={busy}
           onClick={() => onDelete(task)}
         >
-          Delete
+          {t("Delete")}
         </button>
-        <button onClick={() => onShow(task)}>Show more</button>
+        <button onClick={() => onShow(task)}>{t("Show more")}</button>
         {dragHandleProps && (
           <button
             type="button"
             className="task-drag-handle"
             {...dragHandleProps}
           >
-            Move
+            {t("Move")}
           </button>
         )}
       </div>

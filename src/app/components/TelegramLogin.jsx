@@ -1,3 +1,4 @@
+import { getLanguage, t } from "../i18n.js";
 import React, { useEffect, useState } from "react";
 export default function TelegramLogin({ onComplete }) {
   const [challenge, setChallenge] = useState(null),
@@ -11,7 +12,10 @@ export default function TelegramLogin({ onComplete }) {
       try {
         const response = await fetch("/api/auth/complete", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Accept-Language": getLanguage(),
+          },
           body: JSON.stringify({ id: challenge.id }),
           signal: controller.signal,
         });
@@ -42,7 +46,10 @@ export default function TelegramLogin({ onComplete }) {
     try {
       const response = await fetch("/api/auth/telegram", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Accept-Language": getLanguage(),
+          },
           body: "{}",
         }),
         result = await response.json();
@@ -59,12 +66,13 @@ export default function TelegramLogin({ onComplete }) {
       <h1>
         JUST <span>to</span> DO IT
       </h1>
-      <h2>Вход через Telegram</h2>
+      <h2>{t("Sign in with Telegram")}</h2>
       <p>
-        Каждый пользователь получает отдельные проекты и задачи. Подтвердите
-        вход в @just_to_do_it_bot и вернитесь на эту страницу.
+        {t(
+          "Each user has separate projects and tasks. Confirm sign-in in @just_to_do_it_bot and return to this page.",
+        )}
       </p>
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{t(error)}</p>}
       {challenge ? (
         <>
           <a
@@ -73,13 +81,13 @@ export default function TelegramLogin({ onComplete }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Открыть Telegram и подтвердить вход
+            {t("Open Telegram and confirm sign-in")}
           </a>
-          <p>Ожидаем подтверждение. Ссылка действует 5 минут.</p>
+          <p>{t("Waiting for confirmation. The link expires in 5 minutes.")}</p>
         </>
       ) : (
         <button className="primary" disabled={busy} onClick={start}>
-          {busy ? "Подготовка входа…" : "Войти через Telegram"}
+          {busy ? t("Preparing sign-in…") : t("Sign in")}
         </button>
       )}
     </section>

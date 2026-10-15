@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Modal from "./Modal.jsx";
 import ImportForm from "./ImportForm.jsx";
@@ -23,17 +24,25 @@ export default function WorkspaceModal({
         );
   const title =
     modal.kind === "import"
-      ? "Импорт проектов и задач"
+      ? t("Import projects and tasks")
       : modal.kind === "projects"
-        ? "Project dashboard"
+        ? t("Project dashboard")
         : modal.kind === "details"
-          ? detail?.task_title || "Task"
-          : `${existing ? "Edit" : "New"} ${modal.kind}`;
+          ? detail?.task_title || t("Task")
+          : t(
+              modal.kind === "task"
+                ? existing
+                  ? "Edit task"
+                  : "New task"
+                : existing
+                  ? "Edit project"
+                  : "New project",
+            );
   return (
     <Modal title={title} onClose={workspace.closeModal}>
       {error && (
         <p className="error" role="alert">
-          {error}
+          {t(error)}
         </p>
       )}
       {modal.kind === "import" && (
@@ -60,11 +69,11 @@ export default function WorkspaceModal({
       {modal.kind === "projects" && (
         <>
           <p className="muted">
-            Choose a project, or pin it to keep it in the pinned group.
+            {t("Choose a project, or pin it to keep it in the pinned group.")}
           </p>
           <div className="project-grid">{projects.map(renderProject)}</div>
           <button className="primary save" onClick={workspace.addProject}>
-            + New project
+            {t("+ New project")}
           </button>
         </>
       )}

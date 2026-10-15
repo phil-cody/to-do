@@ -1,8 +1,10 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import Kanban from "./Kanban.jsx";
 import Select from "./Select.jsx";
 import Description from "./Markdown.jsx";
+import ProjectDescription from "./ProjectDescription.jsx";
 import { filters } from "../constants.js";
 import { matches } from "../model.js";
 import filterIcon from "../../assets/image/filter-icon.svg";
@@ -32,18 +34,22 @@ export default function Dashboard({
     <>
       <div className="dashboard-heading">
         <div>
-          <h1>{selected?.project_title || "All tasks & projects"}</h1>
-          <Description
-            value={
-              selected?.project_description ||
-              "Everything you’re working on, in one place."
-            }
-          />
+          <h1>{selected?.project_title || t("All tasks & projects")}</h1>
+          {selected ? (
+            <ProjectDescription
+              key={selected.project_id}
+              value={selected.project_description}
+            />
+          ) : (
+            <Description
+              value={t("Everything you’re working on, in one place.")}
+            />
+          )}
         </div>
         <div className="stats">
-          <span>{tasks.length} Tasks</span>
+          <span>{t("Tasks: {count}", { count: tasks.length })}</span>
           <span className="danger">
-            {tasks.filter((t) => matches(t, "overdue")).length} Overdue
+            {tasks.filter((t) => matches(t, "overdue")).length} {t("Overdue")}
           </span>
           <span className="success">
             {
@@ -52,36 +58,38 @@ export default function Dashboard({
                   matches(t, "date-today") && t.task_status !== "completed",
               ).length
             }{" "}
-            Today
+            {t("Today")}
           </span>
           <span>
             {selected
-              ? `Priority #${selected.project_priority}`
-              : `${projects.length} Projects`}
+              ? t("Priority #{number}", { number: selected.project_priority })
+              : t("{count} Projects", { count: projects.length })}
           </span>
         </div>
       </div>
       {isAll && (
-        <section className="all-projects" aria-label="All projects">
+        <section className="all-projects" aria-label={t("All projects")}>
           <div className="section-heading">
-            <h2>Projects</h2>
-            <button onClick={onShowProjects}>Open dashboard ↗</button>
+            <h2>{t("Projects")}</h2>
+            <button onClick={onShowProjects}>{t("Open dashboard ↗")}</button>
           </div>
           <div className="project-grid">{projects.map(renderProject)}</div>
         </section>
       )}
       {isAll && (
         <div className="section-heading">
-          <h2>All tasks</h2>
-          <span className="muted">{shown.length} shown</span>
+          <h2>{t("All tasks")}</h2>
+          <span className="muted">
+            {t("{count} shown", { count: shown.length })}
+          </span>
         </div>
       )}
       <div className="controls">
-        <div className="view-segment" aria-label="Task views">
+        <div className="view-segment" aria-label={t("Task views")}>
           {[
-            ["grid", "Grid", "grid"],
-            ["list", "List", "list"],
-            ["kanban", "Kanban", null],
+            ["grid", t("Grid"), "grid"],
+            ["list", t("List"), "list"],
+            ["kanban", t("Kanban"), null],
           ]
             .filter(([key]) => !(compact && key === "grid"))
             .map(([key, text, icon]) => (
@@ -100,16 +108,18 @@ export default function Dashboard({
         <div className="filter-select">
           <img src={filterIcon} alt="" />
           <Select
-            label="Filter"
+            label={t("Filter")}
             value={filter}
-            options={filters}
+            options={Object.fromEntries(
+              Object.entries(filters).map(([key, label]) => [key, t(label)]),
+            )}
             onChange={(v) => onPreference("project_filter", v)}
           />
         </div>
         <input
-          aria-label="Search tasks"
+          aria-label={t("Search tasks")}
           type="search"
-          placeholder="Search tasks…"
+          placeholder={t("Search tasks…")}
           value={search}
           onChange={(e) => onSearch(e.target.value)}
         />
@@ -133,25 +143,25 @@ export default function Dashboard({
             <span aria-hidden="true" className="plus">
               <Icon name="plus" />
             </span>
-            <strong>Add new task</strong>
+            <strong>{t("Add new task")}</strong>
           </button>
         </div>
       )}
       {view === "kanban" && (
         <button
           className="primary kanban-add"
-          aria-label="+ Add new task"
+          aria-label={t("+ Add new task")}
           onClick={onAddTask}
         >
           <Icon name="plus" />
-          <span>Add new task</span>
+          <span>{t("Add new task")}</span>
         </button>
       )}
       {!shown.length && (
         <p className="empty">
           {tasks.length
-            ? "No tasks match your filters."
-            : "A fresh start. Add your first task."}
+            ? t("No tasks match your filters.")
+            : t("A fresh start. Add your first task.")}
         </p>
       )}
     </>

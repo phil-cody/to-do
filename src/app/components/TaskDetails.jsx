@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Select from "./Select.jsx";
 import Description from "./Markdown.jsx";
@@ -12,10 +13,12 @@ export default function TaskDetails({
 }) {
   return (
     <div className="details">
-      <Description value={detail.task_description || "No description yet."} />
+      <Description
+        value={detail.task_description || t("No description yet.")}
+      />
       <div className="form-fields">
         <Select
-          label="Project"
+          label={t("Project")}
           value={detail.task_project}
           options={Object.fromEntries(
             projects.map((p) => [p.project_id, p.project_title]),
@@ -23,32 +26,36 @@ export default function TaskDetails({
           onChange={(v) => onUpdate(detail, { task_project: v })}
         />
         <Select
-          label="Status"
+          label={t("Status")}
           value={detail.task_status}
-          options={statuses}
+          options={Object.fromEntries(
+            Object.entries(statuses).map(([key, label]) => [key, t(label)]),
+          )}
           onChange={(v) => onUpdate(detail, { task_status: v })}
         />
         <Select
-          label="Priority"
+          label={t("Priority")}
           value={detail.task_priority}
-          options={priorities}
+          options={Object.fromEntries(
+            Object.entries(priorities).map(([key, label]) => [key, t(label)]),
+          )}
           onChange={(v) => onUpdate(detail, { task_priority: v })}
         />
         <div className="detail-due">
-          <span>Due</span>
+          <span>{t("Due")}</span>
           <time dateTime={detail.task_due_date || undefined}>
             {formatDueDate(detail.task_due_date)}
           </time>
         </div>
       </div>
       <div className="actions">
-        <button onClick={() => onEdit(detail)}>Edit task</button>
+        <button onClick={() => onEdit(detail)}>{t("Edit task")}</button>
         <button
           className="danger"
           disabled={busy}
           onClick={() => onDelete(detail)}
         >
-          Delete task
+          {t("Delete task")}
         </button>
       </div>
     </div>

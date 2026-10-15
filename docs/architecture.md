@@ -11,9 +11,12 @@ src/app/
                              TelegramLogin и SyncPanel
   hooks/useWorkspace.js      действия интерфейса, загрузка, ошибки, подписка
   hooks/useDay.js            обновление при смене локального дня
+  hooks/useLanguage.js       подписка React на смену языка
   hooks/useMediaQuery.js      границы адаптивности
   hooks/useDialog.js          native dialog и backdrop
   model.js                   нормализация, общие лимиты/даты, сортировка и фильтры
+  i18n.js                    выбор языка, чистый перевод, хранение и подписки
+  i18n-messages.js           общий словарь русского/английского интерфейса и бота
   import-project.js          проверка файла и добавление копий в снимок
   files.js                   единое локальное скачивание JSON
   workspace.js               чистые функции изменения снимка

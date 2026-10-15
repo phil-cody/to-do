@@ -1,6 +1,8 @@
+import { setLanguage, t } from "../i18n.js";
 import React, { useState } from "react";
 import TimezoneSelect from "./TimezoneSelect.jsx";
 import { downloadJson } from "../files.js";
+import LanguageSelect from "./LanguageSelect.jsx";
 export default function SyncPanel({ workspace }) {
   const { repository, sync } = workspace;
   const [settings, setSettings] = useState(null),
@@ -8,10 +10,20 @@ export default function SyncPanel({ workspace }) {
     [busy, setBusy] = useState(false);
   if (!repository.remote || !repository.user)
     return (
-      <section className="sync-panel" aria-label="Импорт данных">
-        <button disabled={workspace.busy} onClick={workspace.showImport}>
-          Импорт проектов и задач
-        </button>
+      <section className="sync-panel" aria-label={t("Import data")}>
+        <div className="account-actions">
+          <button onClick={() => setSettings(settings ? null : {})}>
+            {t("Telegram and account")}
+          </button>
+          <button disabled={workspace.busy} onClick={workspace.showImport}>
+            {t("Import projects and tasks")}
+          </button>
+        </div>
+        {settings && (
+          <div className="account-settings">
+            <LanguageSelect onChange={setLanguage} />
+          </div>
+        )}
       </section>
     );
   async function action(fn) {
@@ -29,17 +41,17 @@ export default function SyncPanel({ workspace }) {
     downloadJson(await repository.exportDraft(), "todo_app.backup.json");
   }
   return (
-    <section className="sync-panel" aria-label="Синхронизация">
+    <section className="sync-panel" aria-label={t("Synchronization")}>
       <div className="sync-summary">
         <span>
           {repository.user.name} ·{" "}
           {sync.conflict
-            ? "Конфликт изменений"
+            ? t("Conflicting changes")
             : sync.pending
-              ? `Ожидают отправки: ${sync.pending}`
+              ? t("Pending uploads: {count}", { count: sync.pending })
               : sync.online === false
-                ? "Офлайн"
-                : "Синхронизировано"}
+                ? t("Offline")
+                : t("Synced")}
         </span>
         <button
           disabled={busy}
@@ -50,52 +62,55 @@ export default function SyncPanel({ workspace }) {
             })
           }
         >
-          Telegram и аккаунт
+          {t("Telegram and account")}
         </button>
         <button
           disabled={busy || workspace.busy}
           onClick={workspace.showImport}
         >
-          Импорт проектов и задач
+          {t("Import projects and tasks")}
         </button>
         <button
           disabled={busy}
           onClick={() => action(() => repository.flush())}
         >
-          Обновить
+          {t("Refresh")}
         </button>
       </div>
-      {(error || sync.error) && <p role="alert">{error || sync.error}</p>}
+      {(error || sync.error) && <p role="alert">{t(error || sync.error)}</p>}
       {sync.conflict && (
         <div className="sync-conflict">
           <p>
-            Изменённые поля пересекаются с изменениями другого устройства.
-            Остальные данные будут сохранены.
+            {t(
+              "Some fields were also changed on another device. Other data will be preserved.",
+            )}
           </p>
           <button onClick={() => action(download)}>
-            Скачать копию моих данных
+            {t("Download a copy of my data")}
           </button>
           <button
             disabled={busy}
             onClick={() => {
-              if (confirm("Применить свои изменения в конфликтующих полях?"))
+              if (confirm(t("Apply my changes to the conflicting fields?")))
                 void action(() => repository.resolveConflict(true));
             }}
           >
-            Применить мои изменения
+            {t("Apply my changes")}
           </button>
           <button
             disabled={busy}
             onClick={() => {
               if (
                 confirm(
-                  "Отбросить все ожидающие изменения этого аккаунта и загрузить серверные данные? Сначала сохраните копию при необходимости.",
+                  t(
+                    "Discard all pending changes for this account and load server data? Download a copy first if needed.",
+                  ),
                 )
               )
                 void action(() => repository.resolveConflict(false));
             }}
           >
-            Использовать серверные данные
+            {t("Use server data")}
           </button>
         </div>
       )}
@@ -106,16 +121,28 @@ export default function SyncPanel({ workspace }) {
             e.preventDefault();
             void action(async () => {
               setSettings(
-                await repository.api("/api/settings", {
-                  method: "PUT",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(settings),
+                await repository.updateSettings({
+                  enabled: settings.enabled,
+                  time: settings.time,
+                  timezone: settings.timezone,
                 }),
               );
             });
           }}
         >
-          <h3>Ежедневные задачи в Telegram</h3>
+          <LanguageSelect
+            disabled={busy}
+            onChange={(language) =>
+              action(async () => {
+                const result = await repository.updateSettings({ language });
+                setSettings((current) => ({
+                  ...current,
+                  language: result.language,
+                }));
+              })
+            }
+          />
+          <h3>{t("Daily tasks in Telegram")}</h3>
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -124,10 +151,10 @@ export default function SyncPanel({ workspace }) {
                 setSettings({ ...settings, enabled: e.target.checked })
               }
             />
-            Отправлять задачи на сегодня
+            {t("Send today's tasks")}
           </label>
           <label>
-            Время
+            {t("Time")}
             <input
               type="time"
               required
@@ -143,11 +170,12 @@ export default function SyncPanel({ workspace }) {
             onChange={(timezone) => setSettings({ ...settings, timezone })}
           />
           <button disabled={busy} type="submit">
-            Сохранить расписание
+            {t("Save schedule")}
           </button>
           <p>
-            Текстовые сообщения боту становятся задачами Inbox. /today — задачи
-            на сегодня, /stop — отключить отправку.
+            {t(
+              "Text messages to the bot become Inbox tasks. /today shows today's tasks; /stop disables delivery.",
+            )}
           </p>
           <div className="account-actions">
             <button
@@ -155,24 +183,24 @@ export default function SyncPanel({ workspace }) {
               type="button"
               onClick={workspace.showImport}
             >
-              Перенести локальные задачи
+              {t("Migrate local tasks")}
             </button>
             <button
               type="button"
               disabled={busy}
               onClick={() => action(download)}
             >
-              Скачать резервную копию
+              {t("Download backup")}
             </button>
             <button
               type="button"
               disabled={busy}
               onClick={() => action(() => repository.logout())}
             >
-              Выйти
+              {t("Log out")}
             </button>
             <button type="button" onClick={() => setSettings(null)}>
-              Закрыть
+              {t("Close")}
             </button>
           </div>
         </form>

@@ -1,3 +1,4 @@
+import { getLanguage, t } from "../i18n.js";
 import React, { useId, useMemo } from "react";
 
 const cities = {
@@ -64,8 +65,12 @@ function label(zone, now) {
     ? `UTC${match[1]}${match[2].padStart(2, "0")}:${match[3] || "00"}`
     : "UTC+00:00";
   const city =
-    cities[canonical(zone)] ||
-    zone.replaceAll("_", " ").split("/").reverse().join(" · ");
+    (cities[canonical(zone)] && t(cities[canonical(zone)])) ||
+    (getLanguage() === "ru"
+      ? new Intl.DateTimeFormat("ru", { timeZone: zone, timeZoneName: "long" })
+          .formatToParts(now)
+          .find((part) => part.type === "timeZoneName").value
+      : zone.replaceAll("_", " ").split("/").reverse().join(" · "));
   return `${city} (${utc})`;
 }
 
@@ -87,33 +92,33 @@ export default function TimezoneSelect({ value, onChange, disabled }) {
         zone,
         label:
           label(zone, now) +
-          (canonical(zone) === canonical(local) ? " — на этом устройстве" : ""),
+          (canonical(zone) === canonical(local) ? t(" — on this device") : ""),
       })),
       other: all
         .filter((zone) => !seen.has(canonical(zone)))
         .map((zone) => ({ zone, label: label(zone, now) }))
-        .sort((a, b) => a.label.localeCompare(b.label, "ru")),
+        .sort((a, b) => a.label.localeCompare(b.label, getLanguage())),
     };
-  }, [value]);
+  }, [value, getLanguage()]);
   return (
     <label className="select-field">
-      Часовой пояс
+      {t("Time zone")}
       <select
-        aria-label="Часовой пояс"
+        aria-label={t("Time zone")}
         aria-describedby={hintId}
         required
         value={value}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
       >
-        <optgroup label="Ваш выбор и популярные города">
+        <optgroup label={t("Your choice and popular cities")}>
           {groups.suggested.map(({ zone, label }) => (
             <option key={zone} value={zone}>
               {label}
             </option>
           ))}
         </optgroup>
-        <optgroup label="Другие города и регионы">
+        <optgroup label={t("Other cities and regions")}>
           {groups.other.map(({ zone, label }) => (
             <option key={zone} value={zone}>
               {label}
@@ -122,8 +127,9 @@ export default function TimezoneSelect({ value, onChange, disabled }) {
         </optgroup>
       </select>
       <small id={hintId}>
-        Время отправки — местное время выбранного города. Сезонный перевод часов
-        учитывается автоматически.
+        {t(
+          "Delivery uses the selected city's local time. Daylight saving time is applied automatically.",
+        )}
       </small>
     </label>
   );

@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React, { Suspense, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 import { markdownComponents } from "../markdown.jsx";
@@ -21,7 +22,7 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
       }}
     >
       <label>
-        Title
+        {t("Title")}
         <input
           autoFocus
           required
@@ -29,13 +30,15 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
           value={draft[`${prefix}_title`]}
           onChange={(e) => set(`${prefix}_title`, e.target.value)}
           placeholder={
-            isTask ? "What needs to get done?" : "Give your project a name"
+            isTask
+              ? t("What needs to get done?")
+              : t("Give your project a name")
           }
         />
       </label>
       <div className="description-field">
-        <span id="description-label">Description · Markdown</span>
-        <Suspense fallback={<p>Loading editor…</p>}>
+        <span id="description-label">{t("Description · Markdown")}</span>
+        <Suspense fallback={<p>{t("Loading editor…")}</p>}>
           <MDEditor
             value={draft[`${prefix}_description`]}
             onChange={(v) => set(`${prefix}_description`, v || "")}
@@ -53,7 +56,7 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
         {isTask ? (
           <>
             <Select
-              label="Project"
+              label={t("Project")}
               value={draft.task_project}
               options={Object.fromEntries(
                 projects.map((p) => [p.project_id, p.project_title]),
@@ -61,7 +64,7 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
               onChange={(v) => set("task_project", v)}
             />
             <label>
-              Due date
+              {t("Due date")}
               <input
                 type="date"
                 value={draft.task_due_date}
@@ -69,21 +72,28 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
               />
             </label>
             <Select
-              label="Status"
+              label={t("Status")}
               value={draft.task_status}
-              options={statuses}
+              options={Object.fromEntries(
+                Object.entries(statuses).map(([key, label]) => [key, t(label)]),
+              )}
               onChange={(v) => set("task_status", v)}
             />
             <Select
-              label="Priority"
+              label={t("Priority")}
               value={draft.task_priority}
-              options={priorities}
+              options={Object.fromEntries(
+                Object.entries(priorities).map(([key, label]) => [
+                  key,
+                  t(label),
+                ]),
+              )}
               onChange={(v) => set("task_priority", v)}
             />
           </>
         ) : (
           <label>
-            Project order
+            {t("Project order")}
             <input
               required
               type="number"
@@ -92,12 +102,16 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
               value={draft.project_priority}
               onChange={(e) => set("project_priority", Number(e.target.value))}
             />
-            <small>Lower numbers appear first among unpinned projects.</small>
+            <small>
+              {t("Lower numbers appear first among unpinned projects.")}
+            </small>
           </label>
         )}
       </div>
       <button className="primary save" disabled={busy} type="submit">
-        {busy ? "Saving…" : `Save ${kind}`}
+        {busy
+          ? t("Saving…")
+          : t(kind === "task" ? "Save task" : "Save project")}
       </button>
     </form>
   );

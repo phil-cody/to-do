@@ -51,6 +51,8 @@ test("release builds the pushed commit and refuses stale, corrupt, dirty or unpu
       "server/index.js",
       "src/app/model.js",
       "src/app/description.js",
+      "src/app/i18n.js",
+      "src/app/i18n-messages.js",
     ])
       writeFileSync(path.join(root, name), "// synthetic fixture\n");
     git("init", "-b", "main");

@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React, { useId, useState } from "react";
 import { taskGroup, taskGroups } from "../model.js";
 import Icon from "./Icon.jsx";
@@ -8,7 +9,7 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
   const { drag, handleProps } = useKanbanDrag(onDrop);
   const columns = Object.entries(taskGroups).map(([key, label]) => ({
     key,
-    label,
+    label: t(label),
     tasks: tasks.filter((task) => taskGroup(task, day) === key),
   }));
   // Preserve status order within each group; empty columns follow populated ones.
@@ -23,7 +24,9 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
         >
           {drag.title}
           <small>
-            {drag.target ? taskGroups[drag.target] : "Move to a status column"}
+            {drag.target
+              ? t(taskGroups[drag.target])
+              : t("Move to a status column")}
           </small>
         </div>
       )}
@@ -47,7 +50,10 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
             <h3>
               <button
                 className="column-toggle"
-                aria-label={`${label}: ${items.length} tasks`}
+                aria-label={t("{status}: {count} tasks", {
+                  status: label,
+                  count: items.length,
+                })}
                 aria-expanded={!collapsed}
                 aria-controls={`${id}-${key}`}
                 onClick={() =>
@@ -69,10 +75,12 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
               )}
               {key === "overdue" && (
                 <p className="column-note">
-                  Unfinished tasks with a past due date.
+                  {t("Unfinished tasks with a past due date.")}
                 </p>
               )}
-              {!items.length && <p className="empty">No tasks here yet</p>}
+              {!items.length && (
+                <p className="empty">{t("No tasks here yet")}</p>
+              )}
             </div>
           </section>
         );

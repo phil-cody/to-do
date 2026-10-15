@@ -9,10 +9,10 @@ const file = (value) => ({
 });
 async function openImport(page) {
   await page
-    .getByRole("button", { name: "Импорт проектов и задач", exact: true })
+    .getByRole("button", { name: "Import projects and tasks", exact: true })
     .click();
   return page.getByRole("dialog", {
-    name: "Импорт проектов и задач",
+    name: "Import projects and tasks",
     exact: true,
   });
 }
@@ -24,12 +24,14 @@ test("downloaded template imports only after confirmation; duplicate imports kee
   await page.goto("/");
   const dialog = await openImport(page);
   const downloadEvent = page.waitForEvent("download");
-  await dialog.getByRole("button", { name: "Скачать шаблон проекта" }).click();
+  await dialog
+    .getByRole("button", { name: "Download project template" })
+    .click();
   const download = await downloadEvent;
   const content = JSON.parse(await readFile(await download.path(), "utf8"));
   expect(content).toEqual(await template());
   const backupEvent = page.waitForEvent("download");
-  await dialog.getByRole("button", { name: "Скачать текущие задачи" }).click();
+  await dialog.getByRole("button", { name: "Download current tasks" }).click();
   const backup = await backupEvent;
   const stored = JSON.parse(await readFile(await backup.path(), "utf8"));
   expect(stored.projects.map((project) => project.project_title)).toEqual([
@@ -38,19 +40,15 @@ test("downloaded template imports only after confirmation; duplicate imports kee
   ]);
 
   await dialog
-    .getByLabel("Файл проекта или резервной копии", { exact: false })
+    .getByLabel("Project or backup file", { exact: false })
     .setInputFiles(file(content));
-  await expect(dialog.getByLabel("Предпросмотр импорта")).toContainText(
-    "Задач: 2",
-  );
+  await expect(dialog.getByLabel("Import preview")).toContainText("Tasks: 2");
   expect(
     await page.evaluate(
       () => JSON.parse(localStorage.getItem("todo_app")).projects.length,
     ),
   ).toBe(2);
-  await dialog
-    .getByRole("button", { name: "Добавить проекты и задачи" })
-    .click();
+  await dialog.getByRole("button", { name: "Add projects and tasks" }).click();
   await expect(dialog).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "Legacy task", exact: true }),
@@ -60,9 +58,9 @@ test("downloaded template imports only after confirmation; duplicate imports kee
   ).toBeVisible();
   await openImport(page);
   await page
-    .getByLabel("Файл проекта или резервной копии", { exact: false })
+    .getByLabel("Project or backup file", { exact: false })
     .setInputFiles(file(content));
-  await page.getByRole("button", { name: "Добавить проекты и задачи" }).click();
+  await page.getByRole("button", { name: "Add projects and tasks" }).click();
   await expect(dialog).toHaveCount(0);
   await page.reload();
   const snapshot = await page.evaluate(() =>
@@ -83,17 +81,17 @@ test("invalid dates and cancelling the preview never change stored data", async 
     content = await template();
   content.project.tasks[0].dueDate = "2026-02-30";
   await dialog
-    .getByLabel("Файл проекта или резервной копии", { exact: false })
+    .getByLabel("Project or backup file", { exact: false })
     .setInputFiles(file(content));
-  await expect(dialog.getByRole("alert")).toContainText("задача 1, срок");
+  await expect(dialog.getByRole("alert")).toContainText("task 1, due date");
   await expect(
-    dialog.getByRole("button", { name: "Добавить проекты и задачи" }),
+    dialog.getByRole("button", { name: "Add projects and tasks" }),
   ).toHaveCount(0);
   content.project.tasks[0].dueDate = "";
   await dialog
-    .getByLabel("Файл проекта или резервной копии", { exact: false })
+    .getByLabel("Project or backup file", { exact: false })
     .setInputFiles(file(content));
-  await expect(dialog.getByLabel("Предпросмотр импорта")).toBeVisible();
+  await expect(dialog.getByLabel("Import preview")).toBeVisible();
   await dialog.getByRole("button", { name: "Close dialog" }).click();
   expect(await page.evaluate(() => localStorage.getItem("todo_app"))).toBe(
     before,
@@ -107,7 +105,7 @@ test("failed storage write preserves the import preview and succeeds on retry", 
   const before = await page.evaluate(() => localStorage.getItem("todo_app"));
   const dialog = await openImport(page);
   await dialog
-    .getByLabel("Файл проекта или резервной копии", { exact: false })
+    .getByLabel("Project or backup file", { exact: false })
     .setInputFiles(file(await template()));
   await page.evaluate(() => {
     window.originalSetItem = Storage.prototype.setItem;
@@ -115,20 +113,16 @@ test("failed storage write preserves the import preview and succeeds on retry", 
       throw new Error("Disk full");
     };
   });
-  await dialog
-    .getByRole("button", { name: "Добавить проекты и задачи" })
-    .click();
+  await dialog.getByRole("button", { name: "Add projects and tasks" }).click();
   await expect(dialog.getByRole("alert")).toContainText("Disk full");
-  await expect(dialog.getByLabel("Предпросмотр импорта")).toBeVisible();
+  await expect(dialog.getByLabel("Import preview")).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("todo_app"))).toBe(
     before,
   );
   await page.evaluate(() => {
     Storage.prototype.setItem = window.originalSetItem;
   });
-  await dialog
-    .getByRole("button", { name: "Добавить проекты и задачи" })
-    .click();
+  await dialog.getByRole("button", { name: "Add projects and tasks" }).click();
   await expect(dialog).toHaveCount(0);
   expect(
     await page.evaluate(

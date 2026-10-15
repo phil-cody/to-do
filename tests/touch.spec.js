@@ -22,6 +22,9 @@ test("touch drag moves a task to a collapsed column and persists its status", as
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Kanban", exact: true }).click();
+  await page
+    .locator(".column-in-process .column-toggle")
+    .scrollIntoViewIfNeeded();
   const client = await page.context().newCDPSession(page);
   const start = await center(
     page.getByRole("button", { name: "Move Legacy task", exact: true }),

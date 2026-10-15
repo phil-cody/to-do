@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import { matches } from "../model.js";
@@ -17,7 +18,7 @@ export default function Sidebar({
   return (
     <aside>
       <div className="sidebar-heading">
-        <h2>Projects</h2>
+        <h2>{t("Projects")}</h2>
       </div>
       <div className="workspace-links">
         <button
@@ -25,36 +26,36 @@ export default function Sidebar({
           disabled={busy}
           onClick={() => onChoose("all")}
         >
-          <span>All tasks & projects</span>
+          <span>{t("All tasks & projects")}</span>
           <small>{taskCount}</small>
         </button>
         <button
           className="nav-item"
-          aria-label="▦ Project dashboard"
+          aria-label={t("▦ Project dashboard")}
           onClick={onShowProjects}
         >
           <Icon name="grid" />
-          <span>Project dashboard</span>
+          <span>{t("Project dashboard")}</span>
         </button>
       </div>
       <button
         className="new-project primary"
-        aria-label="+ New Project"
+        aria-label={t("+ New Project")}
         onClick={onAddProject}
       >
         <Icon name="plus" />
-        <span>New Project</span>
+        <span>{t("New Project")}</span>
       </button>
-      <nav aria-label="Projects">
+      <nav aria-label={t("Projects")}>
         {[
           [
             "pinned",
-            "Pinned projects",
+            t("Pinned projects"),
             projects.filter((p) => p.project_pinned),
           ],
           [
             "other",
-            "Other projects",
+            t("Other projects"),
             projects.filter((p) => !p.project_pinned),
           ],
         ].map(([key, title, groupProjects]) => (
@@ -67,7 +68,7 @@ export default function Sidebar({
               {title}
             </h3>
             {!groupProjects.length && (
-              <p className="muted group-empty">No projects</p>
+              <p className="muted group-empty">{t("No projects")}</p>
             )}
             {groupProjects.map((p) => (
               <div
@@ -85,7 +86,7 @@ export default function Sidebar({
                   className="pin"
                   disabled={busy}
                   aria-pressed={p.project_pinned}
-                  aria-label={`${p.project_pinned ? "Unpin" : "Pin"} ${p.project_title}`}
+                  aria-label={`${p.project_pinned ? t("Unpin") : t("Pin")} ${p.project_title}`}
                   onClick={() => onPin(p)}
                 >
                   <Icon name="star" filled={p.project_pinned} />
@@ -94,22 +95,24 @@ export default function Sidebar({
                   {p.project_description}
                 </p>
                 <div className="project-nav-stats">
-                  <span>Tasks: {p.todoList.length}</span>
                   <span>
-                    Overdue:{" "}
+                    {t("Tasks:")} {p.todoList.length}
+                  </span>
+                  <span>
+                    {t("Overdue:")}{" "}
                     <b className="danger">
                       {p.todoList.filter((t) => matches(t, "overdue")).length}
                     </b>
                   </span>
                   <span>
-                    Done:{" "}
+                    {t("Done:")}{" "}
                     {
                       p.todoList.filter((t) => t.task_status === "completed")
                         .length
                     }
                   </span>
                   <span>
-                    Today:{" "}
+                    {t("Today:")}{" "}
                     <b className="success">
                       {
                         p.todoList.filter(
@@ -122,14 +125,14 @@ export default function Sidebar({
                   </span>
                 </div>
                 <div className="actions">
-                  <button onClick={() => onEditProject(p)}>Edit</button>
+                  <button onClick={() => onEditProject(p)}>{t("Edit")}</button>
                   {p.project_type !== "inbox" && projects.length > 1 && (
                     <button
                       className="danger"
                       disabled={busy}
                       onClick={() => onDeleteProject(p)}
                     >
-                      Delete
+                      {t("Delete")}
                     </button>
                   )}
                 </div>

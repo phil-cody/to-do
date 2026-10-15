@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import Description from "./Markdown.jsx";
@@ -22,7 +23,7 @@ export default function ProjectCard({
         </button>
         <button
           disabled={busy}
-          aria-label={`${project.project_pinned ? "Unpin" : "Pin"} ${project.project_title}`}
+          aria-label={`${project.project_pinned ? t("Unpin") : t("Pin")} ${project.project_title}`}
           aria-pressed={project.project_pinned}
           onClick={() => onPin(project)}
         >
@@ -31,19 +32,22 @@ export default function ProjectCard({
       </div>
       <Description value={project.project_description} />
       <div className="project-meta">
-        {project.todoList.length} tasks ·{" "}
-        {project.todoList.filter((t) => t.task_status === "completed").length}{" "}
-        completed
+        {t("{count} tasks · {done} completed", {
+          count: project.todoList.length,
+          done: project.todoList.filter(
+            (task) => task.task_status === "completed",
+          ).length,
+        })}
       </div>
       <div className="actions">
-        <button onClick={() => onEdit(project)}>Edit project</button>
+        <button onClick={() => onEdit(project)}>{t("Edit project")}</button>
         {project.project_type !== "inbox" && projectCount > 1 && (
           <button
             className="danger"
             disabled={busy}
             onClick={() => onDelete(project)}
           >
-            Delete
+            {t("Delete")}
           </button>
         )}
       </div>

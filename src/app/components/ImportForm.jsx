@@ -1,3 +1,4 @@
+import { t } from "../i18n.js";
 import React, { useEffect, useRef, useState } from "react";
 import template from "../../../docs/templates/project-template.json";
 import { parseProjectImport } from "../import-project.js";
@@ -43,7 +44,7 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
     setReading(true);
     try {
       if (file.size > workspaceLimits.snapshotBytes)
-        throw new Error("Файл слишком большой. Максимум — 2 МБ.");
+        throw new Error(t("The file is too large. Maximum: 2 MB."));
       const raw = await file.text();
       if (ticket === generation.current) prepare(raw, file.name);
     } catch (error) {
@@ -61,22 +62,23 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
       }}
     >
       <p>
-        Подготовьте проект по шаблону или выберите резервную копию Todo. Файл
-        проверяется в браузере; данные добавятся только после подтверждения.
+        {t(
+          "Prepare a project using the template or choose a Todo backup. The file is checked in your browser; data is added only after confirmation.",
+        )}
       </p>
       <div className="account-actions">
         <button
           type="button"
           onClick={() => downloadJson(template, "todo-project-template.json")}
         >
-          Скачать шаблон проекта
+          {t("Download project template")}
         </button>
         <button
           type="button"
           disabled={busy || reading}
           onClick={downloadCurrent}
         >
-          Скачать текущие задачи
+          {t("Download current tasks")}
         </button>
         {remote && (
           <button
@@ -89,20 +91,22 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
                 const raw = localStorage.getItem("todo_app");
                 if (!raw)
                   throw new Error(
-                    "На этом адресе нет локальных задач. Загрузите резервную копию файлом.",
+                    t(
+                      "No local tasks exist at this address. Upload a backup file.",
+                    ),
                   );
-                prepare(raw, "Локальные задачи этого браузера");
+                prepare(raw, t("Local tasks in this browser"));
               } catch (error) {
                 setError(error.message);
               }
             }}
           >
-            Прочитать локальные задачи
+            {t("Read local tasks")}
           </button>
         )}
       </div>
       <label>
-        Файл проекта или резервной копии (JSON, до 2 МБ)
+        {t("Project or backup file (JSON, up to 2 MB)")}
         <input
           type="file"
           accept=".json,application/json"
@@ -110,51 +114,61 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
           onChange={readFile}
         />
       </label>
-      {reading && <p role="status">Обрабатываем данные…</p>}
-      {error && <p role="alert">{error}</p>}
+      {reading && <p role="status">{t("Processing data…")}</p>}
+      {error && <p role="alert">{t(error)}</p>}
       {preview && (
-        <section className="import-preview" aria-label="Предпросмотр импорта">
-          <h3>Предпросмотр</h3>
+        <section className="import-preview" aria-label={t("Import preview")}>
+          <h3>{t("Preview")}</h3>
           <p>{preview.source}</p>
           <p>
-            Проектов в файле: {preview.projects.length}. Задач:{" "}
+            {t("Projects in file:")} {preview.projects.length}. {t("Tasks:")}{" "}
             {preview.taskCount}.
           </p>
           <div className="import-projects">
             {preview.projects.slice(0, 50).map((project, index) => (
               <article key={index}>
                 <h4>
-                  {project.project_title} · {project.todoList.length} задач
+                  {project.project_title} ·{" "}
+                  {t("Tasks: {count}", { count: project.todoList.length })}
                 </h4>
                 {project.project_type === "inbox" && (
-                  <p>Задачи Inbox будут добавлены в ваш Inbox.</p>
+                  <p>{t("Inbox tasks will be added to your Inbox.")}</p>
                 )}
                 <Description value={project.project_description} />
                 <ul>
                   {project.todoList.slice(0, 20).map((task, number) => (
                     <li key={number}>
                       <strong>{task.task_title}</strong> —{" "}
-                      {statuses[task.task_status]},{" "}
-                      {priorities[task.task_priority]}
+                      {t(statuses[task.task_status])},{" "}
+                      {t(priorities[task.task_priority])}
                       {task.task_due_date ? `, ${task.task_due_date}` : ""}
                     </li>
                   ))}
                 </ul>
                 {project.todoList.length > 20 && (
-                  <p>И ещё {project.todoList.length - 20} задач.</p>
+                  <p>
+                    {t("And {count} more tasks.", {
+                      count: project.todoList.length - 20,
+                    })}
+                  </p>
                 )}
               </article>
             ))}
             {preview.projects.length > 50 && (
-              <p>И ещё {preview.projects.length - 50} проектов.</p>
+              <p>
+                {t("And {count} more projects.", {
+                  count: preview.projects.length - 50,
+                })}
+              </p>
             )}
           </div>
           <p>
-            Существующие данные сохранятся. Проекты с совпадающими названиями
-            получат пометку «импорт». Повторная загрузка создаст новые копии.
+            {t(
+              "Existing data will be preserved. Projects with duplicate names get an import suffix. Uploading again creates new copies.",
+            )}
           </p>
           <button className="primary" disabled={busy || reading} type="submit">
-            {busy ? "Добавляем…" : "Добавить проекты и задачи"}
+            {busy ? t("Adding…") : t("Add projects and tasks")}
           </button>
         </section>
       )}

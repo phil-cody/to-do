@@ -2,7 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { Store, hash } from "../server/store.js";
 import { createApp } from "../server/app.js";
-import { TelegramBot, calendar } from "../server/telegram.js";
+import {
+  TelegramBot,
+  calendar,
+  digest,
+  botCommands,
+} from "../server/telegram.js";
 import { validateSnapshot, validateSettings } from "../server/validation.js";
 function setup() {
   const store = new Store(":memory:"),
@@ -317,6 +322,37 @@ test("HTTP API enforces session ownership, Origin, optimistic writes and one-tim
       ).status,
       409,
     );
+    const initialSettings = store.settings("11");
+    const languageResponse = await request("/api/settings", {
+      method: "PUT",
+      headers: { Cookie: session },
+      body: JSON.stringify({ language: "en" }),
+    });
+    assert.equal(languageResponse.status, 200);
+    assert.deepEqual(await languageResponse.json(), {
+      ...initialSettings,
+      language: "en",
+    });
+    assert.equal(
+      (
+        await (
+          await request("/api/workspace", { headers: { Cookie: session } })
+        ).json()
+      ).user.language,
+      "en",
+    );
+    const invalidLanguage = await request("/api/settings", {
+      method: "PUT",
+      headers: { Cookie: session, "Accept-Language": "en" },
+      body: JSON.stringify({ language: "fr" }),
+    });
+    assert.equal(invalidLanguage.status, 422);
+    assert.equal(
+      (await invalidLanguage.json()).error,
+      "Choose a valid language: en or ru.",
+    );
+    assert.equal(store.settings("11").language, "en");
+    assert.equal(store.settings("22").language, "ru");
     await request("/api/auth/logout", {
       method: "POST",
       headers: { Cookie: session },
@@ -329,6 +365,91 @@ test("HTTP API enforces session ownership, Origin, optimistic writes and one-tim
     );
   } finally {
     await app.close();
+    store.close();
+  }
+});
+
+test("Bot language choice is per-account, idempotent and shared with schedule, messages and command menus", async () => {
+  const { store, bot, sent } = setup();
+  try {
+    store.ensureUser({ id: 11, language_code: "en" }, 11);
+    store.ensureUser({ id: 22, language_code: "ru" }, 22);
+    store.setSettings("11", {
+      enabled: true,
+      time: "10:30",
+      timezone: "Asia/Ho_Chi_Minh",
+    });
+    bot.processUpdate(message(1, 11, "/language"));
+    await bot.deliver();
+    assert.ok(sent.some((payload) => payload.text === "Choose a language:"));
+    assert.deepEqual(
+      sent
+        .find((payload) => payload.text === "Choose a language:")
+        .reply_markup.inline_keyboard[0].map((item) => item.callback_data),
+      ["language:en", "language:ru"],
+    );
+    bot.processUpdate({
+      update_id: 2,
+      callback_query: {
+        id: "language-choice",
+        from: { id: 11 },
+        data: "language:ru",
+        message: { chat: { id: 11, type: "private" } },
+      },
+    });
+    assert.deepEqual(store.settings("11"), {
+      enabled: true,
+      time: "10:30",
+      timezone: "Asia/Ho_Chi_Minh",
+      language: "ru",
+    });
+    const english = message(3, 11, "/language en");
+    bot.processUpdate(english);
+    bot.processUpdate(english);
+    bot.processUpdate(message(4, 11, "/remind 09:15 UTC"));
+    assert.equal(store.settings("11").language, "en");
+    assert.equal(store.settings("22").language, "ru");
+    bot.processUpdate(message(5, 11, "/language fr"));
+    bot.processUpdate(message(6, 11, "/help"));
+    bot.processUpdate(message(7, 11, "/new"));
+    bot.processUpdate(message(8, 11, "Original task title"));
+    bot.processUpdate(message(9, 11, "/today"));
+    await bot.deliver();
+    assert.equal(
+      sent.filter((payload) => payload.text === "Language saved.").length,
+      1,
+    );
+    assert.ok(
+      sent.some(
+        (payload) => payload.text === "Use /language en or /language ru.",
+      ),
+    );
+    assert.ok(
+      sent.some(
+        (payload) => payload.text === "Added to Inbox: Original task title",
+      ),
+    );
+    assert.ok(
+      sent.some(
+        (payload) =>
+          payload.scope?.chat_id === "11" &&
+          payload.commands?.some(
+            (command) =>
+              command.command === "language" &&
+              command.description === "Choose language",
+          ),
+      ),
+    );
+    assert.ok(digest(store, store.user("11")).startsWith("Tasks for "));
+    assert.ok(digest(store, store.user("22")).startsWith("Задачи на "));
+    assert.equal(store.workspace("11").snapshot.projects[0].todoList.length, 1);
+    assert.equal(
+      store.workspace("11").snapshot.projects[0].todoList[0].task_title,
+      "Original task title",
+    );
+    for (const command of botCommands("en"))
+      assert.doesNotMatch(command.description, /[а-яё]/i);
+  } finally {
     store.close();
   }
 });
@@ -360,8 +481,9 @@ test("Telegram form command preserves the HTTPS port, provides a safe link and c
     bot.processUpdate(message(1, 11, "/new"));
     bot.processUpdate(message(2, 11, "/help"));
     await bot.deliver();
-    assert.equal(sent.length, 2);
-    for (const response of sent) {
+    const messages = sent.filter((payload) => payload.text);
+    assert.equal(messages.length, 2);
+    for (const response of messages) {
       assert.equal(response.chat_id, "11");
       assert.equal(
         response.reply_markup.inline_keyboard[0][0].url,
@@ -409,7 +531,25 @@ test("Telegram cannot grow a workspace beyond the same byte limit as file import
       20,
     );
     await bot.deliver();
-    assert.ok(sent.some((payload) => payload.text.includes("2 МБ")));
+    assert.ok(sent.some((payload) => payload.text?.includes("2 МБ")));
+  } finally {
+    store.close();
+  }
+});
+
+test("Changing language while a command menu request is in flight preserves the newer menu job", async () => {
+  const { store, bot } = setup();
+  try {
+    store.ensureUser({ id: 11, language_code: "ru" }, 11);
+    bot.request = async () => {
+      store.setSettings("11", { language: "en" });
+      return { ok: true, json: async () => ({ ok: true, result: true }) };
+    };
+    await bot.deliver();
+    const pending = store.db
+      .prepare("SELECT value FROM metadata WHERE key=?")
+      .get("commands:11");
+    assert.equal(JSON.parse(pending.value).language, "en");
   } finally {
     store.close();
   }

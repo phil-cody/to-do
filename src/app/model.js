@@ -1,4 +1,5 @@
 import { normalizeDescription } from "./description.js";
+import { getLanguage, t } from "./i18n.js";
 export const workspaceLimits = Object.freeze({
   projects: 300,
   tasks: 10000,
@@ -143,6 +144,14 @@ export const sortedTasks = (tasks, day = today()) =>
       (a.task_due_date || "9999").localeCompare(b.task_due_date || "9999") ||
       ["high", "medium", "low"].indexOf(a.task_priority) -
         ["high", "medium", "low"].indexOf(b.task_priority) ||
+      String(a.task_title || "").localeCompare(
+        String(b.task_title || ""),
+        getLanguage(),
+        {
+          sensitivity: "base",
+          numeric: true,
+        },
+      ) ||
       String(a.task_createdAt || "").localeCompare(
         String(b.task_createdAt || ""),
       ) ||
@@ -190,14 +199,14 @@ export function upsertTask(data, task) {
 }
 
 export function formatDueDate(value) {
-  if (!value) return "No due date";
-  if (value === today()) return "Today";
-  if (matches({ task_due_date: value }, "date-tomorrow")) return "Tomorrow";
+  if (!value) return t("No due date");
+  if (value === today()) return t("Today");
+  if (matches({ task_due_date: value }, "date-tomorrow")) return t("Tomorrow");
   const [year, month, day] = value.split("-").map(Number),
     date = new Date(year, month - 1, day);
   return Number.isNaN(date.getTime())
-    ? "No due date"
-    : new Intl.DateTimeFormat("en-GB", {
+    ? t("No due date")
+    : new Intl.DateTimeFormat(getLanguage() === "ru" ? "ru-RU" : "en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",

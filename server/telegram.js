@@ -1,3 +1,4 @@
+import { accountLanguage, translate, validLanguage } from "../src/app/i18n.js";
 import { hash } from "./store.js";
 import { setTimeout as delay } from "node:timers/promises";
 import { validateSettings } from "./validation.js";
@@ -25,10 +26,18 @@ export function digest(store, user, now = new Date()) {
     .snapshot.projects.flatMap((p) => p.todoList)
     .filter((t) => t.task_due_date === day && t.task_status !== "completed");
   return [
-    `Задачи на ${day} (${settings.timezone})`,
+    translate("Tasks for {day} ({timezone})", accountLanguage(settings), {
+      day,
+      timezone: settings.timezone,
+    }),
     ...(tasks.length
       ? tasks.map((t, i) => `${i + 1}. ${t.task_title}`)
-      : ["На сегодня нет незавершённых задач."]),
+      : [
+          translate(
+            "There are no unfinished tasks for today.",
+            accountLanguage(settings),
+          ),
+        ]),
   ].join("\n");
 }
 export function enqueueText(store, id, chatId, text, extra) {
@@ -42,6 +51,19 @@ export function enqueueText(store, id, chatId, text, extra) {
   chunks.forEach((chunk, i) =>
     store.enqueue(`${id}:${i}`, chatId, chunk, extra),
   );
+}
+export function botCommands(language) {
+  return [
+    ["new", "Add a task using the form"],
+    ["today", "Today"],
+    ["remind", "Configure daily delivery"],
+    ["stop", "Disable daily delivery"],
+    ["language", "Choose language"],
+    ["help", "Help"],
+  ].map(([command, description]) => ({
+    command,
+    description: translate(description, language),
+  }));
 }
 export class TelegramBot {
   constructor({
@@ -100,13 +122,13 @@ export class TelegramBot {
       throw safe;
     }
   }
-  taskFormButton() {
+  taskFormButton(language) {
     return {
       reply_markup: {
         inline_keyboard: [
           [
             {
-              text: "Добавить задачу по форме",
+              text: translate("Add a task using the form", language),
               url: new URL("/#new-task", this.origin).href,
             },
           ],
@@ -138,12 +160,27 @@ export class TelegramBot {
         this.store.enqueue(
           `denied:${updateKey}`,
           chat,
-          "Доступ к приложению пока не разрешён.",
+          translate(
+            "Access to the app is not allowed yet.",
+            from.language_code?.startsWith("ru") ? "ru" : "en",
+          ),
         );
       } else {
         this.store.ensureUser(from, chat);
+        let language = this.store.settings(id).language;
+        const tr = (text, values) => translate(text, language, values);
         if (callback) {
           const [action, challengeId] = String(callback.data || "").split(":");
+          if (action === "language" && validLanguage(challengeId)) {
+            language = challengeId;
+            this.store.setSettings(id, { language });
+            changedUser = id;
+            this.store.enqueue(
+              `language:${updateKey}`,
+              chat,
+              tr("Language saved."),
+            );
+          }
           const row = this.store.db
             .prepare(
               "SELECT * FROM challenges WHERE id=? AND expires>? AND user_id=?",
@@ -162,8 +199,8 @@ export class TelegramBot {
               `auth:${updateKey}`,
               chat,
               action === "approve"
-                ? "Вход подтверждён. Вернитесь в браузер."
-                : "Запрос входа отклонён.",
+                ? tr("Sign-in confirmed. Return to your browser.")
+                : tr("Sign-in request rejected."),
             );
           }
           // Answering callback removes the spinner; it does not grant a session.
@@ -186,21 +223,26 @@ export class TelegramBot {
               `login:${updateKey}`,
               chat,
               result.changes
-                ? `Подтвердить вход в Todo на ${this.origin}? Нажимайте кнопку, только если вы сами открыли вход на этом адресе.`
-                : "Запрос входа истёк. Начните вход заново в браузере.",
+                ? tr(
+                    "Confirm sign-in to Todo at {origin}? Only press the button if you started sign-in at this address yourself.",
+                    { origin: this.origin },
+                  )
+                : tr(
+                    "The sign-in request has expired. Start again in your browser.",
+                  ),
               result.changes
                 ? {
                     reply_markup: {
                       inline_keyboard: [
                         [
                           {
-                            text: "Подтвердить вход",
+                            text: tr("Confirm sign-in"),
                             callback_data: `approve:${challengeId}`,
                           },
                         ],
                         [
                           {
-                            text: "Отклонить",
+                            text: tr("Decline"),
                             callback_data: `deny:${challengeId}`,
                           },
                         ],
@@ -213,9 +255,43 @@ export class TelegramBot {
             this.store.enqueue(
               `new:${updateKey}`,
               chat,
-              "Откройте форму: укажите проект, описание, срок, статус и приоритет. Если вы ещё не вошли в этом браузере, сначала подтвердите вход через Telegram.",
-              this.taskFormButton(),
+              tr(
+                "Open the form to choose a project, description, due date, status and priority. If you are not signed in in this browser, confirm sign-in via Telegram first.",
+              ),
+              this.taskFormButton(language),
             );
+          } else if (/^\/language(?:@[\w]+)?(?:\s|$)/.test(text || "")) {
+            const choice = text.split(/\s+/)[1];
+            if (validLanguage(choice)) {
+              language = choice;
+              this.store.setSettings(id, { language });
+              changedUser = id;
+              this.store.enqueue(
+                `language:${updateKey}`,
+                chat,
+                tr("Language saved."),
+              );
+            } else {
+              this.store.enqueue(
+                `language:${updateKey}`,
+                chat,
+                tr(
+                  choice
+                    ? "Use /language en or /language ru."
+                    : "Choose a language:",
+                ),
+                {
+                  reply_markup: {
+                    inline_keyboard: [
+                      [
+                        { text: tr("English"), callback_data: "language:en" },
+                        { text: tr("Russian"), callback_data: "language:ru" },
+                      ],
+                    ],
+                  },
+                },
+              );
+            }
           } else if (text === "/today") {
             enqueueText(
               this.store,
@@ -230,7 +306,7 @@ export class TelegramBot {
             this.store.enqueue(
               `stop:${updateKey}`,
               chat,
-              "Ежедневная отправка отключена.",
+              tr("Daily delivery disabled."),
             );
           } else if (text?.startsWith("/remind ")) {
             try {
@@ -240,21 +316,26 @@ export class TelegramBot {
               this.store.enqueue(
                 `settings:${updateKey}`,
                 chat,
-                `Ежедневные задачи: ${time}, ${timezone}. Отключить: /stop`,
+                tr("Daily tasks: {time}, {timezone}. Disable: /stop", {
+                  time,
+                  timezone,
+                }),
               );
             } catch {
               this.store.enqueue(
                 `settings:${updateKey}`,
                 chat,
-                "Пример: /remind 09:00 Europe/Moscow",
+                tr("Example: /remind 09:00 Europe/Moscow"),
               );
             }
           } else if (text?.startsWith("/")) {
             this.store.enqueue(
               `help:${updateKey}`,
               chat,
-              "Отправьте текст — он станет задачей в Inbox. Первая строка — название, остальные — описание.\n/new — добавить задачу по форме\n/today — задачи на сегодня\n/remind 09:00 Europe/Moscow — ежедневная отправка\n/stop — отключить отправку\nВход начинайте в приложении.",
-              this.taskFormButton(),
+              tr(
+                "Send text to create an Inbox task. The first line is the title; the rest is the description.\n/new — add a task using the form\n/today — today's tasks\n/remind 09:00 Europe/Moscow — daily delivery\n/stop — disable delivery\n/language — choose language\nStart sign-in in the app.",
+              ),
+              this.taskFormButton(language),
             );
           } else if (text) {
             try {
@@ -262,13 +343,13 @@ export class TelegramBot {
               changedUser = id;
             } catch (error) {
               if (error.status !== 422) throw error;
-              this.store.enqueue(`limit:${updateKey}`, chat, error.message);
+              this.store.enqueue(`limit:${updateKey}`, chat, tr(error.message));
             }
           } else {
             this.store.enqueue(
               `unsupported:${updateKey}`,
               chat,
-              "Пока поддерживаются текстовые сообщения. Отправьте задачу текстом.",
+              tr("Only text messages are supported. Send a task as text."),
             );
           }
         }
@@ -306,6 +387,22 @@ export class TelegramBot {
     if (this.delivering) return;
     this.delivering = true;
     try {
+      for (const row of this.store.db
+        .prepare("SELECT * FROM metadata WHERE key LIKE 'commands:%' LIMIT 20")
+        .all()) {
+        try {
+          const { chat, language } = JSON.parse(row.value);
+          await this.call("setMyCommands", {
+            scope: { type: "chat", chat_id: chat },
+            commands: botCommands(language),
+          });
+          this.store.db
+            .prepare("DELETE FROM metadata WHERE key=? AND value=?")
+            .run(row.key, row.value);
+        } catch {
+          /* Keep the job for a later retry. */
+        }
+      }
       const callbacks = this.store.db
         .prepare("SELECT * FROM metadata WHERE key LIKE 'callback:%' LIMIT 20")
         .all();
@@ -371,16 +468,12 @@ export class TelegramBot {
       throw new Error(
         "У бота включён webhook. Отключите его перед запуском long polling.",
       );
-    await this.call("setMyCommands", {
-      scope: { type: "all_private_chats" },
-      commands: [
-        { command: "new", description: "Добавить задачу по форме" },
-        { command: "today", description: "Задачи на сегодня" },
-        { command: "remind", description: "Настроить ежедневную отправку" },
-        { command: "stop", description: "Отключить ежедневную отправку" },
-        { command: "help", description: "Помощь" },
-      ],
-    }).catch(() => {});
+    for (const language of ["en", "ru"])
+      await this.call("setMyCommands", {
+        scope: { type: "all_private_chats" },
+        ...(language === "ru" ? { language_code: "ru" } : {}),
+        commands: botCommands(language),
+      }).catch(() => {});
     this.stopped = false;
     this.stopping = false;
     this.controller = new AbortController();

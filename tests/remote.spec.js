@@ -1,37 +1,5 @@
 import { test, expect } from "@playwright/test";
-const base = "http://localhost:4010";
-async function login(page, user, request, hash = "") {
-  await page.setExtraHTTPHeaders({
-    "X-Real-IP": `10.0.${Math.floor(user / 256)}.${user % 256}`,
-  });
-  await page.goto(base + hash);
-  await page
-    .getByRole("button", { name: "Войти через Telegram", exact: true })
-    .click();
-  const link = page.getByRole("link", {
-    name: "Открыть Telegram и подтвердить вход",
-  });
-  await expect(link).toBeVisible();
-  const challenge = new URL(await link.getAttribute("href")).searchParams
-    .get("start")
-    .slice("login_".length);
-  await request.post("http://localhost:4011", { data: { user, challenge } });
-  if (hash === "#new-task")
-    await expect(page.getByRole("dialog")).toBeVisible();
-  else
-    await expect(
-      page.getByRole("heading", { name: "Inbox", exact: true }),
-    ).toBeVisible();
-}
-async function addTask(page, title) {
-  await page.getByRole("button", { name: "+ Add Task", exact: true }).click();
-  await page.getByLabel("Title", { exact: true }).fill(title);
-  await page.getByRole("button", { name: "Save task", exact: true }).click();
-  await expect(page.getByRole("dialog")).not.toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: title, exact: true }),
-  ).toBeVisible();
-}
+import { base, login, addTask } from "./fixtures/remote.js";
 
 test("Switching the shared session cannot upload an old account's offline queue to another account", async ({
   browser,
@@ -52,7 +20,7 @@ test("Switching the shared session cannot upload an old account's offline queue 
     await first.addCookies(await second.cookies());
     await first.setOffline(false);
     await expect(
-      oldTab.getByRole("heading", { name: "Вход через Telegram" }),
+      oldTab.getByRole("heading", { name: "Sign in with Telegram" }),
     ).toBeVisible();
     await expect(
       oldTab.getByRole("heading", { name: "Second account private task" }),
@@ -113,10 +81,10 @@ test("Telegram login isolates users, bot messages update live, logout requires r
     await expect(
       other.getByRole("heading", { name: "Task from Telegram" }),
     ).toHaveCount(0);
-    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
-    await page.getByRole("button", { name: "Выйти", exact: true }).click();
+    await page.getByRole("button", { name: "Telegram and account" }).click();
+    await page.getByRole("button", { name: "Log out", exact: true }).click();
     await expect(
-      page.getByRole("heading", { name: "Вход через Telegram" }),
+      page.getByRole("heading", { name: "Sign in with Telegram" }),
     ).toBeVisible();
     await expect
       .poll(async () =>
@@ -188,9 +156,7 @@ test("Offline reload preserves queued tasks and reconnect merges changes from an
     await expect(
       two.getByRole("heading", { name: "Offline task", exact: true }),
     ).toBeVisible();
-    await expect(one.getByLabel("Синхронизация")).toContainText(
-      "Синхронизировано",
-    );
+    await expect(one.getByLabel("Synchronization")).toContainText("Synced");
     const privateCaches = await one.evaluate(async () => {
       const keys = await caches.keys();
       return (
@@ -243,19 +209,17 @@ test("Concurrent same-field edits require explicit conflict resolution", async (
       two.getByRole("heading", { name: "Server title", exact: true }),
     ).toBeVisible();
     await a.setOffline(false);
-    await expect(one.getByLabel("Синхронизация")).toContainText(
-      "Конфликт изменений",
+    await expect(one.getByLabel("Synchronization")).toContainText(
+      "Conflicting changes",
     );
     one.once("dialog", (d) => d.accept());
     await one
-      .getByRole("button", { name: "Применить мои изменения", exact: true })
+      .getByRole("button", { name: "Apply my changes", exact: true })
       .click();
     await expect(
       two.getByRole("heading", { name: "My title", exact: true }),
     ).toBeVisible();
-    await expect(one.getByLabel("Синхронизация")).toContainText(
-      "Синхронизировано",
-    );
+    await expect(one.getByLabel("Synchronization")).toContainText("Synced");
   } finally {
     await a.close();
     await b.close();
@@ -319,34 +283,36 @@ test("timezone is selected by city, persists after saving and fits a mobile scre
   const page = await context.newPage();
   try {
     await login(page, 6001, request);
-    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
+    await page.getByRole("button", { name: "Telegram and account" }).click();
     const select = page.getByRole("combobox", {
-      name: "Часовой пояс",
+      name: "Time zone",
       exact: true,
     });
     await expect(select).toHaveValue("UTC");
     await expect(
-      page.getByRole("textbox", { name: "Часовой пояс", exact: true }),
+      page.getByRole("textbox", { name: "Time zone", exact: true }),
     ).toHaveCount(0);
-    const vietnam = select.locator("option").filter({ hasText: "Хошимин" });
+    const vietnam = select
+      .locator("option")
+      .filter({ hasText: "Ho Chi Minh City" });
     await expect(vietnam).toHaveCount(1);
     await expect(vietnam).toHaveText(
-      /Хошимин, Вьетнам \(UTC\+07:00\) — на этом устройстве/,
+      /Ho Chi Minh City, Vietnam \(UTC\+07:00\) — on this device/,
     );
     const timezone = await vietnam.getAttribute("value");
     await select.selectOption(timezone);
-    await page.getByRole("button", { name: "Сохранить расписание" }).click();
+    await page.getByRole("button", { name: "Save schedule" }).click();
     await expect(
-      page.getByRole("button", { name: "Сохранить расписание" }),
+      page.getByRole("button", { name: "Save schedule" }),
     ).toBeEnabled();
     const response = await context.request.get(base + "/api/me");
     expect((await response.json()).settings.timezone).toBe(timezone);
     await page.reload();
-    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
+    await page.getByRole("button", { name: "Telegram and account" }).click();
     await expect(select).toHaveValue(timezone);
     await select.selectOption("Asia/Kathmandu");
     await expect(select.locator("option:checked")).toHaveText(
-      /Катманду \(UTC\+05:45\)/,
+      /Kathmandu \(UTC\+05:45\)/,
     );
     expect(
       await page.evaluate(
@@ -390,23 +356,17 @@ test("local task migration previews before saving, preserves its source and stay
       ],
     });
     await page.evaluate((raw) => localStorage.setItem("todo_app", raw), raw);
-    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
-    await page
-      .getByRole("button", { name: "Перенести локальные задачи" })
-      .click();
+    await page.getByRole("button", { name: "Telegram and account" }).click();
+    await page.getByRole("button", { name: "Migrate local tasks" }).click();
     const dialog = page.getByRole("dialog", {
-      name: "Импорт проектов и задач",
+      name: "Import projects and tasks",
     });
-    await dialog
-      .getByRole("button", { name: "Прочитать локальные задачи" })
-      .click();
-    await expect(dialog.getByLabel("Предпросмотр импорта")).toContainText(
-      "Задач: 2",
-    );
+    await dialog.getByRole("button", { name: "Read local tasks" }).click();
+    await expect(dialog.getByLabel("Import preview")).toContainText("Tasks: 2");
     let response = await first.request.get(base + "/api/workspace");
     expect((await response.json()).snapshot.projects).toHaveLength(1);
     await dialog
-      .getByRole("button", { name: "Добавить проекты и задачи" })
+      .getByRole("button", { name: "Add projects and tasks" })
       .click();
     await expect(dialog).toHaveCount(0);
     await expect(
