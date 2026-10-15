@@ -58,10 +58,11 @@ export default function App() {
       onDelete={workspace.deleteProject}
     />
   );
-  const renderTask = (task) => (
+  const renderTask = (task, { dragHandleProps } = {}) => (
     <TaskCard
       key={task.task_id}
       task={task}
+      dragHandleProps={dragHandleProps}
       isAll={board.isAll}
       draggable={board.view === "kanban"}
       busy={workspace.busy}

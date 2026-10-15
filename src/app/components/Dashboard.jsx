@@ -118,6 +118,7 @@ export default function Dashboard({
         <Kanban
           key={projectId}
           tasks={shown}
+          busy={busy}
           day={day}
           renderTask={renderTask}
           onDrop={(id, status) => {

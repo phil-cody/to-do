@@ -310,3 +310,31 @@ test("Rotating a bot token does not reapply an already processed Inbox update", 
     store.close();
   }
 });
+
+test("Telegram form command preserves the HTTPS port, provides a safe link and creates no task", async () => {
+  const { store, bot, sent } = setup();
+  try {
+    bot.origin = "https://justtodoit.duckdns.org:8443";
+    bot.processUpdate(message(1, 11, "/new"));
+    bot.processUpdate(message(1, 11, "/new"));
+    bot.processUpdate(message(2, 11, "/help"));
+    await bot.deliver();
+    assert.equal(sent.length, 2);
+    for (const response of sent) {
+      assert.equal(response.chat_id, "11");
+      assert.equal(
+        response.reply_markup.inline_keyboard[0][0].url,
+        "https://justtodoit.duckdns.org:8443/#new-task",
+      );
+      assert.equal(
+        new URL(response.reply_markup.inline_keyboard[0][0].url).search,
+        "",
+      );
+    }
+    assert.equal(store.workspace("11").snapshot.projects[0].todoList.length, 0);
+    bot.processUpdate(message(3, 11, "Task from plain text"));
+    assert.equal(store.workspace("11").snapshot.projects[0].todoList.length, 1);
+  } finally {
+    store.close();
+  }
+});

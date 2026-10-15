@@ -91,3 +91,44 @@
 .kanban-content[hidden] {
   display: none;
 }
+
+.task-drag-handle {
+  align-self: flex-end;
+  min-height: 44px;
+  padding: 6px 12px;
+  gap: 6px;
+  color: var(--muted);
+  background: transparent;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.task-drag-handle:active {
+  cursor: grabbing;
+}
+.task-drag-handle > span:first-child {
+  font-size: 24px;
+}
+.kanban-column.is-drop-target {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+.kanban-drag-preview {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 12px));
+  max-width: min(260px, 80vw);
+  padding: 12px 16px;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  background: white;
+  box-shadow: 0 6px 18px #2d231a33;
+  overflow-wrap: anywhere;
+}
+.kanban-drag-preview small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}

@@ -100,6 +100,20 @@ export class TelegramBot {
       throw safe;
     }
   }
+  taskFormButton() {
+    return {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "Добавить задачу по форме",
+              url: new URL("/#new-task", this.origin).href,
+            },
+          ],
+        ],
+      },
+    };
+  }
   processUpdate(update) {
     const updateKey = this.identity + ":" + update.update_id;
     let changedUser = null;
@@ -195,6 +209,13 @@ export class TelegramBot {
                   }
                 : {},
             );
+          } else if (text === "/new" || text === `/new@${this.username}`) {
+            this.store.enqueue(
+              `new:${updateKey}`,
+              chat,
+              "Откройте форму: укажите проект, описание, срок, статус и приоритет. Если вы ещё не вошли в этом браузере, сначала подтвердите вход через Telegram.",
+              this.taskFormButton(),
+            );
           } else if (text === "/today") {
             enqueueText(
               this.store,
@@ -232,7 +253,8 @@ export class TelegramBot {
             this.store.enqueue(
               `help:${updateKey}`,
               chat,
-              "Отправьте текст — он станет задачей в Inbox. Первая строка — название, остальные — описание.\n/today — задачи на сегодня\n/remind 09:00 Europe/Moscow — ежедневная отправка\n/stop — отключить отправку\nВход начинайте в приложении.",
+              "Отправьте текст — он станет задачей в Inbox. Первая строка — название, остальные — описание.\n/new — добавить задачу по форме\n/today — задачи на сегодня\n/remind 09:00 Europe/Moscow — ежедневная отправка\n/stop — отключить отправку\nВход начинайте в приложении.",
+              this.taskFormButton(),
             );
           } else if (text) {
             try {
@@ -349,6 +371,16 @@ export class TelegramBot {
       throw new Error(
         "У бота включён webhook. Отключите его перед запуском long polling.",
       );
+    await this.call("setMyCommands", {
+      scope: { type: "all_private_chats" },
+      commands: [
+        { command: "new", description: "Добавить задачу по форме" },
+        { command: "today", description: "Задачи на сегодня" },
+        { command: "remind", description: "Настроить ежедневную отправку" },
+        { command: "stop", description: "Отключить ежедневную отправку" },
+        { command: "help", description: "Помощь" },
+      ],
+    }).catch(() => {});
     this.stopped = false;
     this.stopping = false;
     this.controller = new AbortController();

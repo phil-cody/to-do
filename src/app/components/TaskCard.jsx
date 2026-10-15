@@ -6,6 +6,7 @@ export default function TaskCard({
   task,
   isAll,
   draggable,
+  dragHandleProps,
   busy,
   projectTitle,
   onChoose,
@@ -18,8 +19,25 @@ export default function TaskCard({
     <article
       className={`task-card ${task.task_status === "completed" ? "completed" : ""}`}
       draggable={draggable && !busy}
+      onPointerDown={(event) => {
+        if (
+          event.pointerType === "mouse" &&
+          !event.target.closest("button, select, input, textarea, a")
+        )
+          dragHandleProps?.onPointerDown(event);
+      }}
+      onPointerMove={dragHandleProps?.onPointerMove}
+      onPointerUp={dragHandleProps?.onPointerUp}
+      onPointerCancel={dragHandleProps?.onPointerCancel}
+      onLostPointerCapture={dragHandleProps?.onLostPointerCapture}
       onDragStart={(e) => e.dataTransfer.setData("text/plain", task.task_id)}
     >
+      {dragHandleProps && (
+        <button type="button" className="task-drag-handle" {...dragHandleProps}>
+          <span aria-hidden="true">⠿</span>
+          <span>Move</span>
+        </button>
+      )}
       <div className="task-selects">
         <Select
           label="Status"

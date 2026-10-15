@@ -53,6 +53,28 @@ export default function useWorkspace() {
       active = false;
     };
   }, [repository]);
+  useEffect(() => {
+    if (!data || authentication) return;
+    const openFromLink = () => {
+      if (window.location.hash !== "#new-task") return;
+      const project =
+        data.projects.find((project) => project.project_type === "inbox") ||
+        orderedProjects(data.projects)[0];
+      openModal({
+        kind: "task",
+        item: newTask(project.project_id),
+        selectOnSave: true,
+      });
+      window.history.replaceState(
+        window.history.state,
+        "",
+        window.location.pathname + window.location.search,
+      );
+    };
+    openFromLink();
+    window.addEventListener("hashchange", openFromLink);
+    return () => window.removeEventListener("hashchange", openFromLink);
+  }, [data, authentication]);
   async function reload() {
     setError("");
     try {
@@ -152,6 +174,11 @@ export default function useWorkspace() {
     preference: (key, value) =>
       commit((data) => setPreference(data, key, value)),
     saveEditor: (item) =>
-      commit((data) => saveItem(data, modal.kind, item), true),
+      commit((data) => {
+        const saved = saveItem(data, modal.kind, item);
+        return modal.selectOnSave
+          ? { ...saved, selectedProjectId: item.task_project }
+          : saved;
+      }, true),
   };
 }

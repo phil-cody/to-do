@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test as base, expect } from "@playwright/test";
 const seed = {
   projects: [
     {
@@ -33,11 +33,17 @@ const seed = {
   ],
   selectedProjectId: "work",
 };
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript((data) => {
-    if (!localStorage.getItem("todo_app"))
-      localStorage.setItem("todo_app", JSON.stringify(data));
-  }, seed);
+const test = base.extend({
+  workspaceSeed: [
+    async ({ page }, use) => {
+      await page.addInitScript((data) => {
+        if (!localStorage.getItem("todo_app"))
+          localStorage.setItem("todo_app", JSON.stringify(data));
+      }, seed);
+      await use();
+    },
+    { auto: true },
+  ],
 });
 
 export { test, expect, seed };

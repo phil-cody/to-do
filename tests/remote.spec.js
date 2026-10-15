@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
 const base = "http://localhost:4010";
-async function login(page, user, request) {
+async function login(page, user, request, hash = "") {
   await page.setExtraHTTPHeaders({
     "X-Real-IP": `10.0.${Math.floor(user / 256)}.${user % 256}`,
   });
-  await page.goto(base);
+  await page.goto(base + hash);
   await page
     .getByRole("button", { name: "Войти через Telegram", exact: true })
     .click();
@@ -16,9 +16,12 @@ async function login(page, user, request) {
     .get("start")
     .slice("login_".length);
   await request.post("http://localhost:4011", { data: { user, challenge } });
-  await expect(
-    page.getByRole("heading", { name: "Inbox", exact: true }),
-  ).toBeVisible();
+  if (hash === "#new-task")
+    await expect(page.getByRole("dialog")).toBeVisible();
+  else
+    await expect(
+      page.getByRole("heading", { name: "Inbox", exact: true }),
+    ).toBeVisible();
 }
 async function addTask(page, title) {
   await page.getByRole("button", { name: "+ Add Task", exact: true }).click();
@@ -200,5 +203,101 @@ test("Concurrent same-field edits require explicit conflict resolution", async (
   } finally {
     await a.close();
     await b.close();
+  }
+});
+
+test("Telegram task form link survives authentication and saves to the authenticated account", async ({
+  browser,
+  request,
+}) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  try {
+    await login(page, 5001, request, "#new-task");
+    const dialog = page.getByRole("dialog");
+    await dialog
+      .getByLabel("Title", { exact: true })
+      .fill("Authenticated form task");
+    await dialog
+      .getByLabel("Description · Markdown")
+      .fill("**From Telegram form**");
+    await dialog.getByLabel("Priority", { exact: true }).selectOption("high");
+    await dialog.getByLabel("Due date").fill("2026-12-01");
+    await dialog
+      .getByRole("button", { name: "Save task", exact: true })
+      .click();
+    await expect(dialog).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", {
+        name: "Authenticated form task",
+        exact: true,
+      }),
+    ).toBeVisible();
+    const response = await context.request.get(base + "/api/workspace");
+    const { snapshot } = await response.json();
+    const task = snapshot.projects[0].todoList[0];
+    expect(task.task_title).toBe("Authenticated form task");
+    expect(task.task_priority).toBe("high");
+    expect(task.task_due_date).toBe("2026-12-01");
+    await page.reload();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", {
+        name: "Authenticated form task",
+        exact: true,
+      }),
+    ).toBeVisible();
+  } finally {
+    await context.close();
+  }
+});
+
+test("timezone is selected by city, persists after saving and fits a mobile screen", async ({
+  browser,
+  request,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    timezoneId: "Asia/Ho_Chi_Minh",
+  });
+  const page = await context.newPage();
+  try {
+    await login(page, 6001, request);
+    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
+    const select = page.getByRole("combobox", {
+      name: "Часовой пояс",
+      exact: true,
+    });
+    await expect(select).toHaveValue("UTC");
+    await expect(
+      page.getByRole("textbox", { name: "Часовой пояс", exact: true }),
+    ).toHaveCount(0);
+    const vietnam = select.locator("option").filter({ hasText: "Хошимин" });
+    await expect(vietnam).toHaveCount(1);
+    await expect(vietnam).toHaveText(
+      /Хошимин, Вьетнам \(UTC\+07:00\) — на этом устройстве/,
+    );
+    const timezone = await vietnam.getAttribute("value");
+    await select.selectOption(timezone);
+    await page.getByRole("button", { name: "Сохранить расписание" }).click();
+    await expect(
+      page.getByRole("button", { name: "Сохранить расписание" }),
+    ).toBeEnabled();
+    const response = await context.request.get(base + "/api/me");
+    expect((await response.json()).settings.timezone).toBe(timezone);
+    await page.reload();
+    await page.getByRole("button", { name: "Telegram и аккаунт" }).click();
+    await expect(select).toHaveValue(timezone);
+    await select.selectOption("Asia/Kathmandu");
+    await expect(select.locator("option:checked")).toHaveText(
+      /Катманду \(UTC\+05:45\)/,
+    );
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+  } finally {
+    await context.close();
   }
 });

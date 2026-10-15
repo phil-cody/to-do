@@ -566,6 +566,60 @@ curl -fsS https://my-todo-unique.duckdns.org/api/health
 sudo systemctl enable nginx todo
 ```
 
+### Если сертификат выдан, но пробное продление возвращает 404
+
+Общий redirect на уровне HTTP-server может отправлять ACME-запросы в HTTPS-блок с запретом скрытых путей. Не удаляйте действующий сертификат. Для предсказуемого продления настройте отдельный webroot. На VPS:
+
+```sh
+sudo cp -a /etc/nginx/sites-available/todo "/etc/nginx/sites-available/todo.backup.$(date -u +%Y%m%dT%H%M%SZ)"
+sudo install -d -m 755 /var/www/letsencrypt/.well-known/acme-challenge
+sudo nano /etc/nginx/sites-available/todo
+```
+
+Сохраните HTTPS-блок с сертификатом и proxy. Замените **только HTTP-блок с listen 80**, подставив свой домен:
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name my-todo-unique.duckdns.org;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        default_type text/plain;
+        try_files $uri =404;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+```
+
+В этом HTTP-блоке не должно остаться server-level `if` с redirect или общего `return 404`: они выполняются до обработки location. Остальные сайты не меняйте. Сохраните файл в nano через Ctrl+O, Enter, Ctrl+X. Затем:
+
+```sh
+sudo nginx -t && sudo systemctl reload nginx
+printf '%s
+' 'todo-acme-ok' | sudo tee /var/www/letsencrypt/.well-known/acme-challenge/todo-check > /dev/null
+curl -fsS http://my-todo-unique.duckdns.org/.well-known/acme-challenge/todo-check
+```
+
+Повторите curl с Mac. Ожидается `todo-acme-ok` без redirect. Если проверка не прошла, остановитесь и проверьте DNS, порт 80 и конфигурацию. После успешной проверки на VPS:
+
+```sh
+sudo /snap/bin/certbot reconfigure --cert-name my-todo-unique.duckdns.org --authenticator webroot --webroot-path /var/www/letsencrypt --deploy-hook '/usr/sbin/nginx -t && /usr/bin/systemctl reload nginx'
+sudo /snap/bin/certbot renew --cert-name my-todo-unique.duckdns.org --dry-run --run-deploy-hooks
+```
+
+`reconfigure` проверяет новые параметры на тестовом центре сертификации и сохраняет их только при успехе; deploy-hook применяет обновлённый сертификат через reload Nginx. Ожидается успешная симуляция продления. Таймер Snap остаётся прежним; состояние `inactive (timer-activated)` между запусками нормально. [Официальная инструкция по изменению параметров продления](https://eff-certbot.readthedocs.io/en/stable/using.html#modifying-the-renewal-configuration-of-existing-certificates).
+
+### Нестандартный HTTPS-порт и ошибка «Неверный адрес приложения»
+
+Если 443 занят другим сервисом (например, VPN), Todo можно разместить на свободном 8443. В HTTPS-блоке замените оба `listen 443` на `listen 8443`, в HTTP-перенаправлении используйте `https://$host:8443$request_uri`, а в `/etc/todo.env` задайте `APP_ORIGIN=https://ВАШ-ДОМЕН:8443`. Разрешите TCP 8443 в действующих firewall. HTTP-проверка сертификата остаётся на 80, webroot не меняется.
+
+В proxy-блоке обязательно используйте `proxy_set_header Host $http_host;`: `$host` убирает порт, из-за чего backend отклоняет запрос при сравнении с APP_ORIGIN. После изменений выполните `sudo nginx -t && sudo systemctl reload nginx`, затем `sudo systemctl restart todo`. Проверьте `curl -fsS https://ВАШ-ДОМЕН:8443/api/health`. Не освобождайте занятый 443 остановкой чужой службы.
+
 ### Если у бота ранее был webhook
 
 Текущая реализация использует long polling, поэтому webhook должен быть выключен. В журнале будет явное сообщение об активном webhook. Если этот бот больше не обслуживает другой проект, можно **на VPS** отключить webhook **без удаления накопленных updates**, не раскрывая токен в аргументах команды:

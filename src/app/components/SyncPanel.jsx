@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { normalize } from "../model.js";
 import { importLocalSnapshot } from "../sync/merge.js";
+import TimezoneSelect from "./TimezoneSelect.jsx";
 export default function SyncPanel({ workspace }) {
   const { repository, sync, data } = workspace;
   const [settings, setSettings] = useState(null),
@@ -134,29 +135,11 @@ export default function SyncPanel({ workspace }) {
               }
             />
           </label>
-          <label>
-            Часовой пояс
-            <input
-              required
-              list="timezones"
-              value={settings.timezone}
-              onChange={(e) =>
-                setSettings({ ...settings, timezone: e.target.value })
-              }
-            />
-            <datalist id="timezones">
-              {[
-                "Europe/Moscow",
-                "Asia/Ho_Chi_Minh",
-                Intl.DateTimeFormat().resolvedOptions().timeZone,
-                "UTC",
-              ]
-                .filter((v, i, a) => a.indexOf(v) === i)
-                .map((zone) => (
-                  <option key={zone} value={zone} />
-                ))}
-            </datalist>
-          </label>
+          <TimezoneSelect
+            value={settings.timezone}
+            disabled={busy}
+            onChange={(timezone) => setSettings({ ...settings, timezone })}
+          />
           <button disabled={busy} type="submit">
             Сохранить расписание
           </button>

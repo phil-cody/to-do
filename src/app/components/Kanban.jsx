@@ -1,9 +1,11 @@
 import React, { useId, useState } from "react";
 import { taskGroup, taskGroups } from "../model.js";
 import Icon from "./Icon.jsx";
-export default function Kanban({ tasks, day, renderTask, onDrop }) {
+import useKanbanDrag from "../hooks/useKanbanDrag.js";
+export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
   const id = useId(),
     [overrides, setOverrides] = useState({});
+  const { drag, handleProps } = useKanbanDrag(onDrop);
   const columns = Object.entries(taskGroups).map(([key, label]) => ({
     key,
     label,
@@ -13,13 +15,26 @@ export default function Kanban({ tasks, day, renderTask, onDrop }) {
   columns.sort((a, b) => Number(!a.tasks.length) - Number(!b.tasks.length));
   return (
     <div className="kanban">
+      {drag && (
+        <div
+          className="kanban-drag-preview"
+          style={{ left: drag.x, top: drag.y }}
+          aria-hidden="true"
+        >
+          {drag.title}
+          <small>
+            {drag.target ? taskGroups[drag.target] : "Move to a status column"}
+          </small>
+        </div>
+      )}
       {columns.map((column) => {
         const { key, label, tasks: items } = column,
           collapsed = overrides[key] ?? !items.length;
         return (
           <section
             key={key}
-            className={`kanban-column column-${key} ${collapsed ? "is-collapsed" : ""}`}
+            data-kanban-status={key}
+            className={`kanban-column column-${key} ${collapsed ? "is-collapsed" : ""} ${drag?.target === key ? "is-drop-target" : ""}`}
             onDragOver={(event) => {
               if (key !== "overdue") event.preventDefault();
             }}
@@ -49,7 +64,9 @@ export default function Kanban({ tasks, day, renderTask, onDrop }) {
               className="kanban-content"
               hidden={collapsed}
             >
-              {items.map(renderTask)}
+              {items.map((task) =>
+                renderTask(task, { dragHandleProps: handleProps(task, busy) }),
+              )}
               {key === "overdue" && (
                 <p className="column-note">
                   Unfinished tasks with a past due date.
