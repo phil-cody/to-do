@@ -18,6 +18,8 @@ export default function useWorkspace() {
   const [data, setData] = useState(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
+    [activity, setActivity] = useState("Saving…"),
+    [optimisticData, setOptimisticData] = useState(null),
     [modal, setModal] = useState(null),
     [search, setSearch] = useState(""),
     [sidebarOpen, setSidebarOpen] = useState(false);
@@ -88,15 +90,16 @@ export default function useWorkspace() {
       setAuthentication(!!error.authentication);
     }
   }
-  // Publish a snapshot only after persistence succeeds. Failed writes preserve
-  // the previous workspace and the editor's unsaved draft.
-  async function commit(update, close = false) {
+  // Быстрые действия отображаются сразу. Формы сохраняют черновик до подтверждения.
+  async function commit(update, close = false, optimistic = false) {
     if (saving.current) return false;
     saving.current = true;
     setBusy(true);
+    setActivity("Saving…");
     setError("");
     try {
       const next = update(data);
+      if (optimistic) setOptimisticData(next);
       const saved = await repository.save(next, data);
       setData(saved || next);
       setSync(repository.status || { local: true });
@@ -111,10 +114,12 @@ export default function useWorkspace() {
       return false;
     } finally {
       saving.current = false;
+      setOptimisticData(null);
       setBusy(false);
     }
   }
   function openModal(value) {
+    if (saving.current) return;
     setSidebarOpen(false);
     setModal(value);
   }
@@ -128,7 +133,7 @@ export default function useWorkspace() {
   }
   function deleteTask(task) {
     if (window.confirm(t("Delete “{title}”?", { title: task.task_title })))
-      return commit((data) => removeTask(data, task.task_id), true);
+      return commit((data) => removeTask(data, task.task_id), true, true);
   }
   function deleteProject(project) {
     if (
@@ -139,15 +144,33 @@ export default function useWorkspace() {
         }),
       )
     )
-      return commit((data) => removeProject(data, project.project_id), true);
+      return commit(
+        (data) => removeProject(data, project.project_id),
+        true,
+        true,
+      );
   }
   return {
-    data,
+    data: optimisticData || data,
     repository,
     sync,
     authentication,
     error,
     busy,
+    activity,
+    performAction: async (action, label) => {
+      if (saving.current) return false;
+      saving.current = true;
+      setBusy(true);
+      setActivity(label);
+      try {
+        await action();
+        return true;
+      } finally {
+        saving.current = false;
+        setBusy(false);
+      }
+    },
     modal,
     search,
     sidebarOpen,
@@ -186,11 +209,11 @@ export default function useWorkspace() {
     deleteTask,
     deleteProject,
     pinProject: (project) =>
-      commit((data) => toggleProjectPin(data, project.project_id)),
+      commit((data) => toggleProjectPin(data, project.project_id), false, true),
     updateTask: (task, changes) =>
-      commit((data) => upsertTask(data, { ...task, ...changes })),
+      commit((data) => upsertTask(data, { ...task, ...changes }), false, true),
     preference: (key, value) =>
-      commit((data) => setPreference(data, key, value)),
+      commit((data) => setPreference(data, key, value), false, true),
     saveEditor: (item) =>
       commit((data) => {
         const saved = saveItem(data, modal.kind, item);

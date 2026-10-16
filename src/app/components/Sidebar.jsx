@@ -33,6 +33,7 @@ export default function Sidebar({
         </button>
         <button
           className="nav-item"
+          disabled={busy}
           aria-label={t("▦ Project dashboard")}
           onClick={onShowProjects}
         >
@@ -42,6 +43,7 @@ export default function Sidebar({
       </div>
       <button
         className="new-project primary"
+        disabled={busy}
         aria-label={t("+ New Project")}
         onClick={onAddProject}
       >
@@ -126,7 +128,9 @@ export default function Sidebar({
                   </span>
                 </div>
                 <div className="actions">
-                  <button onClick={() => onEditProject(p)}>{t("Edit")}</button>
+                  <button disabled={busy} onClick={() => onEditProject(p)}>
+                    {t("Edit")}
+                  </button>
                   {p.project_type !== "inbox" && projects.length > 1 && (
                     <button
                       className="danger"

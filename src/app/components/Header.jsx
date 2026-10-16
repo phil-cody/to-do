@@ -1,5 +1,6 @@
 import { getLanguage, t } from "../i18n.js";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { BusyContext } from "./Select.jsx";
 import Icon from "./Icon.jsx";
 function HeaderClock() {
   const [now, setNow] = useState(() => new Date());
@@ -28,14 +29,20 @@ function HeaderClock() {
 }
 
 export function AddActions({ onAddProject, onAddTask }) {
+  const busy = useContext(BusyContext);
   return (
     <>
-      <button aria-label={t("+ Add Project")} onClick={onAddProject}>
+      <button
+        disabled={busy}
+        aria-label={t("+ Add Project")}
+        onClick={onAddProject}
+      >
         <Icon name="plus" />
         <span>{t("Add Project")}</span>
       </button>
       <button
         className="primary"
+        disabled={busy}
         aria-label={t("+ Add Task")}
         onClick={onAddTask}
       >

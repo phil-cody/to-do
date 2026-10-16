@@ -39,7 +39,7 @@ export default function WorkspaceModal({
                   : "New project",
             );
   return (
-    <Modal title={title} onClose={workspace.closeModal}>
+    <Modal title={title} onClose={workspace.closeModal} busy={busy}>
       {error && (
         <p className="error" role="alert">
           {t(error)}

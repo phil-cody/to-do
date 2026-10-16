@@ -1,16 +1,23 @@
 import { getLanguage, t } from "../i18n.js";
-import React, { useEffect, useState } from "react";
+import { requestWithTimeout } from "../sync/request.js";
+import React, { useEffect, useState, useRef } from "react";
 export default function TelegramLogin({ onComplete }) {
   const [challenge, setChallenge] = useState(null),
     [error, setError] = useState(""),
+    [finalizing, setFinalizing] = useState(false),
     [busy, setBusy] = useState(false);
+  const complete = useRef(onComplete);
+  complete.current = onComplete;
   useEffect(() => {
     if (!challenge) return;
-    let active = true;
+    let active = true,
+      polling = false;
     const controller = new AbortController();
     const poll = async () => {
+      if (polling) return;
+      polling = true;
       try {
-        const response = await fetch("/api/auth/complete", {
+        const response = await requestWithTimeout(fetch, "/api/auth/complete", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -23,14 +30,21 @@ export default function TelegramLogin({ onComplete }) {
         const result = await response.json();
         if (!response.ok) throw new Error(result.error);
         if (active) {
-          setChallenge(null);
-          onComplete();
+          setFinalizing(true);
+          await complete.current();
+          if (active) {
+            setChallenge(null);
+            setFinalizing(false);
+          }
         }
       } catch (error) {
         if (active) {
           setError(error.message);
           setChallenge(null);
+          setFinalizing(false);
         }
+      } finally {
+        polling = false;
       }
     };
     const timer = setInterval(poll, 2000);
@@ -39,12 +53,12 @@ export default function TelegramLogin({ onComplete }) {
       clearInterval(timer);
       controller.abort();
     };
-  }, [challenge, onComplete]);
+  }, [challenge]);
   async function start() {
     setBusy(true);
     setError("");
     try {
-      const response = await fetch("/api/auth/telegram", {
+      const response = await requestWithTimeout(fetch, "/api/auth/telegram", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -83,7 +97,13 @@ export default function TelegramLogin({ onComplete }) {
           >
             {t("Open Telegram and confirm sign-in")}
           </a>
-          <p>{t("Waiting for confirmation. The link expires in 5 minutes.")}</p>
+          <p role="status">
+            {t(
+              finalizing
+                ? "Loading your workspace…"
+                : "Waiting for confirmation. The link expires in 5 minutes.",
+            )}
+          </p>
         </>
       ) : (
         <button className="primary" disabled={busy} onClick={start}>

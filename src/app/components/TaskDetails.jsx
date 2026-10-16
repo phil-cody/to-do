@@ -49,7 +49,9 @@ export default function TaskDetails({
         </div>
       </div>
       <div className="actions">
-        <button onClick={() => onEdit(detail)}>{t("Edit task")}</button>
+        <button disabled={busy} onClick={() => onEdit(detail)}>
+          {t("Edit task")}
+        </button>
         <button
           className="danger"
           disabled={busy}

@@ -124,13 +124,14 @@ export default function Dashboard({
           renderTask={renderTask}
           onDrop={(id, status) => {
             const task = allTasks.find((task) => task.task_id === id);
-            if (task && !busy) onUpdateTask(task, { task_status: status });
+            if (task && !busy)
+              return onUpdateTask(task, { task_status: status });
           }}
         />
       ) : (
         <div className={`tasks ${view}`}>
           {shown.map(renderTask)}
-          <button className="add-task" onClick={onAddTask}>
+          <button disabled={busy} className="add-task" onClick={onAddTask}>
             <span aria-hidden="true" className="plus">
               <Icon name="plus" />
             </span>
@@ -141,6 +142,7 @@ export default function Dashboard({
       {view === "kanban" && (
         <button
           className="primary kanban-add"
+          disabled={busy}
           aria-label={t("+ Add new task")}
           onClick={onAddTask}
         >

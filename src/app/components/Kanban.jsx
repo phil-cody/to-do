@@ -5,17 +5,52 @@ import Icon from "./Icon.jsx";
 import useKanbanDrag from "../hooks/useKanbanDrag.js";
 export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
   const id = useId(),
-    [overrides, setOverrides] = useState({});
-  const { drag, handleProps } = useKanbanDrag(onDrop);
+    [overrides, setOverrides] = useState({}),
+    [pendingMove, setPendingMove] = useState(null),
+    [moveError, setMoveError] = useState("");
+  const move = async (id, status) => {
+    if (
+      busy ||
+      pendingMove ||
+      tasks.find((task) => task.task_id === id)?.task_status === status
+    )
+      return;
+    setMoveError("");
+    setPendingMove({ id, status });
+    try {
+      const saved = await onDrop(id, status);
+      if (saved !== false)
+        setOverrides((state) => ({ ...state, [status]: false }));
+    } catch (error) {
+      setMoveError(
+        t("Changes could not be saved: {message}", {
+          message: t(error.message),
+        }),
+      );
+    } finally {
+      setPendingMove(null);
+    }
+  };
+  const { drag, handleProps } = useKanbanDrag(move);
+  const displayedTasks = tasks.map((task) =>
+    pendingMove?.id === task.task_id
+      ? { ...task, task_status: pendingMove.status }
+      : task,
+  );
   const columns = Object.entries(taskGroups).map(([key, label]) => ({
     key,
     label: t(label),
-    tasks: tasks.filter((task) => taskGroup(task, day) === key),
+    tasks: displayedTasks.filter((task) => taskGroup(task, day) === key),
   }));
   // Preserve status order within each group; empty columns follow populated ones.
   columns.sort((a, b) => Number(!a.tasks.length) - Number(!b.tasks.length));
   return (
     <div className="kanban">
+      {moveError && (
+        <p className="error" role="alert">
+          {moveError}
+        </p>
+      )}
       {drag && (
         <div
           className="kanban-drag-preview"
@@ -32,7 +67,10 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
       )}
       {columns.map((column) => {
         const { key, label, tasks: items } = column,
-          collapsed = overrides[key] ?? !items.length;
+          collapsed =
+            pendingMove?.status === key
+              ? false
+              : (overrides[key] ?? !items.length);
         return (
           <section
             key={key}
@@ -64,7 +102,12 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
             >
               {items.map((task) =>
                 renderTask(task, {
-                  dragHandleProps: handleProps(task, busy, key),
+                  saving: pendingMove?.id === task.task_id,
+                  dragHandleProps: handleProps(
+                    task,
+                    busy || !!pendingMove,
+                    key,
+                  ),
                 }),
               )}
               {key === "overdue" && (

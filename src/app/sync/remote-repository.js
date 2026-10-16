@@ -161,11 +161,19 @@ export class RemoteRepository extends HttpRepository {
       )
         await this.flush();
     } catch (error) {
-      if (!error.authentication && error.status && error.status !== 409)
-        await this.store.change(`user:${this.user.id}`, (state) => ({
-          ...state,
-          queue: state.queue.filter((item) => item.id !== edit.id),
-        }));
+      if (!error.authentication && error.status && error.status !== 409) {
+        const state = await this.store.change(
+          `user:${this.user.id}`,
+          (state) => ({
+            ...state,
+            queue: state.queue.filter((item) => item.id !== edit.id),
+          }),
+        );
+        this.publish(pendingSnapshot(state), {
+          pending: state.queue.length,
+          error: error.message,
+        });
+      }
       throw error;
     }
     const state = await this.store.read(this.key());

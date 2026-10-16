@@ -30,7 +30,9 @@ export default function ProjectCard({
         })}
       </div>
       <div className="actions">
-        <button onClick={() => onEdit(project)}>{t("Edit project")}</button>
+        <button disabled={busy} onClick={() => onEdit(project)}>
+          {t("Edit project")}
+        </button>
         <button
           disabled={busy}
           aria-label={`${project.project_pinned ? t("Unpin") : t("Pin")} ${project.project_title}`}

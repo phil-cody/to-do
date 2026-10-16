@@ -6,6 +6,18 @@
   background: var(--surface);
   font-size: 13px;
 }
+.save-feedback {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  color: var(--blue);
+  background: var(--surface);
+  font-size: 13px;
+  border-bottom: 1px solid var(--line);
+}
+.account-feedback {
+  margin-top: 12px;
+  color: var(--blue);
+}
 .sync-summary,
 .sync-conflict,
 .account-actions {

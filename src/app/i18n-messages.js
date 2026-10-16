@@ -1,4 +1,11 @@
 export const messages = {
+  "The server took too long to respond. Try again.":
+    "Сервер слишком долго не отвечает. Попробуйте ещё раз.",
+  "Could not reach the server. Try again.":
+    "Не удалось связаться с сервером. Попробуйте ещё раз.",
+  "Please wait…": "Пожалуйста, подождите…",
+  "Schedule saved.": "Расписание сохранено.",
+  "Language saved.": "Язык сохранён.",
   "Task description": "Описание задачи",
   Projects: "Проекты",
   "All tasks & projects": "Все задачи и проекты",

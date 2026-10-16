@@ -7,6 +7,7 @@ export default function TaskCard({
   task,
   isAll,
   dragHandleProps,
+  saving = false,
   busy,
   projectTitle,
   onChoose,
@@ -17,7 +18,8 @@ export default function TaskCard({
 }) {
   return (
     <article
-      className={`task-card ${task.task_status === "completed" ? "completed" : ""}`}
+      className={`task-card ${task.task_status === "completed" ? "completed" : ""} ${saving ? "is-saving" : ""}`}
+      aria-busy={saving || undefined}
       draggable={false}
       onPointerDown={(event) => {
         if (
@@ -51,6 +53,11 @@ export default function TaskCard({
         />
       </div>
       <h3>{task.task_title}</h3>
+      {saving && (
+        <p className="task-save-status" role="status">
+          {t("Saving…")}
+        </p>
+      )}
       <DescriptionAccordion
         className="task-excerpt"
         label={t("Task description")}
@@ -69,15 +76,19 @@ export default function TaskCard({
         {formatDueDate(task.task_due_date)}
       </p>
       <div className="actions">
-        <button onClick={() => onEdit(task)}>{t("Edit")}</button>
+        <button disabled={busy || saving} onClick={() => onEdit(task)}>
+          {t("Edit")}
+        </button>
         <button
           className="danger"
-          disabled={busy}
+          disabled={busy || saving}
           onClick={() => onDelete(task)}
         >
           {t("Delete")}
         </button>
-        <button onClick={() => onShow(task)}>{t("Show more")}</button>
+        <button disabled={busy || saving} onClick={() => onShow(task)}>
+          {t("Show more")}
+        </button>
         {dragHandleProps && (
           <button
             type="button"

@@ -26,6 +26,14 @@
   margin-bottom: 12px;
   padding: 16px;
 }
+.kanban .task-card.is-saving {
+  border-color: var(--blue);
+}
+.task-save-status {
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 500;
+}
 .kanban .task-card .actions button {
   padding: 8px 10px;
   font-size: 14px;

@@ -61,11 +61,12 @@ export default function App() {
       onDelete={workspace.deleteProject}
     />
   );
-  const renderTask = (task, { dragHandleProps } = {}) => (
+  const renderTask = (task, { dragHandleProps, saving } = {}) => (
     <TaskCard
       key={task.task_id}
       task={task}
       dragHandleProps={dragHandleProps}
+      saving={saving}
       isAll={board.isAll}
       busy={workspace.busy}
       projectTitle={board.projectTitles.get(task.task_project)}
@@ -100,6 +101,11 @@ export default function App() {
           onAddProject={workspace.addProject}
           onAddTask={workspace.addTask}
         />
+        {workspace.busy && !workspace.modal && !workspace.sidebarOpen && (
+          <p className="save-feedback" role="status">
+            {t(workspace.activity)}
+          </p>
+        )}
         {workspace.error && !workspace.modal && (
           <div className="error" role="alert">
             {t(workspace.error)}
@@ -110,6 +116,7 @@ export default function App() {
           {mobile ? (
             <SidebarDrawer
               open={workspace.sidebarOpen}
+              busy={workspace.busy}
               onClose={() => workspace.setSidebarOpen(false)}
             >
               {sidebar}

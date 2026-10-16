@@ -2,7 +2,7 @@ import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import useDialog, { isBackdropClick } from "../hooks/useDialog.js";
-export default function Modal({ title, onClose, children }) {
+export default function Modal({ title, onClose, children, busy = false }) {
   const ref = useDialog();
   return (
     <dialog
@@ -19,7 +19,16 @@ export default function Modal({ title, onClose, children }) {
     >
       <div className="modal-heading">
         <h2 id="modal-title">{title}</h2>
-        <button aria-label={t("Close dialog")} onClick={onClose}>
+        {busy && (
+          <span className="modal-save-status" role="status">
+            {t("Saving…")}
+          </span>
+        )}
+        <button
+          disabled={busy}
+          aria-label={t("Close dialog")}
+          onClick={onClose}
+        >
           <Icon name="close" />
         </button>
       </div>
@@ -27,7 +36,7 @@ export default function Modal({ title, onClose, children }) {
     </dialog>
   );
 }
-export function SidebarDrawer({ open, onClose, children }) {
+export function SidebarDrawer({ open, onClose, children, busy = false }) {
   const ref = useDialog(open);
   return (
     <dialog
@@ -37,19 +46,25 @@ export function SidebarDrawer({ open, onClose, children }) {
       ref={ref}
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        if (!busy) onClose();
       }}
       onClick={(event) => {
-        if (isBackdropClick(event)) onClose();
+        if (!busy && isBackdropClick(event)) onClose();
       }}
     >
       <button
         className="drawer-close"
+        disabled={busy}
         aria-label={t("Close project menu")}
         onClick={onClose}
       >
         <Icon name="close" />
       </button>
+      {busy && (
+        <p className="save-feedback" role="status">
+          {t("Saving…")}
+        </p>
+      )}
       {children}
     </dialog>
   );

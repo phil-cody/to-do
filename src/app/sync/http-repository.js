@@ -1,8 +1,9 @@
 import { normalize } from "../model.js";
+import { requestWithTimeout } from "./request.js";
 export class HttpRepository {
   constructor(url, request = (...args) => fetch(...args)) {
     this.url = url;
-    this.request = request;
+    this.request = (url, options) => requestWithTimeout(request, url, options);
   }
   endpoint() {
     const base = globalThis.location?.href || "http://localhost/";

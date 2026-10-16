@@ -7,7 +7,9 @@ export default function SyncPanel({ workspace }) {
   const { repository, sync } = workspace;
   const [settings, setSettings] = useState(null),
     [error, setError] = useState(""),
+    [feedback, setFeedback] = useState(""),
     [busy, setBusy] = useState(false);
+  const working = busy || workspace.busy;
   if (!repository.remote || !repository.user)
     return (
       <section className="sync-panel" aria-label={t("Import data")}>
@@ -26,11 +28,13 @@ export default function SyncPanel({ workspace }) {
         )}
       </section>
     );
-  async function action(fn) {
+  async function action(fn, label = "Please wait…", done = "") {
+    if (working) return;
     setBusy(true);
     setError("");
+    setFeedback("");
     try {
-      await fn();
+      if (await workspace.performAction(fn, label)) setFeedback(done);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -45,16 +49,18 @@ export default function SyncPanel({ workspace }) {
       <div className="sync-summary">
         <span>
           {repository.user.name} ·{" "}
-          {sync.conflict
-            ? t("Conflicting changes")
-            : sync.pending
-              ? t("Pending uploads: {count}", { count: sync.pending })
-              : sync.online === false
-                ? t("Offline")
-                : t("Synced")}
+          {workspace.busy
+            ? t(workspace.activity)
+            : sync.conflict
+              ? t("Conflicting changes")
+              : sync.pending
+                ? t("Pending uploads: {count}", { count: sync.pending })
+                : sync.online === false
+                  ? t("Offline")
+                  : t("Synced")}
         </span>
         <button
-          disabled={busy}
+          disabled={working}
           onClick={() =>
             action(async () => {
               const me = await repository.api("/api/me");
@@ -64,20 +70,22 @@ export default function SyncPanel({ workspace }) {
         >
           {t("Telegram and account")}
         </button>
-        <button
-          disabled={busy || workspace.busy}
-          onClick={workspace.showImport}
-        >
+        <button disabled={working} onClick={workspace.showImport}>
           {t("Import projects and tasks")}
         </button>
         <button
-          disabled={busy}
+          disabled={working}
           onClick={() => action(() => repository.flush())}
         >
           {t("Refresh")}
         </button>
       </div>
       {(error || sync.error) && <p role="alert">{t(error || sync.error)}</p>}
+      {feedback && !working && (
+        <p className="account-feedback" role="status">
+          {t(feedback)}
+        </p>
+      )}
       {sync.conflict && (
         <div className="sync-conflict">
           <p>
@@ -85,11 +93,11 @@ export default function SyncPanel({ workspace }) {
               "Some fields were also changed on another device. Other data will be preserved.",
             )}
           </p>
-          <button onClick={() => action(download)}>
+          <button disabled={working} onClick={() => action(download)}>
             {t("Download a copy of my data")}
           </button>
           <button
-            disabled={busy}
+            disabled={working}
             onClick={() => {
               if (confirm(t("Apply my changes to the conflicting fields?")))
                 void action(() => repository.resolveConflict(true));
@@ -98,7 +106,7 @@ export default function SyncPanel({ workspace }) {
             {t("Apply my changes")}
           </button>
           <button
-            disabled={busy}
+            disabled={working}
             onClick={() => {
               if (
                 confirm(
@@ -119,90 +127,102 @@ export default function SyncPanel({ workspace }) {
           className="account-settings"
           onSubmit={(e) => {
             e.preventDefault();
-            void action(async () => {
-              setSettings(
-                await repository.updateSettings({
-                  enabled: settings.enabled,
-                  time: settings.time,
-                  timezone: settings.timezone,
-                }),
-              );
-            });
+            void action(
+              async () => {
+                setSettings(
+                  await repository.updateSettings({
+                    enabled: settings.enabled,
+                    time: settings.time,
+                    timezone: settings.timezone,
+                  }),
+                );
+              },
+              "Saving…",
+              "Schedule saved.",
+            );
           }}
         >
-          <LanguageSelect
-            disabled={busy}
-            onChange={(language) =>
-              action(async () => {
-                const result = await repository.updateSettings({ language });
-                setSettings((current) => ({
-                  ...current,
-                  language: result.language,
-                }));
-              })
-            }
-          />
-          <h3>{t("Daily tasks in Telegram")}</h3>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={settings.enabled}
-              onChange={(e) =>
-                setSettings({ ...settings, enabled: e.target.checked })
+          <fieldset className="form-content" disabled={working}>
+            <LanguageSelect
+              disabled={working}
+              onChange={(language) =>
+                action(
+                  async () => {
+                    const result = await repository.updateSettings({
+                      language,
+                    });
+                    setSettings((current) => ({
+                      ...current,
+                      language: result.language,
+                    }));
+                  },
+                  "Saving…",
+                  "Language saved.",
+                )
               }
             />
-            {t("Send today's tasks")}
-          </label>
-          <label>
-            {t("Time")}
-            <input
-              type="time"
-              required
-              value={settings.time}
-              onChange={(e) =>
-                setSettings({ ...settings, time: e.target.value })
-              }
+            <h3>{t("Daily tasks in Telegram")}</h3>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={settings.enabled}
+                onChange={(e) =>
+                  setSettings({ ...settings, enabled: e.target.checked })
+                }
+              />
+              {t("Send today's tasks")}
+            </label>
+            <label>
+              {t("Time")}
+              <input
+                type="time"
+                required
+                value={settings.time}
+                onChange={(e) =>
+                  setSettings({ ...settings, time: e.target.value })
+                }
+              />
+            </label>
+            <TimezoneSelect
+              value={settings.timezone}
+              disabled={working}
+              onChange={(timezone) => setSettings({ ...settings, timezone })}
             />
-          </label>
-          <TimezoneSelect
-            value={settings.timezone}
-            disabled={busy}
-            onChange={(timezone) => setSettings({ ...settings, timezone })}
-          />
-          <button disabled={busy} type="submit">
-            {t("Save schedule")}
-          </button>
-          <p>
-            {t(
-              "Text messages to the bot become Inbox tasks. /today shows today's tasks; /stop disables delivery.",
-            )}
-          </p>
-          <div className="account-actions">
-            <button
-              disabled={busy}
-              type="button"
-              onClick={workspace.showImport}
-            >
-              {t("Migrate local tasks")}
+            <button disabled={working} type="submit">
+              {t("Save schedule")}
             </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => action(download)}
-            >
-              {t("Download backup")}
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => action(() => repository.logout())}
-            >
-              {t("Log out")}
-            </button>
-            <button type="button" onClick={() => setSettings(null)}>
-              {t("Close")}
-            </button>
-          </div>
+            <p>
+              {t(
+                "Text messages to the bot become Inbox tasks. /today shows today's tasks; /stop disables delivery.",
+              )}
+            </p>
+            <div className="account-actions">
+              <button
+                disabled={working}
+                type="button"
+                onClick={workspace.showImport}
+              >
+                {t("Migrate local tasks")}
+              </button>
+              <button
+                type="button"
+                disabled={working}
+                onClick={() => action(download)}
+              >
+                {t("Download backup")}
+              </button>
+              <button
+                type="button"
+                disabled={working}
+                onClick={() => action(() => repository.logout())}
+              >
+                {t("Log out")}
+              </button>
+              <button type="button" onClick={() => setSettings(null)}>
+                {t("Close")}
+              </button>
+            </div>
+          </fieldset>
         </form>
       )}
     </section>
