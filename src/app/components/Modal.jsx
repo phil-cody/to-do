@@ -6,6 +6,7 @@ export default function Modal({ title, onClose, children }) {
   const ref = useDialog();
   return (
     <dialog
+      className="workspace-modal"
       ref={ref}
       aria-labelledby="modal-title"
       onCancel={(event) => {
@@ -16,13 +17,15 @@ export default function Modal({ title, onClose, children }) {
         if (isBackdropClick(event)) onClose();
       }}
     >
-      <div className="modal-heading">
-        <h2 id="modal-title">{title}</h2>
-        <button aria-label={t("Close dialog")} onClick={onClose}>
-          <Icon name="close" />
-        </button>
+      <div className="modal-scroll">
+        <div className="modal-heading">
+          <h2 id="modal-title">{title}</h2>
+          <button aria-label={t("Close dialog")} onClick={onClose}>
+            <Icon name="close" />
+          </button>
+        </div>
+        {children}
       </div>
-      {children}
     </dialog>
   );
 }

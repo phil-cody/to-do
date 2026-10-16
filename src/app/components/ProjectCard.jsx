@@ -15,17 +15,7 @@ export default function ProjectCard({
   return (
     <article className="project-card">
       <ProjectOpenArea project={project} busy={busy} onChoose={onChoose} />
-      <div className="card-heading">
-        <h3 className="project-title">{project.project_title}</h3>
-        <button
-          disabled={busy}
-          aria-label={`${project.project_pinned ? t("Unpin") : t("Pin")} ${project.project_title}`}
-          aria-pressed={project.project_pinned}
-          onClick={() => onPin(project)}
-        >
-          <Icon name="star" filled={project.project_pinned} />
-        </button>
-      </div>
+      <h3 className="project-title">{project.project_title}</h3>
       <DescriptionAccordion
         value={project.project_description}
         label={t("Project description")}
@@ -41,6 +31,14 @@ export default function ProjectCard({
       </div>
       <div className="actions">
         <button onClick={() => onEdit(project)}>{t("Edit project")}</button>
+        <button
+          disabled={busy}
+          aria-label={`${project.project_pinned ? t("Unpin") : t("Pin")} ${project.project_title}`}
+          aria-pressed={project.project_pinned}
+          onClick={() => onPin(project)}
+        >
+          <Icon name="star" filled={project.project_pinned} />
+        </button>
         {project.project_type !== "inbox" && projectCount > 1 && (
           <button
             className="danger"

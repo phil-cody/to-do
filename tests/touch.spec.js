@@ -96,6 +96,65 @@ test("kanban handle supports keyboard status changes", async ({ page }) => {
   );
 });
 
+test("touch drag reaches a distant collapsed column by scrolling past other columns", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.addInitScript(() => {
+    const data = JSON.parse(localStorage.getItem("todo_app"));
+    const project = data.projects[1];
+    if (project.todoList.length > 1) return;
+    for (let i = 0; i < 5; i++)
+      project.todoList.push({
+        ...project.todoList[0],
+        task_id: `extra-${i}`,
+        task_title: `Z Extra ${i}`,
+      });
+    localStorage.setItem("todo_app", JSON.stringify(data));
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Kanban", exact: true }).click();
+  const handle = page.getByRole("button", {
+    name: "Move Legacy task",
+    exact: true,
+  });
+  await handle.scrollIntoViewIfNeeded();
+  const client = await page.context().newCDPSession(page);
+  await touch(client, "touchStart", await center(handle));
+  const main = await page.locator("main").boundingBox();
+  await touch(client, "touchMove", {
+    x: main.x + main.width / 2,
+    y: main.y + main.height - 2,
+  });
+  const target = page.locator(".column-completed .column-toggle");
+  await expect
+    .poll(
+      async () => {
+        const box = await target.boundingBox();
+        return box.y + box.height <= main.y + main.height;
+      },
+      { timeout: 10000 },
+    )
+    .toBe(true);
+  await touch(client, "touchMove", {
+    x: main.x + main.width / 2,
+    y: main.y + main.height / 2,
+  });
+  await page.evaluate(
+    () => new Promise((resolve) => requestAnimationFrame(resolve)),
+  );
+  await touch(client, "touchMove", await center(target));
+  await expect(page.locator(".column-completed")).toHaveClass(/is-drop-target/);
+  await touch(client, "touchEnd");
+  await expect(page.locator(".column-completed .task-card")).toContainText(
+    "Legacy task",
+  );
+  await page.reload();
+  await expect(page.locator(".column-completed .task-card")).toContainText(
+    "Legacy task",
+  );
+});
+
 test("Telegram form link opens the full editor in Inbox without creating a task until saved", async ({
   page,
 }) => {

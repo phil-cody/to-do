@@ -67,7 +67,6 @@ export default function App() {
       task={task}
       dragHandleProps={dragHandleProps}
       isAll={board.isAll}
-      draggable={board.view === "kanban"}
       busy={workspace.busy}
       projectTitle={board.projectTitles.get(task.task_project)}
       onChoose={workspace.chooseProject}

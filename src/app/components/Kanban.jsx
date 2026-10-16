@@ -38,14 +38,6 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
             key={key}
             data-kanban-status={key}
             className={`kanban-column column-${key} ${collapsed ? "is-collapsed" : ""} ${drag?.target === key ? "is-drop-target" : ""}`}
-            onDragOver={(event) => {
-              if (key !== "overdue") event.preventDefault();
-            }}
-            onDrop={(event) => {
-              event.preventDefault();
-              if (key !== "overdue")
-                onDrop(event.dataTransfer.getData("text/plain"), key);
-            }}
           >
             <h3>
               <button

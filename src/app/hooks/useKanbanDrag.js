@@ -8,8 +8,30 @@ export default function useKanbanDrag(onDrop) {
     frame = useRef(null),
     drop = useRef(onDrop);
   drop.current = onDrop;
-  const columnAt = (x, y) =>
-    document.elementFromPoint(x, y)?.closest("[data-kanban-status]");
+  const columnAt = (x, y) => {
+    const element = document.elementFromPoint(x, y);
+    const column = element?.closest("[data-kanban-status]");
+    if (column) return column;
+    const board = element?.closest(".kanban");
+    if (!board) return null;
+    const columns = [...board.querySelectorAll("[data-kanban-status]")].map(
+      (element) => ({ element, bounds: element.getBoundingClientRect() }),
+    );
+    // Пустая область под короткой колонкой тоже принадлежит её строке сетки.
+    return columns.find(({ bounds }) => {
+      const rowBottom = Math.max(
+        ...columns
+          .filter((item) => Math.abs(item.bounds.top - bounds.top) < 1)
+          .map((item) => item.bounds.bottom),
+      );
+      return (
+        x >= bounds.left &&
+        x <= bounds.right &&
+        y >= bounds.top &&
+        y <= rowBottom
+      );
+    })?.element;
+  };
   const targetAt = (x, y) => {
     const column = columnAt(x, y);
     const status = column?.dataset.kanbanStatus;
@@ -40,11 +62,13 @@ export default function useKanbanDrag(onDrop) {
           ? Math.min(16, (current.y - bounds.bottom + edge) / 4)
           : 0;
     if (current.moved) {
-      // Keep a small collapsed drop target under the finger until release.
+      // Свёрнутая колонка не должна уезжать из-под указателя перед отпусканием.
       const column = columnAt(current.x, current.y);
       if (!(
         column?.classList.contains("is-collapsed") &&
-        column.dataset.kanbanStatus !== "overdue"
+        column.dataset.kanbanStatus !== "overdue" &&
+        current.y > bounds.top + 12 &&
+        current.y < bounds.bottom - 12
       ))
         main.scrollTop += delta;
       setDrag({
@@ -62,7 +86,13 @@ export default function useKanbanDrag(onDrop) {
       "aria-label": t("Move {title}", { title: task.task_title }),
       title: t("Drag to a status column; use arrow keys to change status"),
       onPointerDown(event) {
-        if (disabled || !event.isPrimary || active.current) return;
+        if (
+          disabled ||
+          !event.isPrimary ||
+          event.button !== 0 ||
+          active.current
+        )
+          return;
         event.preventDefault();
         event.currentTarget.setPointerCapture(event.pointerId);
         const main = event.currentTarget.closest("main");

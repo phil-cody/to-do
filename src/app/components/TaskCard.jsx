@@ -6,7 +6,6 @@ import { statuses, priorities, matches, formatDueDate } from "../model.js";
 export default function TaskCard({
   task,
   isAll,
-  draggable,
   dragHandleProps,
   busy,
   projectTitle,
@@ -19,7 +18,7 @@ export default function TaskCard({
   return (
     <article
       className={`task-card ${task.task_status === "completed" ? "completed" : ""}`}
-      draggable={draggable && !busy}
+      draggable={false}
       onPointerDown={(event) => {
         if (
           event.pointerType === "mouse" &&
@@ -31,17 +30,21 @@ export default function TaskCard({
       onPointerUp={dragHandleProps?.onPointerUp}
       onPointerCancel={dragHandleProps?.onPointerCancel}
       onLostPointerCapture={dragHandleProps?.onLostPointerCapture}
-      onDragStart={(e) => e.dataTransfer.setData("text/plain", task.task_id)}
+      onDragStart={(event) => {
+        if (dragHandleProps) event.preventDefault();
+      }}
     >
       <div className="task-selects">
-        <Select
-          label={t("Status")}
-          value={task.task_status}
-          options={Object.fromEntries(
-            Object.entries(statuses).map(([key, label]) => [key, t(label)]),
-          )}
-          onChange={(v) => onUpdate(task, { task_status: v })}
-        />
+        {!dragHandleProps && (
+          <Select
+            label={t("Status")}
+            value={task.task_status}
+            options={Object.fromEntries(
+              Object.entries(statuses).map(([key, label]) => [key, t(label)]),
+            )}
+            onChange={(v) => onUpdate(task, { task_status: v })}
+          />
+        )}
         <Select
           label={t("Priority")}
           value={task.task_priority}

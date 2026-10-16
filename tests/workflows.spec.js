@@ -46,8 +46,8 @@ test("plus, markdown detail, editing, movement, kanban, persistence, dashboard",
   await page
     .locator(".task-card")
     .filter({ has: page.getByRole("heading", { name: "Moved task" }) })
-    .getByLabel("Status", { exact: true })
-    .selectOption("completed");
+    .getByRole("button", { name: "Move Moved task", exact: true })
+    .press("ArrowDown");
   await expect(page.locator(".column-completed")).toContainText("Moved task");
   await page.reload();
   await expect(page.locator(".column-completed")).toContainText("Moved task");
@@ -228,8 +228,8 @@ test("markdown cards, pinned ordering and four exclusive kanban columns", async 
   await expect(page.locator(".column-overdue")).toContainText("late");
   await page
     .locator(".column-overdue .task-card")
-    .getByLabel("Status", { exact: true })
-    .selectOption("completed");
+    .getByRole("button", { name: "Move late", exact: true })
+    .press("ArrowUp");
   await expect(page.locator(".column-overdue .task-card")).toHaveCount(0);
   await expect(page.locator(".column-completed .task-card")).toHaveCount(3);
 });

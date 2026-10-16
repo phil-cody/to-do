@@ -29,6 +29,17 @@ dialog {
   border-radius: 30px;
   box-shadow: 0 6px 14px #2d231a0f;
 }
+.workspace-modal {
+  overflow: hidden;
+}
+.workspace-modal[open] {
+  display: flex;
+  flex-direction: column;
+}
+.modal-scroll {
+  min-height: 0;
+  overflow: auto;
+}
 .modal-heading {
   display: flex;
   align-items: center;
