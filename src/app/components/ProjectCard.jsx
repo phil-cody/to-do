@@ -1,7 +1,8 @@
 import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
-import Description from "./Markdown.jsx";
+import DescriptionAccordion from "./DescriptionAccordion.jsx";
+import ProjectOpenArea from "./ProjectOpenArea.jsx";
 export default function ProjectCard({
   project,
   projectCount,
@@ -13,14 +14,9 @@ export default function ProjectCard({
 }) {
   return (
     <article className="project-card">
+      <ProjectOpenArea project={project} busy={busy} onChoose={onChoose} />
       <div className="card-heading">
-        <button
-          className="project-title"
-          disabled={busy}
-          onClick={() => onChoose(project.project_id)}
-        >
-          {project.project_title}
-        </button>
+        <h3 className="project-title">{project.project_title}</h3>
         <button
           disabled={busy}
           aria-label={`${project.project_pinned ? t("Unpin") : t("Pin")} ${project.project_title}`}
@@ -30,7 +26,11 @@ export default function ProjectCard({
           <Icon name="star" filled={project.project_pinned} />
         </button>
       </div>
-      <Description value={project.project_description} />
+      <DescriptionAccordion
+        value={project.project_description}
+        label={t("Project description")}
+        className="project-card-description"
+      />
       <div className="project-meta">
         {t("{count} tasks · {done} completed", {
           count: project.todoList.length,

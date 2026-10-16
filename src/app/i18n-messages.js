@@ -11,8 +11,6 @@ export const messages = {
   "This week": "На этой неделе",
   "Priority #{number}": "Приоритет №{number}",
   "{count} Projects": "Проектов: {count}",
-  "All projects": "Все проекты",
-  "Open dashboard ↗": "Открыть обзор ↗",
   "All tasks": "Все задачи",
   "{count} shown": "Показано: {count}",
   "Task views": "Виды задач",

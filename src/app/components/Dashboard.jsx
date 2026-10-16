@@ -24,10 +24,8 @@ export default function Dashboard({
   search,
   onSearch,
   onPreference,
-  onShowProjects,
   onAddTask,
   onUpdateTask,
-  renderProject,
   renderTask,
 }) {
   return (
@@ -69,15 +67,6 @@ export default function Dashboard({
           </span>
         </div>
       </div>
-      {isAll && (
-        <section className="all-projects" aria-label={t("All projects")}>
-          <div className="section-heading">
-            <h2>{t("Projects")}</h2>
-            <button onClick={onShowProjects}>{t("Open dashboard ↗")}</button>
-          </div>
-          <div className="project-grid">{projects.map(renderProject)}</div>
-        </section>
-      )}
       {isAll && (
         <div className="section-heading">
           <h2>{t("All tasks")}</h2>

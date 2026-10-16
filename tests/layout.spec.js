@@ -70,11 +70,15 @@ for (const width of [360, 398, 399, 600, 759, 760])
       await expect(drawer).not.toBeVisible();
       await expect(toggle).toBeFocused();
       await toggle.click();
-      await drawer.locator(".nav-item").filter({ hasText: "Inbox" }).click();
+      await drawer
+        .getByRole("button", { name: "Inbox", exact: true })
+        .press("Enter");
       await expect(drawer).not.toBeVisible();
       await expect(page.locator(".dashboard-heading h1")).toHaveText("Inbox");
       await toggle.click();
-      await drawer.locator(".nav-item").filter({ hasText: "Work" }).click();
+      await drawer
+        .getByRole("button", { name: "Work", exact: true })
+        .press("Enter");
       await expect(drawer).not.toBeVisible();
     }
     if (width < 399) {

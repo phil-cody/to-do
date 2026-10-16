@@ -159,3 +159,44 @@ test("Saving during an already running refresh still drains the newly queued edi
   assert.equal(f.snapshot.projects[0].project_title, "Saved during refresh");
   assert.equal(f.repo.status.pending, 0);
 });
+
+test("Project navigation stays in device storage, survives refresh and offline reload, and never enters the upload queue", async () => {
+  const f = setup();
+  const initial = await f.repo.load();
+  f.snapshot.projects.push({
+    ...initial.projects[0],
+    project_id: "other",
+    project_title: "Other",
+    project_type: "custom",
+    todoList: [],
+  });
+  const base = await f.repo.load();
+  const original = JSON.stringify(f.snapshot);
+  const selected = await f.repo.save(
+    { ...base, selectedProjectId: "other" },
+    base,
+  );
+  assert.equal(selected.selectedProjectId, "other");
+  assert.equal(JSON.stringify(f.snapshot), original);
+  assert.equal((await f.store.read("user:11")).queue.length, 0);
+  f.snapshot.selectedProjectId = "all";
+  await f.repo.flush();
+  assert.equal((await f.repo.load()).selectedProjectId, "other");
+  f.offline(true);
+  assert.equal((await f.repo.load()).selectedProjectId, "other");
+  const edited = structuredClone(selected);
+  edited.projects[1].project_description =
+    "A shared edit from my selected project";
+  await f.repo.save(edited, selected);
+  f.offline(false);
+  await f.repo.flush();
+  assert.equal(f.snapshot.selectedProjectId, "all");
+  assert.equal(
+    f.snapshot.projects[1].project_description,
+    "A shared edit from my selected project",
+  );
+  f.snapshot.projects = f.snapshot.projects.filter(
+    (project) => project.project_id !== "other",
+  );
+  assert.equal((await f.repo.load()).selectedProjectId, "all");
+});

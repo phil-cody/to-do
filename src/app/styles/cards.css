@@ -5,10 +5,8 @@
 }
 .project-card .wmde-markdown {
   background: transparent;
-  margin: 10px 0;
+  margin: 0;
   font-size: 13px;
-  max-height: 80px;
-  overflow: auto;
   color: var(--muted);
 }
 .project-meta {
@@ -226,4 +224,50 @@
   width: 32px;
   height: 32px;
   stroke-width: 3;
+}
+
+.project-card-description {
+  margin-top: 10px;
+  --description-font-size: 13px;
+}
+/* The background control sits below selectable text and nested controls. */
+.project-card,
+.project-nav {
+  position: relative;
+  isolation: isolate;
+}
+.project-open-area {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.project-open-area:hover {
+  background: transparent;
+}
+:is(.project-card, .project-nav) > :not(.project-open-area) {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+:is(.project-card, .project-nav)
+  :is(
+    .project-title,
+    .nav-item,
+    .wmde-markdown,
+    .project-meta,
+    .project-nav-stats,
+    button:not(.project-open-area),
+    a,
+    input,
+    select,
+    textarea
+  ) {
+  pointer-events: auto;
 }

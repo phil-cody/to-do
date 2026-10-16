@@ -100,3 +100,150 @@ for (const view of ["Grid", "List", "Kanban"]) {
     ).toHaveCount(0);
   });
 }
+
+test("short descriptions have no toggle; long project and task descriptions adapt to width", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const data = JSON.parse(localStorage.getItem("todo_app"));
+    data.projects[1].project_description = "Short project text";
+    data.projects[1].todoList[0].task_description = "Short task text";
+    localStorage.setItem("todo_app", JSON.stringify(data));
+  });
+  await page.goto("/");
+  await expect(
+    page.locator(".description-accordion .wmde-markdown"),
+  ).toHaveCount(2);
+  await expect(page.locator(".description-accordion > button")).toHaveCount(0);
+  await page.getByRole("button", { name: "▦ Project dashboard" }).click();
+  await expect(
+    page
+      .getByRole("dialog")
+      .locator(".project-card-description .wmde-markdown"),
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole("dialog").locator(".description-accordion > button"),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Close dialog" }).click();
+  await page
+    .locator(".task-card")
+    .getByRole("button", { name: "Edit", exact: true })
+    .click();
+  const text =
+    "A description with enough words to fit two lines when the task is wide but wrap across many more lines in a narrow card.";
+  await page.getByLabel("Description · Markdown").fill(text);
+  await page.getByRole("button", { name: "Save task", exact: true }).click();
+  await page.getByRole("button", { name: "List", exact: true }).click();
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  const description = page.locator(".task-excerpt");
+  await expect(description.locator(".wmde-markdown")).toHaveText(text);
+  await expect(description.getByRole("button")).toHaveCount(0);
+  await page.setViewportSize({ width: 360, height: 1000 });
+  await expect(
+    description.getByRole("button", { name: "Expand", exact: true }),
+  ).toBeVisible();
+  await description
+    .getByRole("button", { name: "Expand", exact: true })
+    .click();
+  await expect(
+    description.getByRole("button", { name: "Collapse", exact: true }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  await expect(description.getByRole("button")).toHaveCount(0);
+});
+
+test("dashboard project descriptions reveal hidden Markdown and keep their controls independent", async ({
+  page,
+  context,
+}) => {
+  await context.route("https://example.com/**", (route) =>
+    route.fulfill({ body: "Test link destination" }),
+  );
+  await page.addInitScript(() => {
+    const data = JSON.parse(localStorage.getItem("todo_app"));
+    data.projects[1].project_description =
+      "**Project text**\n\nSecond paragraph\n\nThird paragraph\n\n[Project link](https://example.com/project)";
+    localStorage.setItem("todo_app", JSON.stringify(data));
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "▦ Project dashboard" }).click();
+  const dialog = page.getByRole("dialog");
+  const card = dialog
+    .locator(".project-card")
+    .filter({ has: page.getByRole("heading", { name: "Work", exact: true }) });
+  await card.getByRole("heading", { name: "Work", exact: true }).click();
+  await expect(dialog).toBeVisible();
+  await card.locator("strong").click();
+  await expect(dialog).toBeVisible();
+  await card.getByRole("button", { name: "Expand", exact: true }).click();
+  await expect(
+    card.getByRole("button", { name: "Collapse", exact: true }),
+  ).toBeVisible();
+  const popupEvent = page.waitForEvent("popup");
+  await card.getByRole("link", { name: "Project link" }).click();
+  const popup = await popupEvent;
+  await popup.close();
+  await expect(dialog).toBeVisible();
+  await card.getByRole("button", { name: "Pin Work", exact: true }).click();
+  await expect(dialog).toBeVisible();
+  await expect(
+    card.getByRole("button", { name: "Unpin Work", exact: true }),
+  ).toBeVisible();
+  await card.click({ position: { x: 5, y: 5 } });
+  await expect(dialog).not.toBeVisible();
+  await expect(page.locator(".dashboard-heading h1")).toHaveText("Work");
+  await page.getByRole("button", { name: "▦ Project dashboard" }).click();
+  await dialog
+    .getByRole("button", { name: "Inbox", exact: true })
+    .press("Enter");
+  await expect(dialog).not.toBeVisible();
+  await expect(page.locator(".dashboard-heading h1")).toHaveText("Inbox");
+});
+
+for (const width of [360, 1440]) {
+  test(`sidebar project opens from background but leaves text and action buttons independent at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/");
+    const mobile = width < 760;
+    if (mobile)
+      await page.getByRole("button", { name: "Open project menu" }).click();
+    const card = page.locator(".project-nav").filter({
+      has: page.getByRole("button", { name: "Inbox", exact: true }),
+    });
+    await card.locator(".nav-item").click();
+    await expect(page.locator(".dashboard-heading h1")).toHaveText("Work");
+    await card
+      .getByRole("button", { name: "Unpin Inbox", exact: true })
+      .click();
+    await expect(page.locator(".dashboard-heading h1")).toHaveText("Work");
+    if (mobile)
+      await expect(
+        page.getByRole("dialog", { name: "Project navigation" }),
+      ).toBeVisible();
+    await card.click({ position: { x: 5, y: 5 } });
+    await expect(page.locator(".dashboard-heading h1")).toHaveText("Inbox");
+    if (mobile)
+      await expect(
+        page.getByRole("dialog", { name: "Project navigation" }),
+      ).not.toBeVisible();
+  });
+}
+
+test("padding of a short code block does not create an unnecessary expand button", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const data = JSON.parse(localStorage.getItem("todo_app"));
+    data.projects[1].todoList[0].task_description = "```\nOne code line\n```";
+    localStorage.setItem("todo_app", JSON.stringify(data));
+  });
+  await page.goto("/");
+  await expect(page.locator(".task-excerpt code")).toHaveText(
+    "One code line\n",
+  );
+  await expect(page.locator(".task-excerpt").getByRole("button")).toHaveCount(
+    0,
+  );
+});

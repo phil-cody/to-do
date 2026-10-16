@@ -2,6 +2,7 @@ import { t } from "../i18n.js";
 import React from "react";
 import Icon from "./Icon.jsx";
 import Description from "./Markdown.jsx";
+import ProjectOpenArea from "./ProjectOpenArea.jsx";
 import { matches } from "../model.js";
 export default function Sidebar({
   projects,
@@ -76,13 +77,10 @@ export default function Sidebar({
                 className={`project-nav ${selected === p ? "active" : ""}`}
                 key={p.project_id}
               >
-                <button
-                  disabled={busy}
-                  className="nav-item"
-                  onClick={() => onChoose(p.project_id)}
-                >
+                <ProjectOpenArea project={p} busy={busy} onChoose={onChoose} />
+                <span className="nav-item">
                   <span>{p.project_title}</span>
-                </button>
+                </span>
                 <button
                   className="pin"
                   disabled={busy}

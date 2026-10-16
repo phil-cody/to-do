@@ -97,6 +97,11 @@ export class RemoteRepository extends HttpRepository {
         revision: result.revision,
         queue: old?.queue || [],
         language: result.user.language,
+        selectedProjectId:
+          old?.selectedProjectId ??
+          old?.queue?.at(-1)?.next.selectedProjectId ??
+          old?.remote?.selectedProjectId ??
+          result.snapshot.selectedProjectId,
       }));
       await this.flush();
       return pendingSnapshot((await this.store.read(this.key())) || state);
@@ -119,19 +124,30 @@ export class RemoteRepository extends HttpRepository {
   }
   async save(next, base) {
     if (!this.user) return super.save(next);
-    const edit = {
-      id: crypto.randomUUID(),
-      base: structuredClone(base),
-      next: structuredClone(next),
-    };
+    const shared = ({ selectedProjectId, ...snapshot }) => snapshot;
+    const navigationOnly =
+      JSON.stringify(shared(next)) === JSON.stringify(shared(base));
+    const edit = navigationOnly
+      ? null
+      : {
+          id: crypto.randomUUID(),
+          base: structuredClone(base),
+          next: structuredClone(next),
+        };
     await this.store.change(this.key(), (state) => {
-      if (state.queue.length >= 500)
+      if (!navigationOnly && state.queue.length >= 500)
         throw new Error(
           "Очередь офлайн-изменений заполнена. Подключитесь к серверу.",
         );
-      return { ...state, queue: [...state.queue, edit] };
+      return {
+        ...state,
+        selectedProjectId: next.selectedProjectId,
+        queue: navigationOnly ? state.queue : [...state.queue, edit],
+      };
     });
     this.channel?.postMessage("changed");
+    if (navigationOnly)
+      return pendingSnapshot(await this.store.read(this.key()));
     try {
       await this.flush();
       // An earlier background refresh may have read the queue before this edit.

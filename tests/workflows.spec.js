@@ -37,6 +37,7 @@ test("plus, markdown detail, editing, movement, kanban, persistence, dashboard",
   await page.getByLabel("Title", { exact: true }).fill("Moved task");
   await page.getByRole("button", { name: "Save task", exact: true }).click();
   await page.getByRole("button", { name: "All tasks & projects" }).click();
+  await expect(page.locator("main .project-grid")).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "Moved task", exact: true }),
   ).toBeVisible();

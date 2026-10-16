@@ -394,3 +394,90 @@ test("local task migration previews before saving, preserves its source and stay
     await second.close();
   }
 });
+
+test("Navigating between projects on one device never moves another device, including edits, reload and offline use", async ({
+  browser,
+  request,
+}) => {
+  const firstContext = await browser.newContext(),
+    secondContext = await browser.newContext();
+  const first = await firstContext.newPage(),
+    second = await secondContext.newPage();
+  try {
+    await login(first, 12001, request);
+    await login(second, 12001, request);
+    await first
+      .getByRole("button", { name: "+ Add Project", exact: true })
+      .click();
+    await first
+      .getByLabel("Title", { exact: true })
+      .fill("Independent project");
+    await first
+      .getByRole("button", { name: "Save project", exact: true })
+      .click();
+    await expect(first.locator(".dashboard-heading h1")).toHaveText(
+      "Independent project",
+    );
+    await expect(
+      second
+        .locator("aside")
+        .getByRole("button", { name: "Independent project", exact: true }),
+    ).toBeVisible();
+    await expect(second.locator(".dashboard-heading h1")).toHaveText("Inbox");
+    await second.getByRole("button", { name: "All tasks & projects" }).click();
+    await expect(second.locator(".dashboard-heading h1")).toHaveText(
+      "All tasks & projects",
+    );
+    await expect(first.locator(".dashboard-heading h1")).toHaveText(
+      "Independent project",
+    );
+    const before = await (
+      await firstContext.request.get(base + "/api/workspace")
+    ).json();
+    await second
+      .locator("aside")
+      .getByRole("button", { name: "Inbox", exact: true })
+      .press("Enter");
+    const after = await (
+      await secondContext.request.get(base + "/api/workspace")
+    ).json();
+    expect(after.revision).toBe(before.revision);
+    await addTask(first, "Shared task in independent project");
+    await expect(second.locator(".dashboard-heading h1")).toHaveText("Inbox");
+    await first.reload();
+    await expect(first.locator(".dashboard-heading h1")).toHaveText(
+      "Independent project",
+    );
+    await second.reload();
+    await expect(second.locator(".dashboard-heading h1")).toHaveText("Inbox");
+    await first.waitForFunction(() => !!navigator.serviceWorker.controller);
+    await firstContext.setOffline(true);
+    await first.getByRole("button", { name: "All tasks & projects" }).click();
+    await expect(first.locator(".dashboard-heading h1")).toHaveText(
+      "All tasks & projects",
+    );
+    await first.reload();
+    await expect(first.locator(".dashboard-heading h1")).toHaveText(
+      "All tasks & projects",
+    );
+    await firstContext.setOffline(false);
+    await first.getByRole("button", { name: "Refresh", exact: true }).click();
+    await expect(first.locator(".dashboard-heading h1")).toHaveText(
+      "All tasks & projects",
+    );
+    await expect(second.locator(".dashboard-heading h1")).toHaveText("Inbox");
+    const data = await (
+      await secondContext.request.get(base + "/api/workspace")
+    ).json();
+    expect(
+      data.snapshot.projects
+        .flatMap((project) => project.todoList)
+        .some(
+          (task) => task.task_title === "Shared task in independent project",
+        ),
+    ).toBe(true);
+  } finally {
+    await firstContext.close();
+    await secondContext.close();
+  }
+});

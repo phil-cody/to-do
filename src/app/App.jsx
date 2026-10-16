@@ -137,10 +137,8 @@ export default function App() {
               search={workspace.search}
               onSearch={workspace.setSearch}
               onPreference={workspace.preference}
-              onShowProjects={workspace.showProjects}
               onAddTask={workspace.addTask}
               onUpdateTask={workspace.updateTask}
-              renderProject={renderProject}
               renderTask={renderTask}
             />
           </main>

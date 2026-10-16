@@ -11,7 +11,6 @@ function flatten(snapshot) {
   }
   return {
     preferences: {
-      selectedProjectId: snapshot.selectedProjectId,
       allView: snapshot.allView,
       allFilter: snapshot.allFilter,
     },
@@ -88,6 +87,7 @@ export function mergeEdit(base, next, remote, { force = false } = {}) {
     throw new MergeConflict(["projects"]);
   return normalize({
     ...result.preferences,
+    selectedProjectId: remote.selectedProjectId,
     projects: Object.values(result.projects).map((p) => ({
       ...p,
       todoList: Object.values(result.tasks).filter(
@@ -100,5 +100,15 @@ export function pendingSnapshot(state) {
   let snapshot = state.remote;
   for (const edit of state.queue)
     snapshot = mergeEdit(edit.base, edit.next, snapshot, { force: true });
-  return snapshot;
+  if (state.selectedProjectId === undefined) return snapshot;
+  return {
+    ...snapshot,
+    selectedProjectId:
+      state.selectedProjectId === "all" ||
+      snapshot.projects.some(
+        (project) => project.project_id === state.selectedProjectId,
+      )
+        ? state.selectedProjectId
+        : "all",
+  };
 }
