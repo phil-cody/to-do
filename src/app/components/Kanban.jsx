@@ -63,7 +63,9 @@ export default function Kanban({ tasks, day, renderTask, onDrop, busy }) {
               hidden={collapsed}
             >
               {items.map((task) =>
-                renderTask(task, { dragHandleProps: handleProps(task, busy) }),
+                renderTask(task, {
+                  dragHandleProps: handleProps(task, busy, key),
+                }),
               )}
               {key === "overdue" && (
                 <p className="column-note">

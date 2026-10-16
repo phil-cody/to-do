@@ -97,6 +97,9 @@
 .task-drag-handle:active {
   cursor: grabbing;
 }
+.task-drag-handle:disabled {
+  cursor: not-allowed;
+}
 .kanban-column.is-drop-target {
   outline: 2px solid var(--blue);
   outline-offset: -2px;

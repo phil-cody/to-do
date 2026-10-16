@@ -80,6 +80,13 @@ export default function DescriptionAccordion({ value, label, className }) {
       className={`description-accordion ${className} ${expanded || !overflows ? "is-expanded" : "is-collapsed"}`}
       aria-label={label}
     >
+      <div
+        ref={content}
+        id={id}
+        className={`description-accordion-content ${className}-content`}
+      >
+        <Description value={value} />
+      </div>
       {overflows && (
         <button
           type="button"
@@ -90,13 +97,6 @@ export default function DescriptionAccordion({ value, label, className }) {
           {t(expanded ? "Collapse" : "Expand")}
         </button>
       )}
-      <div
-        ref={content}
-        id={id}
-        className={`description-accordion-content ${className}-content`}
-      >
-        <Description value={value} />
-      </div>
     </section>
   );
 }

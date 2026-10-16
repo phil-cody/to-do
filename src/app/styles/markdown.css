@@ -26,14 +26,27 @@
   align-items: center;
 }
 .description-accordion > button {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 4px;
   font-size: 13px;
-  padding: 6px 10px;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+}
+.description-accordion > button:hover {
+  background: transparent;
+  color: var(--text);
+  text-decoration: underline;
 }
 .description-accordion {
   position: relative;
-}
-.description-accordion > button + .description-accordion-content {
-  margin-top: 8px;
 }
 .description-measure {
   position: absolute;

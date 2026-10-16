@@ -1,17 +1,22 @@
 import { useEffect, useRef } from "react";
-export default function useDialog(open = true, { lockScroll = false } = {}) {
+let scrollLocks = 0;
+let previousOverflow;
+
+export default function useDialog(open = true) {
   const ref = useRef();
   useEffect(() => {
     if (!open) return;
-    const dialog = ref.current,
-      previous = document.body.style.overflow;
+    const dialog = ref.current;
     dialog.showModal();
-    if (lockScroll) document.body.style.overflow = "hidden";
+    if (scrollLocks++ === 0) {
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    }
     return () => {
       dialog.close();
-      if (lockScroll) document.body.style.overflow = previous;
+      if (--scrollLocks === 0) document.body.style.overflow = previousOverflow;
     };
-  }, [open, lockScroll]);
+  }, [open]);
   return ref;
 }
 export function isBackdropClick(event) {

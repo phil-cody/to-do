@@ -17,20 +17,18 @@ export default function Modal({ title, onClose, children }) {
         if (isBackdropClick(event)) onClose();
       }}
     >
-      <div className="modal-scroll">
-        <div className="modal-heading">
-          <h2 id="modal-title">{title}</h2>
-          <button aria-label={t("Close dialog")} onClick={onClose}>
-            <Icon name="close" />
-          </button>
-        </div>
-        {children}
+      <div className="modal-heading">
+        <h2 id="modal-title">{title}</h2>
+        <button aria-label={t("Close dialog")} onClick={onClose}>
+          <Icon name="close" />
+        </button>
       </div>
+      <div className="modal-scroll">{children}</div>
     </dialog>
   );
 }
 export function SidebarDrawer({ open, onClose, children }) {
-  const ref = useDialog(open, { lockScroll: true });
+  const ref = useDialog(open);
   return (
     <dialog
       className="sidebar-drawer"

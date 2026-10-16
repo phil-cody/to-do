@@ -32,10 +32,14 @@ export default function useKanbanDrag(onDrop) {
       );
     })?.element;
   };
-  const targetAt = (x, y) => {
+  const targetAt = (x, y, sourceStatus = active.current?.sourceStatus) => {
     const column = columnAt(x, y);
     const status = column?.dataset.kanbanStatus;
-    return status && status !== "overdue" ? status : null;
+    return status &&
+      status !== "overdue" &&
+      (sourceStatus !== "overdue" || status === "completed")
+      ? status
+      : null;
   };
   function finish(event, cancelled = false) {
     const current = active.current;
@@ -43,12 +47,60 @@ export default function useKanbanDrag(onDrop) {
     active.current = null;
     cancelAnimationFrame(frame.current);
     setDrag(null);
-    if (!cancelled && current.moved) {
-      const status = targetAt(event.clientX, event.clientY);
+    if (current.source.hasPointerCapture(current.pointerId))
+      current.source.releasePointerCapture(current.pointerId);
+    const moved =
+      current.moved ||
+      Math.hypot(
+        event.clientX - current.startX,
+        event.clientY - current.startY,
+      ) > 8;
+    if (!cancelled && moved) {
+      const status = targetAt(
+        event.clientX,
+        event.clientY,
+        current.sourceStatus,
+      );
       if (status) drop.current(current.id, status);
     }
   }
-  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+  useEffect(() => {
+    const move = (event) => {
+      const current = active.current;
+      if (!current || current.pointerId !== event.pointerId) return;
+      current.x = event.clientX;
+      current.y = event.clientY;
+      current.moved ||=
+        Math.hypot(current.x - current.startX, current.y - current.startY) >
+          8 || Math.abs(current.main.scrollTop - current.startScrollTop) > 8;
+    };
+    const up = (event) => finish(event);
+    const cancel = (event) => finish(event, true);
+    const blur = () => {
+      if (active.current) finish({ pointerId: active.current.pointerId }, true);
+    };
+    const key = (event) => {
+      if (event.key === "Escape" && active.current) {
+        event.preventDefault();
+        blur();
+      }
+    };
+    // Завершение жеста не зависит от всплытия события с карточки или её захвата.
+    window.addEventListener("pointermove", move, true);
+    window.addEventListener("pointerup", up, true);
+    window.addEventListener("pointercancel", cancel, true);
+    window.addEventListener("blur", blur);
+    window.addEventListener("keydown", key);
+    return () => {
+      window.removeEventListener("pointermove", move, true);
+      window.removeEventListener("pointerup", up, true);
+      window.removeEventListener("pointercancel", cancel, true);
+      window.removeEventListener("blur", blur);
+      window.removeEventListener("keydown", key);
+      active.current = null;
+      cancelAnimationFrame(frame.current);
+    };
+  }, []);
   function scroll() {
     const current = active.current;
     if (!current) return;
@@ -62,11 +114,14 @@ export default function useKanbanDrag(onDrop) {
           ? Math.min(16, (current.y - bounds.bottom + edge) / 4)
           : 0;
     if (current.moved) {
-      // Свёрнутая колонка не должна уезжать из-под указателя перед отпусканием.
+      // Колонка назначения не должна уезжать из-под мыши перед отпусканием.
       const column = columnAt(current.x, current.y);
       if (!(
-        column?.classList.contains("is-collapsed") &&
-        column.dataset.kanbanStatus !== "overdue" &&
+        column &&
+        (column.classList.contains("is-collapsed") ||
+          (current.pointerType === "mouse" &&
+            column.dataset.kanbanStatus !== current.sourceStatus)) &&
+        targetAt(current.x, current.y) &&
         current.y > bounds.top + 12 &&
         current.y < bounds.bottom - 12
       ))
@@ -80,7 +135,7 @@ export default function useKanbanDrag(onDrop) {
     }
     frame.current = requestAnimationFrame(scroll);
   }
-  function handleProps(task, disabled) {
+  function handleProps(task, disabled, sourceStatus) {
     return {
       disabled,
       "aria-label": t("Move {title}", { title: task.task_title }),
@@ -100,28 +155,19 @@ export default function useKanbanDrag(onDrop) {
           id: task.task_id,
           title: task.task_title,
           pointerId: event.pointerId,
+          pointerType: event.pointerType,
+          sourceStatus,
           x: event.clientX,
           y: event.clientY,
           startX: event.clientX,
           startY: event.clientY,
           main,
+          source: event.currentTarget,
           startScrollTop: main.scrollTop,
           moved: false,
         };
         frame.current = requestAnimationFrame(scroll);
       },
-      onPointerMove(event) {
-        const current = active.current;
-        if (!current || current.pointerId !== event.pointerId) return;
-        current.x = event.clientX;
-        current.y = event.clientY;
-        current.moved ||=
-          Math.hypot(current.x - current.startX, current.y - current.startY) >
-            8 || Math.abs(current.main.scrollTop - current.startScrollTop) > 8;
-      },
-      onPointerUp: (event) => finish(event),
-      onPointerCancel: (event) => finish(event, true),
-      onLostPointerCapture: (event) => finish(event, true),
       onKeyDown(event) {
         const directions = {
           ArrowUp: -1,
@@ -131,6 +177,10 @@ export default function useKanbanDrag(onDrop) {
         };
         if (!directions[event.key] || disabled) return;
         event.preventDefault();
+        if (sourceStatus === "overdue") {
+          drop.current(task.task_id, "completed");
+          return;
+        }
         const statuses = ["in-process", "pending", "completed"];
         const index = statuses.indexOf(task.task_status);
         const status =

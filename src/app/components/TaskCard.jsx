@@ -26,10 +26,6 @@ export default function TaskCard({
         )
           dragHandleProps?.onPointerDown(event);
       }}
-      onPointerMove={dragHandleProps?.onPointerMove}
-      onPointerUp={dragHandleProps?.onPointerUp}
-      onPointerCancel={dragHandleProps?.onPointerCancel}
-      onLostPointerCapture={dragHandleProps?.onLostPointerCapture}
       onDragStart={(event) => {
         if (dragHandleProps) event.preventDefault();
       }}

@@ -228,8 +228,13 @@ test("markdown cards, pinned ordering and four exclusive kanban columns", async 
   await expect(page.locator(".column-overdue")).toContainText("late");
   await page
     .locator(".column-overdue .task-card")
-    .getByRole("button", { name: "Move late", exact: true })
-    .press("ArrowUp");
+    .getByRole("button", { name: "Edit", exact: true })
+    .click();
+  await page
+    .getByRole("dialog")
+    .getByLabel("Status", { exact: true })
+    .selectOption("completed");
+  await page.getByRole("button", { name: "Save task", exact: true }).click();
   await expect(page.locator(".column-overdue .task-card")).toHaveCount(0);
   await expect(page.locator(".column-completed .task-card")).toHaveCount(3);
 });

@@ -2,6 +2,9 @@ dialog::backdrop {
   background: #183a4c70;
   backdrop-filter: blur(3px);
 }
+body:has(dialog[open]) .workspace > :is(main, aside) {
+  overflow: hidden;
+}
 .description-field {
   min-width: 0;
 }
@@ -32,6 +35,9 @@ dialog {
 .workspace-modal {
   overflow: hidden;
 }
+.workspace-modal :is(button, a, input, select, textarea):focus-visible {
+  outline-offset: -3px;
+}
 .workspace-modal[open] {
   display: flex;
   flex-direction: column;
@@ -39,15 +45,21 @@ dialog {
 .modal-scroll {
   min-height: 0;
   overflow: auto;
+  padding: 6px;
+  margin: -6px;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
 }
 .modal-heading {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
 }
 .modal-heading h2 {
+  min-width: 0;
   overflow-wrap: anywhere;
   font-size: 22px;
   font-weight: 600;
@@ -100,6 +112,7 @@ form .select-field {
   color: var(--text);
 }
 .modal-heading > button {
+  flex-shrink: 0;
   font-size: 24px;
   padding: 0;
   width: 32px;
