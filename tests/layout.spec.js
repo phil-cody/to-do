@@ -457,3 +457,24 @@ test("mobile drawer scrolls independently from the main content", async ({
   await page.keyboard.press("Escape");
   await expect(drawer).not.toBeVisible();
 });
+
+for (const width of [399, 400, 430, 479, 480, 600])
+  test(`Russian mobile action labels fit at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.addInitScript(() => localStorage.setItem("todo_language", "ru"));
+    await page.goto("/");
+    const buttons = page.locator(".mobile-actions > button");
+    await expect(buttons).toHaveCount(3);
+    const overflow = await buttons.evaluateAll((elements) =>
+      elements.map((button) => {
+        const box = button.getBoundingClientRect();
+        const label = button.querySelector("span");
+        const range = document.createRange();
+        range.selectNodeContents(label);
+        return [...range.getClientRects()].some(
+          (rect) => rect.left < box.left || rect.right > box.right,
+        );
+      }),
+    );
+    expect(overflow).toEqual([false, false, false]);
+  });

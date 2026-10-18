@@ -218,6 +218,10 @@
     color: #3f2d11;
     border-color: var(--primary);
   }
+  .mobile-actions > button > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 }
 @media (max-width: 398.98px) {
   .mobile-actions {
@@ -232,9 +236,6 @@
   .mobile-actions > button {
     padding-inline: 6px;
     font-size: 12px;
-  }
-  .mobile-actions > button > span {
-    white-space: nowrap;
   }
 }
 @media (max-width: 759.98px) {
