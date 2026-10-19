@@ -60,9 +60,7 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
               <Select
                 label={t("Project")}
                 value={draft.task_project}
-                options={Object.fromEntries(
-                  projects.map((p) => [p.project_id, p.project_title]),
-                )}
+                options={projects.map((p) => [p.project_id, p.project_title])}
                 onChange={(v) => set("task_project", v)}
               />
               <label>
@@ -76,23 +74,19 @@ export default function EditorForm({ kind, item, projects, onSave, busy }) {
               <Select
                 label={t("Status")}
                 value={draft.task_status}
-                options={Object.fromEntries(
-                  Object.entries(statuses).map(([key, label]) => [
-                    key,
-                    t(label),
-                  ]),
-                )}
+                options={Object.entries(statuses).map(([key, label]) => [
+                  key,
+                  t(label),
+                ])}
                 onChange={(v) => set("task_status", v)}
               />
               <Select
                 label={t("Priority")}
                 value={draft.task_priority}
-                options={Object.fromEntries(
-                  Object.entries(priorities).map(([key, label]) => [
-                    key,
-                    t(label),
-                  ]),
-                )}
+                options={Object.entries(priorities).map(([key, label]) => [
+                  key,
+                  t(label),
+                ])}
                 onChange={(v) => set("task_priority", v)}
               />
             </>

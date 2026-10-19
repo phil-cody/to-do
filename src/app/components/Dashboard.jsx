@@ -101,9 +101,10 @@ export default function Dashboard({
           <Select
             label={t("Filter")}
             value={filter}
-            options={Object.fromEntries(
-              Object.entries(filters).map(([key, label]) => [key, t(label)]),
-            )}
+            options={Object.entries(filters).map(([key, label]) => [
+              key,
+              t(label),
+            ])}
             onChange={(v) => onPreference("project_filter", v)}
           />
         </div>

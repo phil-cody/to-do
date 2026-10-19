@@ -1,6 +1,5 @@
 import { normalize } from "../model.js";
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-const clone = (value) => structuredClone(value);
 function flatten(snapshot) {
   const projects = Object.create(null),
     tasks = Object.create(null);
@@ -48,10 +47,10 @@ export function mergeEdit(base, next, remote, { force = false } = {}) {
       } else if (!old) {
         if (theirs && !same(mine, theirs) && !force)
           conflicts.push(`${type}/${id}`);
-        else result[type][id] = clone(mine);
+        else result[type][id] = structuredClone(mine);
       } else if (!theirs) {
         if (!force) conflicts.push(`${type}/${id}`);
-        else result[type][id] = clone(mine);
+        else result[type][id] = structuredClone(mine);
       } else {
         const merged = { ...theirs };
         for (const field of new Set([
@@ -66,7 +65,7 @@ export function mergeEdit(base, next, remote, { force = false } = {}) {
             )
               conflicts.push(`${type}/${id}/${field}`);
             else if (mine[field] === undefined) delete merged[field];
-            else merged[field] = clone(mine[field]);
+            else merged[field] = structuredClone(mine[field]);
           }
         result[type][id] = merged;
       }

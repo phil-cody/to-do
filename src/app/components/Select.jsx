@@ -10,7 +10,7 @@ export default function Select({ label, value, options, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
-        {Object.entries(options).map(([key, text]) => (
+        {options.map(([key, text]) => (
           <option key={key} value={key}>
             {text}
           </option>

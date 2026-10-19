@@ -20,25 +20,25 @@ export default function TaskDetails({
         <Select
           label={t("Project")}
           value={detail.task_project}
-          options={Object.fromEntries(
-            projects.map((p) => [p.project_id, p.project_title]),
-          )}
+          options={projects.map((p) => [p.project_id, p.project_title])}
           onChange={(v) => onUpdate(detail, { task_project: v })}
         />
         <Select
           label={t("Status")}
           value={detail.task_status}
-          options={Object.fromEntries(
-            Object.entries(statuses).map(([key, label]) => [key, t(label)]),
-          )}
+          options={Object.entries(statuses).map(([key, label]) => [
+            key,
+            t(label),
+          ])}
           onChange={(v) => onUpdate(detail, { task_status: v })}
         />
         <Select
           label={t("Priority")}
           value={detail.task_priority}
-          options={Object.fromEntries(
-            Object.entries(priorities).map(([key, label]) => [key, t(label)]),
-          )}
+          options={Object.entries(priorities).map(([key, label]) => [
+            key,
+            t(label),
+          ])}
           onChange={(v) => onUpdate(detail, { task_priority: v })}
         />
         <div className="detail-due">

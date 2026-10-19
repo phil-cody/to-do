@@ -37,18 +37,20 @@ export default function TaskCard({
           <Select
             label={t("Status")}
             value={task.task_status}
-            options={Object.fromEntries(
-              Object.entries(statuses).map(([key, label]) => [key, t(label)]),
-            )}
+            options={Object.entries(statuses).map(([key, label]) => [
+              key,
+              t(label),
+            ])}
             onChange={(v) => onUpdate(task, { task_status: v })}
           />
         )}
         <Select
           label={t("Priority")}
           value={task.task_priority}
-          options={Object.fromEntries(
-            Object.entries(priorities).map(([key, label]) => [key, t(label)]),
-          )}
+          options={Object.entries(priorities).map(([key, label]) => [
+            key,
+            t(label),
+          ])}
           onChange={(v) => onUpdate(task, { task_priority: v })}
         />
       </div>
