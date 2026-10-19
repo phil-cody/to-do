@@ -1,0 +1,4395 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "5ea1ce778d75402eb33ceb1b40f6d406b8e11dfb",
+  "generatedAt": "2026-10-18T19:42:20.712Z",
+  "files": {
+    ".nvmrc": {
+      "filePath": ".nvmrc",
+      "contentHash": "68ca3fba3b7e864770cb61aeb306d4bd4354b68ab4dd38450860c5d823e42a53",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "4a5b5c51b8c3c3d1758748000ad10a42a89634e7407434ca2586b8bc5b77e414",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 184,
+      "hasStructuralAnalysis": false
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "b712ab21a75abad1eff07b49bc4ffa67b5f972b9d63a1d2d80d2d43f85efcb9a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": false
+    },
+    "deploy/backup-check.mjs": {
+      "filePath": "deploy/backup-check.mjs",
+      "contentHash": "25bae1370a2c4774a90ae213cd70477569b897e764cf3be502dcba204881b958",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:sqlite",
+          "specifiers": [
+            "DatabaseSync"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "existsSync"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    "deploy/backup.mjs": {
+      "filePath": "deploy/backup.mjs",
+      "contentHash": "b7bfd4899be9b9a8800531f9f84e6e187f0e34b6aa33561195ae0546e1eb247a",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:sqlite",
+          "specifiers": [
+            "DatabaseSync",
+            "backup"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "existsSync",
+            "chmodSync"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "deploy/restore.mjs": {
+      "filePath": "deploy/restore.mjs",
+      "contentHash": "8e50ed5b49e0437ce8950aea58fe055b1043410023294b80d3028e490a610785",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "copyFileSync",
+            "existsSync",
+            "rmSync",
+            "renameSync",
+            "chmodSync"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "execFileSync"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "deploy/todo-server.nginx.conf": {
+      "filePath": "deploy/todo-server.nginx.conf",
+      "contentHash": "b654413f5a658bd105c9daa63919a34dddc9c511ecb56fd91808fbe77dd6843a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "deploy/todo.nginx.conf": {
+      "filePath": "deploy/todo.nginx.conf",
+      "contentHash": "53c6e78515ccf5d945da49d42602ef934d270b0a07e79a70c205caf2542d50c4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "deploy/todo.service": {
+      "filePath": "deploy/todo.service",
+      "contentHash": "982cbaf780947e6230f72ce2c8b161bb0cde0f81b2d2d4dd051f32b4b02f5c29",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "deploy/update.sh": {
+      "filePath": "deploy/update.sh",
+      "contentHash": "8ec932d868d029ef1a3231699d9dd5432d37d47000623a42e48bf48fcff7a580",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": false
+    },
+    "docs/README.md": {
+      "filePath": "docs/README.md",
+      "contentHash": "52c2f11e61ffbdbf6687dd912cd065fdbd958d2dff7f63ec469c93c54e5c367d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "docs/architecture.md": {
+      "filePath": "docs/architecture.md",
+      "contentHash": "9790873e8deae113296e517dec3d6a6949c0350a2922f575f0116a30d682e7eb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 75,
+      "hasStructuralAnalysis": false
+    },
+    "docs/behavior.md": {
+      "filePath": "docs/behavior.md",
+      "contentHash": "95f34f1524b3681aedfd82fcbf28917c818fa280c15558762197eb57a2d7aca7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 80,
+      "hasStructuralAnalysis": false
+    },
+    "docs/data.md": {
+      "filePath": "docs/data.md",
+      "contentHash": "42726568b36defc9c0b69c3265490ca93218516a28757264dac0dd0a816565c7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 118,
+      "hasStructuralAnalysis": false
+    },
+    "docs/decisions.md": {
+      "filePath": "docs/decisions.md",
+      "contentHash": "4078fc3f5b0a9c3706d5c55c3f42e0257ef595b7f4a621ca38a19de79a6297c0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "docs/development.md": {
+      "filePath": "docs/development.md",
+      "contentHash": "d73c2eafe7c1da6355a18c5689ca9b0f7f8bb5af41e44d532ca445da02d4a92d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 83,
+      "hasStructuralAnalysis": false
+    },
+    "docs/import.md": {
+      "filePath": "docs/import.md",
+      "contentHash": "e5d130d9074c21aadee27557cbac2f560201b143ce6929872143370d38e579a6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 69,
+      "hasStructuralAnalysis": false
+    },
+    "docs/ponytail-audit.md": {
+      "filePath": "docs/ponytail-audit.md",
+      "contentHash": "4490d706ccefc85126cd38e8a71887ecf904c281982d0cd4d324262d5a311755",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "docs/security.md": {
+      "filePath": "docs/security.md",
+      "contentHash": "2b38ff333510e67ad3c959a54784b697a043041e0d5a7a67ee2613d90e091c56",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 81,
+      "hasStructuralAnalysis": false
+    },
+    "docs/server.md": {
+      "filePath": "docs/server.md",
+      "contentHash": "89c90deaf403f4e69568350bd1aef7934a3d4cd251c9896f3166e8ac930386fb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 114,
+      "hasStructuralAnalysis": false
+    },
+    "docs/telegram.md": {
+      "filePath": "docs/telegram.md",
+      "contentHash": "1b6a5c7cf0121a4389c62e10d9373716b16a8aa3e64c04c9e837af496faec28f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": false
+    },
+    "docs/templates/README.md": {
+      "filePath": "docs/templates/README.md",
+      "contentHash": "7fc6cb01708723f7505137a6d4e06e3f14d1a34c4c00ca20d8e0a8f315301486",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    },
+    "docs/templates/minimal-project.json": {
+      "filePath": "docs/templates/minimal-project.json",
+      "contentHash": "20d62bb3ae127a1def342c36241ace218de93307aa5b6e52ac7bc66b3318391a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "docs/templates/project-template.json": {
+      "filePath": "docs/templates/project-template.json",
+      "contentHash": "8d2dc43b37ce3fb6190a0b84222df3ba78956df30023cb107747efff0d9956e8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "docs/vps-static.md": {
+      "filePath": "docs/vps-static.md",
+      "contentHash": "5ad114952b99510cb44b18cd20ec39aa1cc103624497a4a0b440c717fac16955",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 253,
+      "hasStructuralAnalysis": false
+    },
+    "docs/vps.md": {
+      "filePath": "docs/vps.md",
+      "contentHash": "b3165df7220c28c98504db924be9e21947463c44b90bd45f6639cea00b6cca4b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 873,
+      "hasStructuralAnalysis": false
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "1971fcab20ff132556b462e7f55fbec4f973a484e03b39dbd0a0d8a91997bc5b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": false
+    },
+    "playwright.config.js": {
+      "filePath": "playwright.config.js",
+      "contentHash": "2b564ad540db4f8012a70f19fb657a357fd6a0f2110e3f2c5ad35a6c3d85d37f",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "defineConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/check-visuals.mjs": {
+      "filePath": "scripts/check-visuals.mjs",
+      "contentHash": "1aa889f3d3a38ba011295c2f48a01d90ef7787312c693c01af2c0daf39529d5f",
+      "functions": [
+        {
+          "name": "project",
+          "params": [
+            "id",
+            "title"
+          ],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "chromium"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "readFile",
+            "writeFile",
+            "mkdir"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 179,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/dev-server.mjs": {
+      "filePath": "scripts/dev-server.mjs",
+      "contentHash": "3d7f219824cdeb62a8eea744ea222711a284564ceb29534fb80b11147eece25f",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "./lib/static-server.mjs",
+          "specifiers": [
+            "createStaticServer"
+          ]
+        },
+        {
+          "source": "webpack",
+          "specifiers": [
+            "webpack"
+          ]
+        },
+        {
+          "source": "../webpack.config.js",
+          "specifiers": [
+            "makeConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/lib/static-server.mjs": {
+      "filePath": "scripts/lib/static-server.mjs",
+      "contentHash": "0149756b2109bbad2aff8fd214481841cc141a595c3cac01e91a1b3ea5e9af8e",
+      "functions": [
+        {
+          "name": "createStaticServer",
+          "params": [],
+          "exported": true,
+          "lineCount": 59
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:http",
+          "specifiers": [
+            "http"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "readFile"
+          ]
+        }
+      ],
+      "exports": [
+        "createStaticServer"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/preview-server.mjs": {
+      "filePath": "scripts/preview-server.mjs",
+      "contentHash": "7219ce2f8f7fe66964dcd2bcfad9d7a9de76a17d62021aea20cc525f9c2ddcfd",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./lib/static-server.mjs",
+          "specifiers": [
+            "createStaticServer"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/release.mjs": {
+      "filePath": "scripts/release.mjs",
+      "contentHash": "a7ba61368912b946982d9e051c45a7ef17e17dd19545cfce3c1ae214d26da970",
+      "functions": [
+        {
+          "name": "run",
+          "params": [
+            "command",
+            "args"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "git",
+          "params": [
+            "...args"
+          ],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "inspectRelease",
+          "params": [
+            "folder",
+            "expected"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "revision",
+          "params": [],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "prepare",
+          "params": [
+            "sha",
+            "folder"
+          ],
+          "exported": false,
+          "lineCount": 59
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "spawnSync",
+            "execFileSync"
+          ]
+        },
+        {
+          "source": "node:crypto",
+          "specifiers": [
+            "createHash"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "existsSync",
+            "mkdirSync",
+            "mkdtempSync",
+            "readFileSync",
+            "writeFileSync",
+            "renameSync",
+            "rmSync",
+            "copyFileSync"
+          ]
+        },
+        {
+          "source": "node:os",
+          "specifiers": [
+            "tmpdir"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        }
+      ],
+      "exports": [
+        "inspectRelease",
+        "main"
+      ],
+      "totalLines": 171,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/service-worker.mjs": {
+      "filePath": "scripts/service-worker.mjs",
+      "contentHash": "6286225b1166e957859ecc7f013a6b1c2be2b85f8bdf147ba2e03e934e95df42",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ServiceWorkerPlugin",
+          "methods": [
+            "apply"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "imports": [
+        {
+          "source": "node:crypto",
+          "specifiers": [
+            "createHash"
+          ]
+        }
+      ],
+      "exports": [
+        "ServiceWorkerPlugin"
+      ],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "server/app.js": {
+      "filePath": "server/app.js",
+      "contentHash": "50bc972c2ff89ff0cc35d2945af0e13730998959aa41f4868841fcd9efd2f021",
+      "functions": [
+        {
+          "name": "cookieMap",
+          "params": [
+            "req"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "json",
+          "params": [
+            "res",
+            "status",
+            "body"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "body",
+          "params": [
+            "req"
+          ],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "createApp",
+          "params": [],
+          "exported": true,
+          "lineCount": 297
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:http",
+          "specifiers": [
+            "http"
+          ]
+        },
+        {
+          "source": "node:net",
+          "specifiers": [
+            "isIP"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "readFile"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "workspaceLimits"
+          ]
+        },
+        {
+          "source": "./validation.js",
+          "specifiers": [
+            "ApiError",
+            "validateSettings"
+          ]
+        },
+        {
+          "source": "./store.js",
+          "specifiers": [
+            "hash"
+          ]
+        },
+        {
+          "source": "../src/app/i18n.js",
+          "specifiers": [
+            "translate"
+          ]
+        }
+      ],
+      "exports": [
+        "createApp"
+      ],
+      "totalLines": 329,
+      "hasStructuralAnalysis": true
+    },
+    "server/index.js": {
+      "filePath": "server/index.js",
+      "contentHash": "cf478b01a37caf9c3feee844c186a44f0fb057d239b5cab93b662366631865ab",
+      "functions": [
+        {
+          "name": "connectBot",
+          "params": [],
+          "exported": false,
+          "lineCount": 15
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "./store.js",
+          "specifiers": [
+            "Store"
+          ]
+        },
+        {
+          "source": "./app.js",
+          "specifiers": [
+            "createApp"
+          ]
+        },
+        {
+          "source": "./telegram.js",
+          "specifiers": [
+            "TelegramBot"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "server/store.js": {
+      "filePath": "server/store.js",
+      "contentHash": "94682b1537e45f6cae1a07184c87171d99b42e4b2302030dc928bdb602f672e6",
+      "functions": [
+        {
+          "name": "token",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "hash",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "Store",
+          "methods": [
+            "constructor",
+            "transaction",
+            "user",
+            "setSettings",
+            "settings",
+            "queueCommands",
+            "ensureUser",
+            "workspace",
+            "save",
+            "session",
+            "authenticate",
+            "revoke",
+            "challenge",
+            "getChallenge",
+            "cleanup",
+            "enqueue",
+            "addInbox",
+            "close"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 226
+        }
+      ],
+      "imports": [
+        {
+          "source": "node:sqlite",
+          "specifiers": [
+            "DatabaseSync"
+          ]
+        },
+        {
+          "source": "node:crypto",
+          "specifiers": [
+            "createHash",
+            "randomBytes",
+            "randomUUID"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "mkdirSync",
+            "chmodSync"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize",
+            "workspaceLimits"
+          ]
+        },
+        {
+          "source": "./validation.js",
+          "specifiers": [
+            "ApiError",
+            "validateSnapshot"
+          ]
+        },
+        {
+          "source": "../src/app/i18n.js",
+          "specifiers": [
+            "accountLanguage",
+            "translate"
+          ]
+        }
+      ],
+      "exports": [
+        "token",
+        "hash",
+        "Store"
+      ],
+      "totalLines": 236,
+      "hasStructuralAnalysis": true
+    },
+    "server/telegram.js": {
+      "filePath": "server/telegram.js",
+      "contentHash": "fb8b3768e9d47d3a88047b5e3e1ff5ec09b72a03441f8269e5bb5625acc7b80f",
+      "functions": [
+        {
+          "name": "calendar",
+          "params": [
+            "now",
+            "timezone"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "digest",
+          "params": [
+            "store",
+            "user"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "enqueueText",
+          "params": [
+            "store",
+            "id",
+            "chatId",
+            "text",
+            "extra"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "botCommands",
+          "params": [
+            "language"
+          ],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [
+        {
+          "name": "TelegramBot",
+          "methods": [
+            "constructor",
+            "allowed",
+            "call",
+            "taskFormButton",
+            "processUpdate",
+            "schedule",
+            "deliver",
+            "start",
+            "poll",
+            "stop"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 465
+        }
+      ],
+      "imports": [
+        {
+          "source": "../src/app/i18n.js",
+          "specifiers": [
+            "accountLanguage",
+            "translate",
+            "validLanguage"
+          ]
+        },
+        {
+          "source": "./store.js",
+          "specifiers": [
+            "hash"
+          ]
+        },
+        {
+          "source": "node:timers/promises",
+          "specifiers": [
+            "delay"
+          ]
+        },
+        {
+          "source": "./validation.js",
+          "specifiers": [
+            "validateSettings"
+          ]
+        }
+      ],
+      "exports": [
+        "calendar",
+        "digest",
+        "enqueueText",
+        "botCommands",
+        "TelegramBot"
+      ],
+      "totalLines": 533,
+      "hasStructuralAnalysis": true
+    },
+    "server/validation.js": {
+      "filePath": "server/validation.js",
+      "contentHash": "640726ad0e1ed4e4ceb3568b7c647052fc383f429cb9d4130689e4b0eec6dd4a",
+      "functions": [
+        {
+          "name": "fail",
+          "params": [
+            "message"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "text",
+          "params": [
+            "value",
+            "max",
+            "label"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "validateSnapshot",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 92
+        },
+        {
+          "name": "validateSettings",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [
+        {
+          "name": "ApiError",
+          "methods": [
+            "constructor"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "imports": [
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize",
+            "statuses",
+            "priorities",
+            "views",
+            "workspaceLimits",
+            "isDueDate"
+          ]
+        },
+        {
+          "source": "../src/app/i18n.js",
+          "specifiers": [
+            "validLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "ApiError",
+        "validateSnapshot",
+        "validateSettings"
+      ],
+      "totalLines": 138,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/App.jsx": {
+      "filePath": "src/app/App.jsx",
+      "contentHash": "5920e17d826f3cc86578384564bc33db18685ea1690dee0293a2a24afd816877",
+      "functions": [
+        {
+          "name": "App",
+          "params": [],
+          "exported": true,
+          "lineCount": 142
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "./components/TelegramLogin.jsx",
+          "specifiers": [
+            "TelegramLogin"
+          ]
+        },
+        {
+          "source": "./components/SyncPanel.jsx",
+          "specifiers": [
+            "SyncPanel"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "./hooks/useWorkspace.js",
+          "specifiers": [
+            "useWorkspace"
+          ]
+        },
+        {
+          "source": "./hooks/useDay.js",
+          "specifiers": [
+            "useDay"
+          ]
+        },
+        {
+          "source": "./hooks/useLanguage.js",
+          "specifiers": [
+            "useLanguage"
+          ]
+        },
+        {
+          "source": "./hooks/useMediaQuery.js",
+          "specifiers": [
+            "useMediaQuery"
+          ]
+        },
+        {
+          "source": "./constants.js",
+          "specifiers": [
+            "MOBILE_QUERY",
+            "COMPACT_QUERY"
+          ]
+        },
+        {
+          "source": "./selectors.js",
+          "specifiers": [
+            "selectDashboard"
+          ]
+        },
+        {
+          "source": "./components/Select.jsx",
+          "specifiers": [
+            "BusyContext"
+          ]
+        },
+        {
+          "source": "./components/Header.jsx",
+          "specifiers": [
+            "Header",
+            "MobileActions"
+          ]
+        },
+        {
+          "source": "./components/Sidebar.jsx",
+          "specifiers": [
+            "Sidebar"
+          ]
+        },
+        {
+          "source": "./components/Modal.jsx",
+          "specifiers": [
+            "SidebarDrawer"
+          ]
+        },
+        {
+          "source": "./components/Dashboard.jsx",
+          "specifiers": [
+            "Dashboard"
+          ]
+        },
+        {
+          "source": "./components/ProjectCard.jsx",
+          "specifiers": [
+            "ProjectCard"
+          ]
+        },
+        {
+          "source": "./components/TaskCard.jsx",
+          "specifiers": [
+            "TaskCard"
+          ]
+        },
+        {
+          "source": "./components/WorkspaceModal.jsx",
+          "specifiers": [
+            "WorkspaceModal"
+          ]
+        }
+      ],
+      "exports": [
+        "App"
+      ],
+      "totalLines": 162,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/app.css": {
+      "filePath": "src/app/app.css",
+      "contentHash": "42e927fa37182c83669be662420637e340d75c96d88d04aa822920ee294a361b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/components/Dashboard.jsx": {
+      "filePath": "src/app/components/Dashboard.jsx",
+      "contentHash": "49e86c2c5b83ad9659231a6e2318d0a8a2914ff1a2be24934b958c9789266af3",
+      "functions": [
+        {
+          "name": "Dashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 153
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Icon.jsx",
+          "specifiers": [
+            "Icon"
+          ]
+        },
+        {
+          "source": "./Kanban.jsx",
+          "specifiers": [
+            "Kanban"
+          ]
+        },
+        {
+          "source": "./Select.jsx",
+          "specifiers": [
+            "Select"
+          ]
+        },
+        {
+          "source": "./Markdown.jsx",
+          "specifiers": [
+            "Description"
+          ]
+        },
+        {
+          "source": "./DescriptionAccordion.jsx",
+          "specifiers": [
+            "DescriptionAccordion"
+          ]
+        },
+        {
+          "source": "../constants.js",
+          "specifiers": [
+            "filters"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "matches"
+          ]
+        },
+        {
+          "source": "../../assets/image/filter-icon.svg",
+          "specifiers": [
+            "filterIcon"
+          ]
+        }
+      ],
+      "exports": [
+        "Dashboard"
+      ],
+      "totalLines": 164,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/DescriptionAccordion.jsx": {
+      "filePath": "src/app/components/DescriptionAccordion.jsx",
+      "contentHash": "7be498d0fa70f80f25f59633d8f0058efbdee7b3c5e08f9c294d7e8c70adc88e",
+      "functions": [
+        {
+          "name": "DescriptionAccordion",
+          "params": [],
+          "exported": true,
+          "lineCount": 99
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useId",
+            "useLayoutEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "./Markdown.jsx",
+          "specifiers": [
+            "Description"
+          ]
+        },
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        }
+      ],
+      "exports": [
+        "DescriptionAccordion"
+      ],
+      "totalLines": 103,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/EditorForm.jsx": {
+      "filePath": "src/app/components/EditorForm.jsx",
+      "contentHash": "48c87d3a1f0e1bfa068f3dc08bf282e538ef6f26b9d6ff41dc8fdf291855f901",
+      "functions": [
+        {
+          "name": "EditorForm",
+          "params": [],
+          "exported": true,
+          "lineCount": 113
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "Suspense",
+            "useState"
+          ]
+        },
+        {
+          "source": "rehype-sanitize",
+          "specifiers": [
+            "rehypeSanitize"
+          ]
+        },
+        {
+          "source": "../markdown.jsx",
+          "specifiers": [
+            "markdownComponents"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "statuses",
+            "priorities",
+            "workspaceLimits"
+          ]
+        },
+        {
+          "source": "./Select.jsx",
+          "specifiers": [
+            "Select"
+          ]
+        },
+        {
+          "source": "./Markdown.jsx",
+          "specifiers": [
+            "MDEditor"
+          ]
+        }
+      ],
+      "exports": [
+        "EditorForm"
+      ],
+      "totalLines": 121,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Header.jsx": {
+      "filePath": "src/app/components/Header.jsx",
+      "contentHash": "c46ff742d6db6140d2621302dce4c29c7765fcb8db5ebe8df1aa53c4792959a7",
+      "functions": [
+        {
+          "name": "HeaderClock",
+          "params": [],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "AddActions",
+          "params": [],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "MobileActions",
+          "params": [],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "Header",
+          "params": [],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useEffect",
+            "useState",
+            "useContext"
+          ]
+        },
+        {
+          "source": "./Select.jsx",
+          "specifiers": [
+            "BusyContext"
+          ]
+        },
+        {
+          "source": "./Icon.jsx",
+          "specifiers": [
+            "Icon"
+          ]
+        }
+      ],
+      "exports": [
+        "AddActions",
+        "MobileActions",
+        "Header"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Icon.jsx": {
+      "filePath": "src/app/components/Icon.jsx",
+      "contentHash": "0e34ea32099e7f80e55ae39f262a3fb24ed9f46c840f752cac5883736554b5a3",
+      "functions": [
+        {
+          "name": "Icon",
+          "params": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        }
+      ],
+      "exports": [
+        "Icon"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ImportForm.jsx": {
+      "filePath": "src/app/components/ImportForm.jsx",
+      "contentHash": "f913f7eec1d04d55059095a7915260d35b569d29ef9c384dd2f514ebd8c8ab87",
+      "functions": [
+        {
+          "name": "ImportForm",
+          "params": [],
+          "exported": true,
+          "lineCount": 169
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../../docs/templates/project-template.json",
+          "specifiers": [
+            "template"
+          ]
+        },
+        {
+          "source": "../import-project.js",
+          "specifiers": [
+            "parseProjectImport"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "statuses",
+            "priorities",
+            "workspaceLimits"
+          ]
+        },
+        {
+          "source": "./Markdown.jsx",
+          "specifiers": [
+            "Description"
+          ]
+        },
+        {
+          "source": "../files.js",
+          "specifiers": [
+            "downloadJson"
+          ]
+        }
+      ],
+      "exports": [
+        "ImportForm"
+      ],
+      "totalLines": 178,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Kanban.jsx": {
+      "filePath": "src/app/components/Kanban.jsx",
+      "contentHash": "1ebb822685540cdc9486f27476ac8425320b3e0e6465fbd61ca1172392d52f24",
+      "functions": [
+        {
+          "name": "Kanban",
+          "params": [],
+          "exported": true,
+          "lineCount": 122
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useId",
+            "useState"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "taskGroup",
+            "taskGroups"
+          ]
+        },
+        {
+          "source": "./Icon.jsx",
+          "specifiers": [
+            "Icon"
+          ]
+        },
+        {
+          "source": "../hooks/useKanbanDrag.js",
+          "specifiers": [
+            "useKanbanDrag"
+          ]
+        }
+      ],
+      "exports": [
+        "Kanban"
+      ],
+      "totalLines": 128,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/LanguageSelect.jsx": {
+      "filePath": "src/app/components/LanguageSelect.jsx",
+      "contentHash": "96d8017ebb13ef2900d7f1c9ca1893d6e80bfb8231cf9aa87a688f62293ea00f",
+      "functions": [
+        {
+          "name": "LanguageSelect",
+          "params": [],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "t"
+          ]
+        }
+      ],
+      "exports": [
+        "LanguageSelect"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Markdown.jsx": {
+      "filePath": "src/app/components/Markdown.jsx",
+      "contentHash": "1b7e46d1c3f0b6478066e55e23a7ace8f49e578400ceb920df33e5338561305f",
+      "functions": [
+        {
+          "name": "localizeCommand",
+          "params": [
+            "command"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "Description",
+          "params": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "lazy",
+            "Suspense"
+          ]
+        },
+        {
+          "source": "rehype-sanitize",
+          "specifiers": [
+            "rehypeSanitize"
+          ]
+        },
+        {
+          "source": "../markdown.jsx",
+          "specifiers": [
+            "markdownComponents"
+          ]
+        }
+      ],
+      "exports": [
+        "MDEditor",
+        "Description"
+      ],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Modal.jsx": {
+      "filePath": "src/app/components/Modal.jsx",
+      "contentHash": "d5240c5b36eeb0482b0c4f0c22dbd0c67ffeaaf158e4446f8489cc661b104b3b",
+      "functions": [
+        {
+          "name": "Modal",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "SidebarDrawer",
+          "params": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Icon.jsx",
+          "specifiers": [
+            "Icon"
+          ]
+        },
+        {
+          "source": "../hooks/useDialog.js",
+          "specifiers": [
+            "useDialog",
+            "isBackdropClick"
+          ]
+        }
+      ],
+      "exports": [
+        "Modal",
+        "SidebarDrawer"
+      ],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ProjectCard.jsx": {
+      "filePath": "src/app/components/ProjectCard.jsx",
+      "contentHash": "fa86f61f74603f4a76525a7d6bcab627abf118e04846d1cec4e1ccde3dc388ab",
+      "functions": [
+        {
+          "name": "ProjectCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Icon.jsx",
+          "specifiers": [
+            "Icon"
+          ]
+        },
+        {
+          "source": "./DescriptionAccordion.jsx",
+          "specifiers": [
+            "DescriptionAccordion"
+          ]
+        },
+        {
+          "source": "./ProjectOpenArea.jsx",
+          "specifiers": [
+            "ProjectOpenArea"
+          ]
+        }
+      ],
+      "exports": [
+        "ProjectCard"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ProjectOpenArea.jsx": {
+      "filePath": "src/app/components/ProjectOpenArea.jsx",
+      "contentHash": "7120c024bf334abb570e3fd5612fa669ec5c73a215b280785f0d4885cb909024",
+      "functions": [
+        {
+          "name": "ProjectOpenArea",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        }
+      ],
+      "exports": [
+        "ProjectOpenArea"
+      ],
+      "totalLines": 14,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Select.jsx": {
+      "filePath": "src/app/components/Select.jsx",
+      "contentHash": "901fbde7da391cd4affe066de1de9b0a00dd69622eb1047bec3c69af778f9238",
+      "functions": [
+        {
+          "name": "Select",
+          "params": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "createContext",
+            "useContext"
+          ]
+        }
+      ],
+      "exports": [
+        "BusyContext",
+        "Select"
+      ],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Sidebar.jsx": {
+      "filePath": "src/app/components/Sidebar.jsx",
+      "contentHash": "fedfacf8c2acc51dd1ef37d79726c1fd7199df228a04b315e317310c05586e39",
+      "functions": [
+        {
+          "name": "Sidebar",
+          "params": [],
+          "exported": true,
+          "lineCount": 145
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Icon.jsx",
+          "specifiers": [
+            "Icon"
+          ]
+        },
+        {
+          "source": "./Markdown.jsx",
+          "specifiers": [
+            "Description"
+          ]
+        },
+        {
+          "source": "./ProjectOpenArea.jsx",
+          "specifiers": [
+            "ProjectOpenArea"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "matches"
+          ]
+        }
+      ],
+      "exports": [
+        "Sidebar"
+      ],
+      "totalLines": 152,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/SyncPanel.jsx": {
+      "filePath": "src/app/components/SyncPanel.jsx",
+      "contentHash": "10ca80105939a5027d6a112a25c0dde7d0d35c005e83c4fa40de87d33fa19c38",
+      "functions": [
+        {
+          "name": "SyncPanel",
+          "params": [],
+          "exported": true,
+          "lineCount": 225
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "setLanguage",
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useState"
+          ]
+        },
+        {
+          "source": "./TimezoneSelect.jsx",
+          "specifiers": [
+            "TimezoneSelect"
+          ]
+        },
+        {
+          "source": "../files.js",
+          "specifiers": [
+            "downloadJson"
+          ]
+        },
+        {
+          "source": "./LanguageSelect.jsx",
+          "specifiers": [
+            "LanguageSelect"
+          ]
+        }
+      ],
+      "exports": [
+        "SyncPanel"
+      ],
+      "totalLines": 231,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TaskCard.jsx": {
+      "filePath": "src/app/components/TaskCard.jsx",
+      "contentHash": "993d2fcfab90eacdb7a30b53eab43dd01c29385f0052c14dd83b74dcf3791580",
+      "functions": [
+        {
+          "name": "TaskCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 101
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Select.jsx",
+          "specifiers": [
+            "Select"
+          ]
+        },
+        {
+          "source": "./DescriptionAccordion.jsx",
+          "specifiers": [
+            "DescriptionAccordion"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "statuses",
+            "priorities",
+            "matches",
+            "formatDueDate"
+          ]
+        }
+      ],
+      "exports": [
+        "TaskCard"
+      ],
+      "totalLines": 107,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TaskDetails.jsx": {
+      "filePath": "src/app/components/TaskDetails.jsx",
+      "contentHash": "7bfcab2c195a265042145cba870760ffece91c2184a3217f11a080e8676c33c7",
+      "functions": [
+        {
+          "name": "TaskDetails",
+          "params": [],
+          "exported": true,
+          "lineCount": 60
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Select.jsx",
+          "specifiers": [
+            "Select"
+          ]
+        },
+        {
+          "source": "./Markdown.jsx",
+          "specifiers": [
+            "Description"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "statuses",
+            "priorities",
+            "formatDueDate"
+          ]
+        }
+      ],
+      "exports": [
+        "TaskDetails"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TelegramLogin.jsx": {
+      "filePath": "src/app/components/TelegramLogin.jsx",
+      "contentHash": "14c5bcb7bb8c843c15cb639a759133335d4022f37a8c391e70622e2fc03f61c6",
+      "functions": [
+        {
+          "name": "TelegramLogin",
+          "params": [],
+          "exported": true,
+          "lineCount": 112
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "t"
+          ]
+        },
+        {
+          "source": "../sync/request.js",
+          "specifiers": [
+            "requestWithTimeout"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useEffect",
+            "useState",
+            "useRef"
+          ]
+        }
+      ],
+      "exports": [
+        "TelegramLogin"
+      ],
+      "totalLines": 116,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TimezoneSelect.jsx": {
+      "filePath": "src/app/components/TimezoneSelect.jsx",
+      "contentHash": "6fae743e37c418976ee14b048cc4d3acfa518397ff0f47781ec1ec0db119b695",
+      "functions": [
+        {
+          "name": "canonical",
+          "params": [
+            "zone"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "label",
+          "params": [
+            "zone",
+            "now"
+          ],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "TimezoneSelect",
+          "params": [],
+          "exported": true,
+          "lineCount": 60
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React",
+            "useId",
+            "useMemo"
+          ]
+        }
+      ],
+      "exports": [
+        "TimezoneSelect"
+      ],
+      "totalLines": 137,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/WorkspaceModal.jsx": {
+      "filePath": "src/app/components/WorkspaceModal.jsx",
+      "contentHash": "ddaebb81bbfd080ed6a539737ddbc29c419f926005c6c99e32d41dfb39d26ba5",
+      "functions": [
+        {
+          "name": "WorkspaceModal",
+          "params": [],
+          "exported": true,
+          "lineCount": 86
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "./Modal.jsx",
+          "specifiers": [
+            "Modal"
+          ]
+        },
+        {
+          "source": "./ImportForm.jsx",
+          "specifiers": [
+            "ImportForm"
+          ]
+        },
+        {
+          "source": "./EditorForm.jsx",
+          "specifiers": [
+            "EditorForm"
+          ]
+        },
+        {
+          "source": "./TaskDetails.jsx",
+          "specifiers": [
+            "TaskDetails"
+          ]
+        }
+      ],
+      "exports": [
+        "WorkspaceModal"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/constants.js": {
+      "filePath": "src/app/constants.js",
+      "contentHash": "a141d387a56b476ffc72577d930d20c73a2b7e39d5318d85d63a6b2b3ce5c610",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "MOBILE_QUERY",
+        "COMPACT_QUERY",
+        "filters"
+      ],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/description.js": {
+      "filePath": "src/app/description.js",
+      "contentHash": "2dede4460db2f0a6379660862882b82c7f110247df826ef22a6b90b7baf6d042",
+      "functions": [
+        {
+          "name": "normalizeDescription",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "normalizeDescription"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/files.js": {
+      "filePath": "src/app/files.js",
+      "contentHash": "2f11a7bc029ff6cf7f0afbdcf7b8ba84185b26f17b2bc81a265317b685ed9c3c",
+      "functions": [
+        {
+          "name": "downloadJson",
+          "params": [
+            "value",
+            "filename"
+          ],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "downloadJson"
+      ],
+      "totalLines": 14,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hooks/useDay.js": {
+      "filePath": "src/app/hooks/useDay.js",
+      "contentHash": "3544089ade791ea06f6fbb67bd47c2e950c01d03643b7394f825ad08292767cb",
+      "functions": [
+        {
+          "name": "useDay",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "today"
+          ]
+        }
+      ],
+      "exports": [
+        "useDay"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hooks/useDialog.js": {
+      "filePath": "src/app/hooks/useDialog.js",
+      "contentHash": "45214c3c0a48707a03afb10dc653a73a3235c586a17389539961df358fdca543",
+      "functions": [
+        {
+          "name": "useDialog",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "isBackdropClick",
+          "params": [
+            "event"
+          ],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef"
+          ]
+        }
+      ],
+      "exports": [
+        "useDialog",
+        "isBackdropClick"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hooks/useKanbanDrag.js": {
+      "filePath": "src/app/hooks/useKanbanDrag.js",
+      "contentHash": "48afb93727bc9d08479a90a0492a8c3a33a1eb0348bf187ec6114bf24600b5dc",
+      "functions": [
+        {
+          "name": "useKanbanDrag",
+          "params": [
+            "onDrop"
+          ],
+          "exported": true,
+          "lineCount": 191
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "useKanbanDrag"
+      ],
+      "totalLines": 196,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hooks/useLanguage.js": {
+      "filePath": "src/app/hooks/useLanguage.js",
+      "contentHash": "e12e28d4f6db247d0bbb3828324e9a845c7545741e8abf0940729c229a6a9e41",
+      "functions": [
+        {
+          "name": "useLanguage",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useSyncExternalStore"
+          ]
+        },
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "setLanguage",
+            "subscribeLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "useLanguage"
+      ],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hooks/useMediaQuery.js": {
+      "filePath": "src/app/hooks/useMediaQuery.js",
+      "contentHash": "64b86df4486f26d50ecd20ac9e28a3ed94b82c3ce0d2aed92ce9b3530f0a72e9",
+      "functions": [
+        {
+          "name": "useMediaQuery",
+          "params": [
+            "query"
+          ],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "useMediaQuery"
+      ],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hooks/useWorkspace.js": {
+      "filePath": "src/app/hooks/useWorkspace.js",
+      "contentHash": "5b4324e50ea71a4a747c4d346432f55afdaaa1cf7600961a94fc1eea64b6f514",
+      "functions": [
+        {
+          "name": "useWorkspace",
+          "params": [],
+          "exported": true,
+          "lineCount": 210
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "../repository.js",
+          "specifiers": [
+            "createRepository"
+          ]
+        },
+        {
+          "source": "../import-project.js",
+          "specifiers": [
+            "appendProjectImport"
+          ]
+        },
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "orderedProjects",
+            "upsertTask"
+          ]
+        },
+        {
+          "source": "../workspace.js",
+          "specifiers": [
+            "newTask",
+            "newProject",
+            "setPreference",
+            "toggleProjectPin",
+            "removeTask",
+            "removeProject",
+            "saveItem"
+          ]
+        }
+      ],
+      "exports": [
+        "useWorkspace"
+      ],
+      "totalLines": 226,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/i18n-messages.js": {
+      "filePath": "src/app/i18n-messages.js",
+      "contentHash": "844784116e769113dd458f0778b4d8687a764d08f9137260aee6122bf3341b4b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "messages"
+      ],
+      "totalLines": 420,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/i18n.js": {
+      "filePath": "src/app/i18n.js",
+      "contentHash": "59d330eb7b2111eddaaf562488c66156d327844c0fdb60fba17c0944c27dc340",
+      "functions": [
+        {
+          "name": "validLanguage",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "accountLanguage",
+          "params": [
+            "settings"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "translate",
+          "params": [
+            "source"
+          ],
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "getLanguage",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "t",
+          "params": [
+            "source",
+            "values"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "setLanguage",
+          "params": [
+            "next"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "subscribeLanguage",
+          "params": [
+            "listener"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./i18n-messages.js",
+          "specifiers": [
+            "messages"
+          ]
+        }
+      ],
+      "exports": [
+        "languages",
+        "validLanguage",
+        "accountLanguage",
+        "translate",
+        "getLanguage",
+        "t",
+        "setLanguage",
+        "subscribeLanguage"
+      ],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/import-project.js": {
+      "filePath": "src/app/import-project.js",
+      "contentHash": "8a11b21df3f6bf94de6fc78a83344125fe0368f63cc0b0dd629041752223b43d",
+      "functions": [
+        {
+          "name": "fail",
+          "params": [
+            "where",
+            "message"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "object",
+          "params": [
+            "value",
+            "where"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "keys",
+          "params": [
+            "value",
+            "allowed",
+            "where"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "text",
+          "params": [
+            "value",
+            "limit",
+            "where"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "choice",
+          "params": [
+            "value",
+            "options",
+            "fallback",
+            "where"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "date",
+          "params": [
+            "value",
+            "where"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "parseProjectImport",
+          "params": [
+            "raw"
+          ],
+          "exported": true,
+          "lineCount": 115
+        },
+        {
+          "name": "appendProjectImport",
+          "params": [
+            "current",
+            "imported"
+          ],
+          "exported": true,
+          "lineCount": 70
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./model.js",
+          "specifiers": [
+            "statuses",
+            "priorities",
+            "views",
+            "workspaceLimits",
+            "isDueDate"
+          ]
+        },
+        {
+          "source": "./description.js",
+          "specifiers": [
+            "normalizeDescription"
+          ]
+        }
+      ],
+      "exports": [
+        "parseProjectImport",
+        "appendProjectImport"
+      ],
+      "totalLines": 226,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/markdown.jsx": {
+      "filePath": "src/app/markdown.jsx",
+      "contentHash": "a81def0b8b1b2442f6acbdeea16172b371d533e82b9159cebec1ba6c491ae7cc",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./i18n.js",
+          "specifiers": [
+            "t"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        }
+      ],
+      "exports": [
+        "markdownComponents"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/model.js": {
+      "filePath": "src/app/model.js",
+      "contentHash": "f031200906981cf55609f3aa797ff24e1f2dea84722b45fb3019c9652b2debb1",
+      "functions": [
+        {
+          "name": "isDueDate",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "today",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "normalize",
+          "params": [
+            "data"
+          ],
+          "exported": true,
+          "lineCount": 86
+        },
+        {
+          "name": "orderedProjects",
+          "params": [
+            "projects"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "taskGroup",
+          "params": [
+            "task"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "sortedTasks",
+          "params": [
+            "tasks"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "matches",
+          "params": [
+            "task",
+            "filter"
+          ],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "upsertTask",
+          "params": [
+            "data",
+            "task"
+          ],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "formatDueDate",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./description.js",
+          "specifiers": [
+            "normalizeDescription"
+          ]
+        },
+        {
+          "source": "./i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "t"
+          ]
+        }
+      ],
+      "exports": [
+        "workspaceLimits",
+        "isDueDate",
+        "statuses",
+        "priorities",
+        "views",
+        "today",
+        "normalize",
+        "orderedProjects",
+        "taskGroups",
+        "taskGroup",
+        "sortedTasks",
+        "matches",
+        "upsertTask",
+        "formatDueDate"
+      ],
+      "totalLines": 215,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/repository.js": {
+      "filePath": "src/app/repository.js",
+      "contentHash": "30b66908883deafeec421f5e7703790b7ed30c97d83829254ccf678c48526315",
+      "functions": [
+        {
+          "name": "createRepository",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [
+        {
+          "name": "LocalRepository",
+          "methods": [
+            "constructor",
+            "load",
+            "subscribe",
+            "save"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "imports": [
+        {
+          "source": "./sync/remote-repository.js",
+          "specifiers": [
+            "RemoteRepository"
+          ]
+        },
+        {
+          "source": "./model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        }
+      ],
+      "exports": [
+        "HttpRepository",
+        "LocalRepository",
+        "createRepository"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/selectors.js": {
+      "filePath": "src/app/selectors.js",
+      "contentHash": "4bec72a3dfe7f5f435e89e9eeaec14fe437fa44c257dff55e1b2146e9db977e0",
+      "functions": [
+        {
+          "name": "selectDashboard",
+          "params": [
+            "data"
+          ],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./model.js",
+          "specifiers": [
+            "orderedProjects",
+            "sortedTasks",
+            "matches",
+            "today"
+          ]
+        }
+      ],
+      "exports": [
+        "selectDashboard"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/service-worker.js": {
+      "filePath": "src/app/service-worker.js",
+      "contentHash": "2042129a939aa6155cd7084f4d9e3a53590a15831568ca35502c6b9090a67448",
+      "functions": [
+        {
+          "name": "registerServiceWorker",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "registerServiceWorker"
+      ],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/styles/base.css": {
+      "filePath": "src/app/styles/base.css",
+      "contentHash": "9c50c3bc3dd9d64f3cdc8d0df257dbc13e6db1cc4f6f712351880d86e72fe330",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 241,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/cards.css": {
+      "filePath": "src/app/styles/cards.css",
+      "contentHash": "21aef8389cf961dd66a435ccb1469d4e6550e9ee8639f541fe26a42d94dc4899",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 274,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/dashboard.css": {
+      "filePath": "src/app/styles/dashboard.css",
+      "contentHash": "7bd097be34601feb24e3d5da7cde9078366449a251d9f1ad9b9617375ed15050",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 167,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/dialogs.css": {
+      "filePath": "src/app/styles/dialogs.css",
+      "contentHash": "4edce3c436d3388eb4ac0aaed3ad714181840d78620e87473e48d196ea1f5dbf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 156,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/header.css": {
+      "filePath": "src/app/styles/header.css",
+      "contentHash": "1f14450618b6d9e18b352342cd32d2bd6b9414b025d5e8fd2609292c382bf9c2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 70,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/kanban.css": {
+      "filePath": "src/app/styles/kanban.css",
+      "contentHash": "cc683fdd57f24e8dc4fddbfc92d03119afa74a582c6dc637e0b6b5d8697b7a91",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 133,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/markdown.css": {
+      "filePath": "src/app/styles/markdown.css",
+      "contentHash": "8bcbd41f7768ecfab38dca9c10712c37000a07bc9021136ebf3f6d8b9ea1b9bf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 86,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/responsive.css": {
+      "filePath": "src/app/styles/responsive.css",
+      "contentHash": "3ff1934318e6c3c133f13c9afb6a750a27612da60d3cf46a6dd30110fd84168c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 246,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/sidebar.css": {
+      "filePath": "src/app/styles/sidebar.css",
+      "contentHash": "763ee6e7a72fe7ccee290ee11870893d57a9fbeca4fea30fe7eefefb4ea53df5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 248,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/styles/sync.css": {
+      "filePath": "src/app/styles/sync.css",
+      "contentHash": "43df9db84327a369d199a2ae3957d33eebb870da93ebc200a336e3b858c79eb6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 109,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/sync/client-store.js": {
+      "filePath": "src/app/sync/client-store.js",
+      "contentHash": "4f7fa06804afa1fab2e553c38dee528b3bc78306ff2b7803c270b713b4ca4fc3",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ClientStore",
+          "methods": [
+            "constructor",
+            "open",
+            "read",
+            "change"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 49
+        }
+      ],
+      "imports": [],
+      "exports": [
+        "ClientStore"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/sync/http-repository.js": {
+      "filePath": "src/app/sync/http-repository.js",
+      "contentHash": "626d3d06a866b8559e1e064616e364b9714970a037865f2ee96e91ae2cf1941c",
+      "functions": [],
+      "classes": [
+        {
+          "name": "HttpRepository",
+          "methods": [
+            "constructor",
+            "endpoint",
+            "load",
+            "save"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 38
+        }
+      ],
+      "imports": [
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        },
+        {
+          "source": "./request.js",
+          "specifiers": [
+            "requestWithTimeout"
+          ]
+        }
+      ],
+      "exports": [
+        "HttpRepository"
+      ],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/sync/merge.js": {
+      "filePath": "src/app/sync/merge.js",
+      "contentHash": "a818a2b1b764aa7b3a0372a59e220a86baa8939ccdadd2172c5f347aa4b85fd5",
+      "functions": [
+        {
+          "name": "same",
+          "params": [
+            "a",
+            "b"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "flatten",
+          "params": [
+            "snapshot"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "mergeEdit",
+          "params": [
+            "base",
+            "next",
+            "remote"
+          ],
+          "exported": true,
+          "lineCount": 69
+        },
+        {
+          "name": "pendingSnapshot",
+          "params": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [
+        {
+          "name": "MergeConflict",
+          "methods": [
+            "constructor"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "imports": [
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        }
+      ],
+      "exports": [
+        "MergeConflict",
+        "mergeEdit",
+        "pendingSnapshot"
+      ],
+      "totalLines": 114,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/sync/remote-repository.js": {
+      "filePath": "src/app/sync/remote-repository.js",
+      "contentHash": "454e1547706c13eacf06de1055bde35d8e0998a61875edfa4befe392a8c9a1b7",
+      "functions": [],
+      "classes": [
+        {
+          "name": "AuthenticationRequired",
+          "methods": [
+            "constructor"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "RemoteRepository",
+          "methods": [
+            "constructor",
+            "api",
+            "key",
+            "forget",
+            "load",
+            "save",
+            "publish",
+            "flush",
+            "subscribe",
+            "resolveConflict",
+            "logout",
+            "exportDraft",
+            "updateSettings"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 369
+        }
+      ],
+      "imports": [
+        {
+          "source": "../model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        },
+        {
+          "source": "./http-repository.js",
+          "specifiers": [
+            "HttpRepository"
+          ]
+        },
+        {
+          "source": "./client-store.js",
+          "specifiers": [
+            "ClientStore"
+          ]
+        },
+        {
+          "source": "./merge.js",
+          "specifiers": [
+            "mergeEdit",
+            "pendingSnapshot"
+          ]
+        },
+        {
+          "source": "../i18n.js",
+          "specifiers": [
+            "getLanguage",
+            "setLanguage",
+            "validLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "AuthenticationRequired",
+        "RemoteRepository"
+      ],
+      "totalLines": 381,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/sync/request.js": {
+      "filePath": "src/app/sync/request.js",
+      "contentHash": "2d323c82ec9238ea2c587fd1930ea9f46026906d23aeb02d44d03354f13a1ba1",
+      "functions": [
+        {
+          "name": "requestWithTimeout",
+          "params": [
+            "request",
+            "url"
+          ],
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "requestWithTimeout"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/workspace.js": {
+      "filePath": "src/app/workspace.js",
+      "contentHash": "2b9f3f9599522909bd12c7a6bad45c5a08f0b9cedd45769b5ef132f708e013e9",
+      "functions": [
+        {
+          "name": "newTask",
+          "params": [
+            "projectId"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "newProject",
+          "params": [
+            "projects"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "setPreference",
+          "params": [
+            "data",
+            "key",
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "toggleProjectPin",
+          "params": [
+            "data",
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "saveProject",
+          "params": [
+            "data",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "removeProject",
+          "params": [
+            "data",
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "removeTask",
+          "params": [
+            "data",
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "saveItem",
+          "params": [
+            "data",
+            "kind",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./model.js",
+          "specifiers": [
+            "today",
+            "upsertTask"
+          ]
+        }
+      ],
+      "exports": [
+        "newTask",
+        "newProject",
+        "setPreference",
+        "toggleProjectPin",
+        "saveProject",
+        "removeProject",
+        "removeTask",
+        "saveItem"
+      ],
+      "totalLines": 113,
+      "hasStructuralAnalysis": true
+    },
+    "src/index.js": {
+      "filePath": "src/index.js",
+      "contentHash": "0c85709f2758a500814113db60e9a686539c0e7de9e3774034ba2c9110a376fc",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./app/service-worker.js",
+          "specifiers": [
+            "registerServiceWorker"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-dom/client",
+          "specifiers": [
+            "createRoot"
+          ]
+        },
+        {
+          "source": "./app/App.jsx",
+          "specifiers": [
+            "App"
+          ]
+        },
+        {
+          "source": "./app/app.css",
+          "specifiers": []
+        },
+        {
+          "source": "./assets/image/favicon.svg",
+          "specifiers": [
+            "logo"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "src/template.html": {
+      "filePath": "src/template.html",
+      "contentHash": "325232d0068a1c9f9ea786aa883cb63d24d0706e05055d7693895aa40b988329",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": false
+    },
+    "tests/deploy.test.js": {
+      "filePath": "tests/deploy.test.js",
+      "contentHash": "90059e4cfe91077991dac251d805a02da56dbe145f48b37402c9ec35c5ec1ded",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "mkdtempSync",
+            "rmSync",
+            "existsSync"
+          ]
+        },
+        {
+          "source": "node:os",
+          "specifiers": [
+            "tmpdir"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "execFileSync"
+          ]
+        },
+        {
+          "source": "../server/store.js",
+          "specifiers": [
+            "Store"
+          ]
+        },
+        {
+          "source": "node:sqlite",
+          "specifiers": [
+            "DatabaseSync"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "tests/descriptions.spec.js": {
+      "filePath": "tests/descriptions.spec.js",
+      "contentHash": "0d6b2d206e7175600e37b7eb0b9a679bcab59282e47f3e3f38b7cd820e30f214",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 250,
+      "hasStructuralAnalysis": true
+    },
+    "tests/fixtures/remote.js": {
+      "filePath": "tests/fixtures/remote.js",
+      "contentHash": "483ef76a2f562a473df887c95bf303a4c5e536616b95b2b5c311510e79b6bc5b",
+      "functions": [
+        {
+          "name": "login",
+          "params": [
+            "page",
+            "user",
+            "request"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "addTask",
+          "params": [
+            "page",
+            "title"
+          ],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "expect"
+          ]
+        }
+      ],
+      "exports": [
+        "base",
+        "login",
+        "addTask"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "tests/fixtures/server.mjs": {
+      "filePath": "tests/fixtures/server.mjs",
+      "contentHash": "4ba70c63b962359dd82cc4e045e8134b7dbb80c7952016ed54e8314cfa681b59",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:http",
+          "specifiers": [
+            "http"
+          ]
+        },
+        {
+          "source": "../../server/store.js",
+          "specifiers": [
+            "Store"
+          ]
+        },
+        {
+          "source": "../../server/app.js",
+          "specifiers": [
+            "createApp"
+          ]
+        },
+        {
+          "source": "../../server/telegram.js",
+          "specifiers": [
+            "TelegramBot"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": true
+    },
+    "tests/fixtures/workspace.js": {
+      "filePath": "tests/fixtures/workspace.js",
+      "contentHash": "e342f44862492a01742afe300cc97fca4f99f10e2303777ee90fa388e175c983",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "base",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [
+        "test",
+        "expect",
+        "seed"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "tests/i18n.spec.js": {
+      "filePath": "tests/i18n.spec.js",
+      "contentHash": "cfe88d171e4f946551c78f2604138f12e9251dc8e4a3a62064ca3db5c905192a",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        },
+        {
+          "source": "./fixtures/remote.js",
+          "specifiers": [
+            "base",
+            "login"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 214,
+      "hasStructuralAnalysis": true
+    },
+    "tests/i18n.test.js": {
+      "filePath": "tests/i18n.test.js",
+      "contentHash": "b74e051845bba2f869ea4d94bbb954d70265fe93868091e2eee22c5f5e6650fc",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/i18n-messages.js",
+          "specifiers": [
+            "messages"
+          ]
+        },
+        {
+          "source": "../src/app/i18n.js",
+          "specifiers": [
+            "translate",
+            "setLanguage",
+            "getLanguage"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "sortedTasks"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "tests/import.spec.js": {
+      "filePath": "tests/import.spec.js",
+      "contentHash": "02208d088a1896374dde9e446760f60fbf828474632f94a6aaf764eeba6142d2",
+      "functions": [
+        {
+          "name": "template",
+          "params": [],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "file",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "openImport",
+          "params": [
+            "page"
+          ],
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "readFile"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 133,
+      "hasStructuralAnalysis": true
+    },
+    "tests/import.test.js": {
+      "filePath": "tests/import.test.js",
+      "contentHash": "b7371e13b6f76f9c6669e3d3ff562dd9776f8d6fbd14196a08a22e7126789800",
+      "functions": [
+        {
+          "name": "template",
+          "params": [],
+          "exported": false,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "readFileSync",
+            "readdirSync"
+          ]
+        },
+        {
+          "source": "../src/app/import-project.js",
+          "specifiers": [
+            "parseProjectImport",
+            "appendProjectImport"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        },
+        {
+          "source": "../server/validation.js",
+          "specifiers": [
+            "validateSnapshot"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 143,
+      "hasStructuralAnalysis": true
+    },
+    "tests/kanban-drag.spec.js": {
+      "filePath": "tests/kanban-drag.spec.js",
+      "contentHash": "681bbaf30a460a6a61fef524a194e3576c5eb7e98a5b1028adae40bb79f2904e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 315,
+      "hasStructuralAnalysis": true
+    },
+    "tests/kanban-sync.spec.js": {
+      "filePath": "tests/kanban-sync.spec.js",
+      "contentHash": "6d0c0fc2b4738429498a57ff917e11724ba2f85493649ad3d6fbf421502d00b9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        },
+        {
+          "source": "./fixtures/remote.js",
+          "specifiers": [
+            "base",
+            "login",
+            "addTask"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": true
+    },
+    "tests/layout.spec.js": {
+      "filePath": "tests/layout.spec.js",
+      "contentHash": "9ac177a22fc90cd14677435436ce51688ea8347764fbd8077c9d34bb5823ec3d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 481,
+      "hasStructuralAnalysis": true
+    },
+    "tests/modal-layout.spec.js": {
+      "filePath": "tests/modal-layout.spec.js",
+      "contentHash": "90fe42ab0d3d8888aadc624aae134057a6bfbf1ce4b4f9669e3fc8060b95203e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 163,
+      "hasStructuralAnalysis": true
+    },
+    "tests/model.test.js": {
+      "filePath": "tests/model.test.js",
+      "contentHash": "9995bd7597e62284ea0e8553caa2e8d2b3b5e6f10db94b46d82ba5a8f9278094",
+      "functions": [
+        {
+          "name": "project",
+          "params": [
+            "id"
+          ],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../src/app/description.js",
+          "specifiers": [
+            "normalizeDescription"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize",
+            "orderedProjects",
+            "sortedTasks",
+            "upsertTask",
+            "matches",
+            "today",
+            "taskGroup"
+          ]
+        },
+        {
+          "source": "../src/app/repository.js",
+          "specifiers": [
+            "LocalRepository",
+            "HttpRepository"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 255,
+      "hasStructuralAnalysis": true
+    },
+    "tests/release.test.js": {
+      "filePath": "tests/release.test.js",
+      "contentHash": "2933207b8b910bbbdf427ead37a56a9557fb1acadefd1eb348bbf82c4105d602",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "specifiers": [
+            "mkdtempSync",
+            "mkdirSync",
+            "writeFileSync",
+            "copyFileSync",
+            "readFileSync",
+            "rmSync"
+          ]
+        },
+        {
+          "source": "node:os",
+          "specifiers": [
+            "tmpdir"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "execFileSync",
+            "spawnSync"
+          ]
+        },
+        {
+          "source": "../scripts/release.mjs",
+          "specifiers": [
+            "inspectRelease"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 115,
+      "hasStructuralAnalysis": true
+    },
+    "tests/remote-repository.test.js": {
+      "filePath": "tests/remote-repository.test.js",
+      "contentHash": "6d56069c70dd4170696de13ade0c4fee7825005f8946f320246f4cf24dcd381d",
+      "functions": [
+        {
+          "name": "setup",
+          "params": [],
+          "exported": false,
+          "lineCount": 68
+        }
+      ],
+      "classes": [
+        {
+          "name": "MemoryStore",
+          "methods": [
+            "constructor",
+            "read",
+            "change"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        },
+        {
+          "source": "../src/app/sync/remote-repository.js",
+          "specifiers": [
+            "RemoteRepository"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 203,
+      "hasStructuralAnalysis": true
+    },
+    "tests/remote.spec.js": {
+      "filePath": "tests/remote.spec.js",
+      "contentHash": "bdce3283ed9582421fc657f844fe73936923c3c2b4e3340ca37abdc912b8cde2",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        },
+        {
+          "source": "./fixtures/remote.js",
+          "specifiers": [
+            "base",
+            "login",
+            "addTask"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 484,
+      "hasStructuralAnalysis": true
+    },
+    "tests/request.test.js": {
+      "filePath": "tests/request.test.js",
+      "contentHash": "fca9ed98012af3f3766f1a23dc281b6e2c7ab2df1c1db3f95b47e16bbe0f8de2",
+      "functions": [
+        {
+          "name": "stalled",
+          "params": [
+            "_url"
+          ],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/sync/request.js",
+          "specifiers": [
+            "requestWithTimeout"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "tests/security.spec.js": {
+      "filePath": "tests/security.spec.js",
+      "contentHash": "5955ffad46b003d01ad2d0bf6f35719c2c8beb6de33aa6514a855f9dbef45a7a",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect",
+            "seed"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 208,
+      "hasStructuralAnalysis": true
+    },
+    "tests/server-feedback.spec.js": {
+      "filePath": "tests/server-feedback.spec.js",
+      "contentHash": "c74306002da5747940e89c0015059fb5dc5ee16dd5b02aacc3d669b5d45762d6",
+      "functions": [
+        {
+          "name": "prepare",
+          "params": [
+            "page",
+            "request",
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "hold",
+          "params": [
+            "page",
+            "rejected"
+          ],
+          "exported": false,
+          "lineCount": 20
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        },
+        {
+          "source": "./fixtures/remote.js",
+          "specifiers": [
+            "base",
+            "login"
+          ]
+        },
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "seed"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 549,
+      "hasStructuralAnalysis": true
+    },
+    "tests/server.test.js": {
+      "filePath": "tests/server.test.js",
+      "contentHash": "7108e83fc349b83ce75f4c08324f2eb4fd7f8351f8022b249e14f8a42114882c",
+      "functions": [
+        {
+          "name": "setup",
+          "params": [],
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "message",
+          "params": [
+            "updateId",
+            "id",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "approve",
+          "params": [
+            "bot",
+            "id",
+            "challenge"
+          ],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../server/store.js",
+          "specifiers": [
+            "Store",
+            "hash"
+          ]
+        },
+        {
+          "source": "../server/app.js",
+          "specifiers": [
+            "createApp"
+          ]
+        },
+        {
+          "source": "../server/telegram.js",
+          "specifiers": [
+            "TelegramBot",
+            "calendar",
+            "digest",
+            "botCommands"
+          ]
+        },
+        {
+          "source": "../server/validation.js",
+          "specifiers": [
+            "validateSnapshot",
+            "validateSettings"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 557,
+      "hasStructuralAnalysis": true
+    },
+    "tests/sync.test.js": {
+      "filePath": "tests/sync.test.js",
+      "contentHash": "30b6f7b2f4d5465148495784b9cf022a50e8ff16c24931ee3533434d273cbe49",
+      "functions": [
+        {
+          "name": "initial",
+          "params": [],
+          "exported": false,
+          "lineCount": 20
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        },
+        {
+          "source": "../src/app/sync/merge.js",
+          "specifiers": [
+            "mergeEdit",
+            "MergeConflict"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": true
+    },
+    "tests/touch.spec.js": {
+      "filePath": "tests/touch.spec.js",
+      "contentHash": "a2f73c1aa4afa97c40712bdf1229c0a6070f4850f72da89f198f3d33620cfaf6",
+      "functions": [
+        {
+          "name": "touch",
+          "params": [
+            "client",
+            "type",
+            "point"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "center",
+          "params": [
+            "locator"
+          ],
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 177,
+      "hasStructuralAnalysis": true
+    },
+    "tests/workflows.spec.js": {
+      "filePath": "tests/workflows.spec.js",
+      "contentHash": "3b524ec1e15bf9ba41f53874ca3ef4be17af30a9b9e112fb5accce924c5793c3",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 450,
+      "hasStructuralAnalysis": true
+    },
+    "tests/workspace.test.js": {
+      "filePath": "tests/workspace.test.js",
+      "contentHash": "35aaddecbd3c33655a26f68e39d93070a2545b7a33f3d8ccdb9f177f786f764e",
+      "functions": [
+        {
+          "name": "workspace",
+          "params": [],
+          "exported": false,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize",
+            "orderedProjects"
+          ]
+        },
+        {
+          "source": "../src/app/workspace.js",
+          "specifiers": [
+            "toggleProjectPin",
+            "removeProject",
+            "removeTask",
+            "saveProject",
+            "setPreference"
+          ]
+        },
+        {
+          "source": "../src/app/selectors.js",
+          "specifiers": [
+            "selectDashboard"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "webpack.config.js": {
+      "filePath": "webpack.config.js",
+      "contentHash": "2a7370a156e7f02159d8052f841f3cde94ae4c952cbcbf361b9d6dc7ef03f1bb",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./scripts/service-worker.mjs",
+          "specifiers": [
+            "ServiceWorkerPlugin"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "html-webpack-plugin",
+          "specifiers": [
+            "HtmlWebpackPlugin"
+          ]
+        },
+        {
+          "source": "mini-css-extract-plugin",
+          "specifiers": [
+            "MiniCssExtractPlugin"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

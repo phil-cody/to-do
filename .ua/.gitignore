@@ -1,0 +1,4 @@
+# Reproducible scratch data and local analysis diagnostics.
+intermediate/
+tmp/
+.trash-*/
