@@ -1,4 +1,5 @@
 import test from "node:test";
+import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import {
   mkdtempSync,
@@ -25,15 +26,22 @@ test("release builds the pushed commit and refuses stale, corrupt, dirty or unpu
       stdio: ["ignore", "pipe", "pipe"],
     }).trim();
   try {
-    for (const folder of ["scripts", "deploy", "server", "src/app"])
+    for (const folder of [
+      "scripts",
+      "deploy",
+      "server",
+      "src/app",
+      "src/app/sync",
+    ])
       mkdirSync(path.join(root, folder), { recursive: true });
     copyFileSync("scripts/release.mjs", path.join(root, "scripts/release.mjs"));
     copyFileSync("deploy/update.sh", path.join(root, "deploy/update.sh"));
     const pkg = {
       name: "release-test",
+      type: "module",
       version: "1.0.0",
       scripts: {
-        build: `node -e "const f=require('fs'); f.mkdirSync('dist'); f.writeFileSync('dist/index.html','Content-Security-Policy'); f.writeFileSync('dist/sw.js','// fixture');"`,
+        build: `node --input-type=commonjs -e "const f=require('fs'); f.mkdirSync('dist'); f.writeFileSync('dist/index.html','Content-Security-Policy'); f.writeFileSync('dist/sw.js','// fixture');"`,
       },
     };
     writeFileSync(path.join(root, "package.json"), JSON.stringify(pkg));
@@ -55,6 +63,19 @@ test("release builds the pushed commit and refuses stale, corrupt, dirty or unpu
       "src/app/i18n-messages.js",
     ])
       writeFileSync(path.join(root, name), "// synthetic fixture\n");
+    writeFileSync(
+      path.join(root, "server/app.js"),
+      'import "../src/app/attachments.js";\n',
+    );
+    writeFileSync(
+      path.join(root, "server/telegram.js"),
+      "// synthetic Telegram module; no poller\n",
+    );
+    for (const name of [
+      "src/app/attachments.js",
+      "src/app/sync/client-store.js",
+    ])
+      copyFileSync(name, path.join(root, name));
     git("init", "-b", "main");
     git("config", "user.name", "Release Test");
     git("config", "user.email", "release-test@example.invalid");
@@ -76,6 +97,34 @@ test("release builds the pushed commit and refuses stale, corrupt, dirty or unpu
     );
     const archive = path.join(folder, "todo-server.tgz");
     const original = readFileSync(archive);
+    const incomplete = path.join(temporary, "incomplete");
+    mkdirSync(incomplete);
+    execFileSync("tar", ["-xf", archive, "-C", incomplete]);
+    rmSync(path.join(incomplete, "src/app/sync/client-store.js"));
+    execFileSync("tar", [
+      "-czf",
+      archive,
+      "-C",
+      incomplete,
+      "package.json",
+      "package-lock.json",
+      "server",
+      "src",
+      "dist",
+      "deploy",
+      "REVISION",
+    ]);
+    writeFileSync(
+      archive + ".sha256",
+      `${createHash("sha256").update(readFileSync(archive)).digest("hex")}  todo-server.tgz\n`,
+    );
+    assert.throws(() => inspectRelease(folder, sha), /Серверные модули/);
+    writeFileSync(archive, original);
+    writeFileSync(
+      archive + ".sha256",
+      `${createHash("sha256").update(original).digest("hex")}  todo-server.tgz\n`,
+    );
+
     writeFileSync(
       archive,
       Buffer.concat([original, Buffer.from("corruption")]),

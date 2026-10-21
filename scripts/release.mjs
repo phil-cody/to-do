@@ -51,6 +51,25 @@ export function inspectRelease(folder, expected) {
   }).trim();
   if (revision !== expected)
     throw new Error("Архив содержит другой коммит. Подготовьте релиз заново.");
+  const runtime = mkdtempSync(path.join(tmpdir(), "todo-release-check-"));
+  try {
+    execFileSync("tar", ["-xf", archive, "-C", runtime]);
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        'await import("./server/app.js"); await import("./server/telegram.js");',
+      ],
+      { cwd: runtime, stdio: "pipe" },
+    );
+  } catch {
+    throw new Error(
+      "Серверные модули из архива не загружаются. Проверьте состав релиза и выполните release:prepare заново.",
+    );
+  } finally {
+    rmSync(runtime, { recursive: true, force: true });
+  }
 }
 function revision() {
   if (git("status", "--porcelain"))
@@ -87,6 +106,8 @@ function prepare(sha, folder) {
         "package.json",
         "package-lock.json",
         "server",
+        "src/app/attachments.js",
+        "src/app/sync/client-store.js",
         "src/app/model.js",
         "src/app/description.js",
         "src/app/i18n.js",

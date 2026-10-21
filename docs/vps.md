@@ -387,7 +387,7 @@ npm run release:prepare
 npm run release:upload
 ```
 
-Первая команда проверяет чистоту рабочей папки, получает актуальный origin/main и требует совпадения с HEAD. Затем она собирает **именно этот коммит** в отдельной временной папке и создаёт `.cache/releases/ПОЛНЫЙ_SHA/todo-server.tgz`, checksum и универсальный update.sh. Архив не содержит .env, базы, node_modules и незакоммиченных файлов. Внутри есть REVISION, backend, общая модель, production dist и deploy. Расширенные атрибуты macOS исключаются.
+Первая команда проверяет чистоту рабочей папки, получает актуальный origin/main и требует совпадения с HEAD. Затем она собирает **именно этот коммит** в отдельной временной папке и создаёт `.cache/releases/ПОЛНЫЙ_SHA/todo-server.tgz`, checksum и универсальный update.sh. Архив не содержит .env, базы, node_modules и незакоммиченных файлов. Внутри есть REVISION, backend, общие модули (включая attachments.js и его зависимость sync/client-store.js), production dist и deploy. После проверки checksum и REVISION архив распаковывается во временный каталог, и Node.js проверяет импорт server/app.js и server/telegram.js именно из него. Эти модули не запускают сервер или Telegram-поллер. Отсутствие любой их транзитивной зависимости останавливает prepare/upload/install до обращения к VPS. Расширенные атрибуты macOS исключаются.
 
 Вторая команда снова проверяет Git, checksum и REVISION и передаёт файлы через SSH-псевдоним todo-vps в `/tmp/todo-release-ПОЛНЫЙ_SHA/` на VPS. Она возвращает вас в терминал Mac и **не устанавливает релиз**. Готовому backend не нужен npm ci на VPS: зависимости интерфейса включены в сборку, сервер использует встроенные модули Node.
 
