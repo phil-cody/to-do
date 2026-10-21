@@ -3,7 +3,8 @@ import { requestWithTimeout } from "./request.js";
 export class HttpRepository {
   constructor(url, request = (...args) => fetch(...args)) {
     this.url = url;
-    this.request = (url, options) => requestWithTimeout(request, url, options);
+    this.request = (url, options, timeout) =>
+      requestWithTimeout(request, url, options, timeout);
   }
   endpoint() {
     const base = globalThis.location?.href || "http://localhost/";

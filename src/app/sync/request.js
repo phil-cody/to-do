@@ -6,16 +6,16 @@ export async function requestWithTimeout(
   timeout = 20000,
 ) {
   const controller = new AbortController();
-  const cancel = () => controller.abort(options.signal?.reason);
-  if (options.signal?.aborted) cancel();
-  else options.signal?.addEventListener("abort", cancel, { once: true });
+  const signal = options.signal
+    ? AbortSignal.any([controller.signal, options.signal])
+    : controller.signal;
   let expired = false;
   const timer = setTimeout(() => {
     expired = true;
     controller.abort();
   }, timeout);
   try {
-    return await request(url, { ...options, signal: controller.signal });
+    return await request(url, { ...options, signal });
   } catch (error) {
     if (options.signal?.aborted) throw error;
     const failure = new Error(
@@ -27,6 +27,5 @@ export async function requestWithTimeout(
     throw failure;
   } finally {
     clearTimeout(timer);
-    options.signal?.removeEventListener("abort", cancel);
   }
 }

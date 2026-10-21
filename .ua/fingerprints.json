@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "5ea1ce778d75402eb33ceb1b40f6d406b8e11dfb",
-  "generatedAt": "2026-10-18T19:42:20.712Z",
+  "gitCommitHash": "f73beb24bb3b087c76a6da109ac113d45f4ef136",
+  "generatedAt": "2026-10-21T05:30:59.399Z",
   "files": {
     ".nvmrc": {
       "filePath": ".nvmrc",
@@ -15,12 +15,12 @@
     },
     "AGENTS.md": {
       "filePath": "AGENTS.md",
-      "contentHash": "4a5b5c51b8c3c3d1758748000ad10a42a89634e7407434ca2586b8bc5b77e414",
+      "contentHash": "b1b1ed27541d478da410768a034f5ed22ec3a2e1ecb06c043442fdf0868397ed",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 184,
+      "totalLines": 192,
       "hasStructuralAnalysis": false
     },
     "README.md": {
@@ -122,12 +122,12 @@
     },
     "deploy/todo-server.nginx.conf": {
       "filePath": "deploy/todo-server.nginx.conf",
-      "contentHash": "b654413f5a658bd105c9daa63919a34dddc9c511ecb56fd91808fbe77dd6843a",
+      "contentHash": "b3152a579e72b815e2d2a2243ff0007d46911bd001dee732b9901d4c3faa6a77",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 28,
+      "totalLines": 29,
       "hasStructuralAnalysis": false
     },
     "deploy/todo.nginx.conf": {
@@ -182,22 +182,22 @@
     },
     "docs/behavior.md": {
       "filePath": "docs/behavior.md",
-      "contentHash": "95f34f1524b3681aedfd82fcbf28917c818fa280c15558762197eb57a2d7aca7",
+      "contentHash": "290e819d3fe0ca713c743169978e68c784e44ce1710404ffa1db9be1f7118bc4",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 80,
+      "totalLines": 88,
       "hasStructuralAnalysis": false
     },
     "docs/data.md": {
       "filePath": "docs/data.md",
-      "contentHash": "42726568b36defc9c0b69c3265490ca93218516a28757264dac0dd0a816565c7",
+      "contentHash": "23a3d9e44a79bfcc1c67ccac956d2901a557cdfb51e80ff0044f160a304459da",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 118,
+      "totalLines": 128,
       "hasStructuralAnalysis": false
     },
     "docs/decisions.md": {
@@ -222,7 +222,7 @@
     },
     "docs/import.md": {
       "filePath": "docs/import.md",
-      "contentHash": "e5d130d9074c21aadee27557cbac2f560201b143ce6929872143370d38e579a6",
+      "contentHash": "bba16bd4056af3c9d818fdc2f559cea8d4128edf1ac9c9b0d4dcb5e494e09a58",
       "functions": [],
       "classes": [],
       "imports": [],
@@ -242,27 +242,27 @@
     },
     "docs/security.md": {
       "filePath": "docs/security.md",
-      "contentHash": "2b38ff333510e67ad3c959a54784b697a043041e0d5a7a67ee2613d90e091c56",
+      "contentHash": "cf4c3fa9027b95adac736766fe56c64217088859589424492b847a6efae43cad",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 81,
+      "totalLines": 85,
       "hasStructuralAnalysis": false
     },
     "docs/server.md": {
       "filePath": "docs/server.md",
-      "contentHash": "89c90deaf403f4e69568350bd1aef7934a3d4cd251c9896f3166e8ac930386fb",
+      "contentHash": "137745721a49362dd33f361fa0e7fd2be33a8937d7948647d322fbef14306668",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 114,
+      "totalLines": 120,
       "hasStructuralAnalysis": false
     },
     "docs/telegram.md": {
       "filePath": "docs/telegram.md",
-      "contentHash": "1b6a5c7cf0121a4389c62e10d9373716b16a8aa3e64c04c9e837af496faec28f",
+      "contentHash": "4ed239027db36a0505d6826bd01c705df4528524e88ea484009e58000477c4e1",
       "functions": [],
       "classes": [],
       "imports": [],
@@ -609,7 +609,7 @@
     },
     "server/app.js": {
       "filePath": "server/app.js",
-      "contentHash": "50bc972c2ff89ff0cc35d2945af0e13730998959aa41f4868841fcd9efd2f021",
+      "contentHash": "7290950923f557c17f738ce1462bf663a74b29c787dfe0ef9ea044afadd3e577",
       "functions": [
         {
           "name": "cookieMap",
@@ -635,13 +635,13 @@
             "req"
           ],
           "exported": false,
-          "lineCount": 15
+          "lineCount": 14
         },
         {
           "name": "createApp",
           "params": [],
           "exported": true,
-          "lineCount": 297
+          "lineCount": 317
         }
       ],
       "classes": [],
@@ -668,6 +668,12 @@
           "source": "node:fs/promises",
           "specifiers": [
             "readFile"
+          ]
+        },
+        {
+          "source": "../src/app/attachments.js",
+          "specifiers": [
+            "attachmentLimits"
           ]
         },
         {
@@ -699,7 +705,7 @@
       "exports": [
         "createApp"
       ],
-      "totalLines": 329,
+      "totalLines": 349,
       "hasStructuralAnalysis": true
     },
     "server/index.js": {
@@ -746,7 +752,7 @@
     },
     "server/store.js": {
       "filePath": "server/store.js",
-      "contentHash": "94682b1537e45f6cae1a07184c87171d99b42e4b2302030dc928bdb602f672e6",
+      "contentHash": "b5cf1763b5b300c9c811cf111defd53fb522df0aba7d009539f614802a94e9b3",
       "functions": [
         {
           "name": "token",
@@ -776,6 +782,8 @@
             "ensureUser",
             "workspace",
             "save",
+            "attachment",
+            "putAttachment",
             "session",
             "authenticate",
             "revoke",
@@ -788,7 +796,7 @@
           ],
           "properties": [],
           "exported": true,
-          "lineCount": 226
+          "lineCount": 310
         }
       ],
       "imports": [
@@ -827,6 +835,13 @@
           ]
         },
         {
+          "source": "../src/app/attachments.js",
+          "specifiers": [
+            "attachmentLimits",
+            "snapshotFiles"
+          ]
+        },
+        {
           "source": "./validation.js",
           "specifiers": [
             "ApiError",
@@ -846,12 +861,12 @@
         "hash",
         "Store"
       ],
-      "totalLines": 236,
+      "totalLines": 321,
       "hasStructuralAnalysis": true
     },
     "server/telegram.js": {
       "filePath": "server/telegram.js",
-      "contentHash": "fb8b3768e9d47d3a88047b5e3e1ff5ec09b72a03441f8269e5bb5625acc7b80f",
+      "contentHash": "85d377a600e4431f858980d2a2ab154109362203abee9b07406fb08cf0b3a2e7",
       "functions": [
         {
           "name": "calendar",
@@ -869,7 +884,7 @@
             "user"
           ],
           "exported": true,
-          "lineCount": 22
+          "lineCount": 37
         },
         {
           "name": "enqueueText",
@@ -947,12 +962,12 @@
         "botCommands",
         "TelegramBot"
       ],
-      "totalLines": 533,
+      "totalLines": 548,
       "hasStructuralAnalysis": true
     },
     "server/validation.js": {
       "filePath": "server/validation.js",
-      "contentHash": "640726ad0e1ed4e4ceb3568b7c647052fc383f429cb9d4130689e4b0eec6dd4a",
+      "contentHash": "9770b060789f151f4648b56b92ee58f19f8e7e7373d2a3ac08b4ce9dbe114083",
       "functions": [
         {
           "name": "fail",
@@ -978,7 +993,7 @@
             "input"
           ],
           "exported": true,
-          "lineCount": 92
+          "lineCount": 101
         },
         {
           "name": "validateSettings",
@@ -1013,6 +1028,12 @@
           ]
         },
         {
+          "source": "../src/app/attachments.js",
+          "specifiers": [
+            "attachmentMetadata"
+          ]
+        },
+        {
           "source": "../src/app/i18n.js",
           "specifiers": [
             "validLanguage"
@@ -1024,7 +1045,7 @@
         "validateSnapshot",
         "validateSettings"
       ],
-      "totalLines": 138,
+      "totalLines": 148,
       "hasStructuralAnalysis": true
     },
     "src/app/App.jsx": {
@@ -1168,6 +1189,93 @@
       "totalLines": 11,
       "hasStructuralAnalysis": false
     },
+    "src/app/attachments.js": {
+      "filePath": "src/app/attachments.js",
+      "contentHash": "759f7de4df46b305b9eebc8afb937e71d501222d06255d6602a4741f0a96844d",
+      "functions": [
+        {
+          "name": "attachmentMetadata",
+          "params": [],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "attachmentBytes",
+          "params": [
+            "data"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "attachmentId",
+          "params": [
+            "bytes"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "fileAttachment",
+          "params": [
+            "file"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "snapshotFiles",
+          "params": [
+            "snapshot"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "metadataSnapshot",
+          "params": [
+            "snapshot"
+          ],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [
+        {
+          "name": "AttachmentStorage",
+          "methods": [
+            "constructor",
+            "key",
+            "prepare",
+            "read",
+            "export"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "imports": [
+        {
+          "source": "./sync/client-store.js",
+          "specifiers": [
+            "ClientStore"
+          ]
+        }
+      ],
+      "exports": [
+        "attachmentLimits",
+        "attachmentMetadata",
+        "attachmentBytes",
+        "attachmentId",
+        "fileAttachment",
+        "snapshotFiles",
+        "metadataSnapshot",
+        "AttachmentStorage"
+      ],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
     "src/app/components/Dashboard.jsx": {
       "filePath": "src/app/components/Dashboard.jsx",
       "contentHash": "49e86c2c5b83ad9659231a6e2318d0a8a2914ff1a2be24934b958c9789266af3",
@@ -1292,13 +1400,13 @@
     },
     "src/app/components/EditorForm.jsx": {
       "filePath": "src/app/components/EditorForm.jsx",
-      "contentHash": "48c87d3a1f0e1bfa068f3dc08bf282e538ef6f26b9d6ff41dc8fdf291855f901",
+      "contentHash": "052616e7b1ef4a25fd31975b97f6c05795d772ba1a3533f0f1831c31d815a8a7",
       "functions": [
         {
           "name": "EditorForm",
           "params": [],
           "exported": true,
-          "lineCount": 113
+          "lineCount": 186
         }
       ],
       "classes": [],
@@ -1338,6 +1446,13 @@
           ]
         },
         {
+          "source": "../attachments.js",
+          "specifiers": [
+            "attachmentLimits",
+            "fileAttachment"
+          ]
+        },
+        {
           "source": "./Select.jsx",
           "specifiers": [
             "Select"
@@ -1353,7 +1468,7 @@
       "exports": [
         "EditorForm"
       ],
-      "totalLines": 121,
+      "totalLines": 195,
       "hasStructuralAnalysis": true
     },
     "src/app/components/Header.jsx": {
@@ -1452,17 +1567,23 @@
     },
     "src/app/components/ImportForm.jsx": {
       "filePath": "src/app/components/ImportForm.jsx",
-      "contentHash": "f913f7eec1d04d55059095a7915260d35b569d29ef9c384dd2f514ebd8c8ab87",
+      "contentHash": "81ebfef0dd8122748e58c65d0171e0cdfcf94d2096a6192f822f48af94c4691e",
       "functions": [
         {
           "name": "ImportForm",
           "params": [],
           "exported": true,
-          "lineCount": 169
+          "lineCount": 175
         }
       ],
       "classes": [],
       "imports": [
+        {
+          "source": "../repository.js",
+          "specifiers": [
+            "LocalRepository"
+          ]
+        },
         {
           "source": "../i18n.js",
           "specifiers": [
@@ -1491,11 +1612,16 @@
           ]
         },
         {
+          "source": "../attachments.js",
+          "specifiers": [
+            "attachmentLimits"
+          ]
+        },
+        {
           "source": "../model.js",
           "specifiers": [
             "statuses",
-            "priorities",
-            "workspaceLimits"
+            "priorities"
           ]
         },
         {
@@ -1514,7 +1640,7 @@
       "exports": [
         "ImportForm"
       ],
-      "totalLines": 178,
+      "totalLines": 186,
       "hasStructuralAnalysis": true
     },
     "src/app/components/Kanban.jsx": {
@@ -1873,7 +1999,7 @@
     },
     "src/app/components/SyncPanel.jsx": {
       "filePath": "src/app/components/SyncPanel.jsx",
-      "contentHash": "10ca80105939a5027d6a112a25c0dde7d0d35c005e83c4fa40de87d33fa19c38",
+      "contentHash": "e83f191465cea065851696c492427fa18fd74d819534f840f75ce481bd44b3d6",
       "functions": [
         {
           "name": "SyncPanel",
@@ -1978,13 +2104,13 @@
     },
     "src/app/components/TaskDetails.jsx": {
       "filePath": "src/app/components/TaskDetails.jsx",
-      "contentHash": "7bfcab2c195a265042145cba870760ffece91c2184a3217f11a080e8676c33c7",
+      "contentHash": "094ca666e841149841f80327f8c1b426ff9e23242949ce84225394bd0a42bc9c",
       "functions": [
         {
           "name": "TaskDetails",
           "params": [],
           "exported": true,
-          "lineCount": 60
+          "lineCount": 82
         }
       ],
       "classes": [],
@@ -2025,7 +2151,7 @@
       "exports": [
         "TaskDetails"
       ],
-      "totalLines": 66,
+      "totalLines": 88,
       "hasStructuralAnalysis": true
     },
     "src/app/components/TelegramLogin.jsx": {
@@ -2124,13 +2250,13 @@
     },
     "src/app/components/WorkspaceModal.jsx": {
       "filePath": "src/app/components/WorkspaceModal.jsx",
-      "contentHash": "ddaebb81bbfd080ed6a539737ddbc29c419f926005c6c99e32d41dfb39d26ba5",
+      "contentHash": "685c1b492a86baeab2b2546847482dc1547eb6cf8cbd750e501a262974b368c2",
       "functions": [
         {
           "name": "WorkspaceModal",
           "params": [],
           "exported": true,
-          "lineCount": 86
+          "lineCount": 87
         }
       ],
       "classes": [],
@@ -2175,7 +2301,7 @@
       "exports": [
         "WorkspaceModal"
       ],
-      "totalLines": 93,
+      "totalLines": 94,
       "hasStructuralAnalysis": true
     },
     "src/app/constants.js": {
@@ -2406,17 +2532,23 @@
     },
     "src/app/hooks/useWorkspace.js": {
       "filePath": "src/app/hooks/useWorkspace.js",
-      "contentHash": "5b4324e50ea71a4a747c4d346432f55afdaaa1cf7600961a94fc1eea64b6f514",
+      "contentHash": "8fcea8ef7520b30b6f948a566a17c1b0be7630e1644be701acea094261752584",
       "functions": [
         {
           "name": "useWorkspace",
           "params": [],
           "exported": true,
-          "lineCount": 210
+          "lineCount": 235
         }
       ],
       "classes": [],
       "imports": [
+        {
+          "source": "../attachments.js",
+          "specifiers": [
+            "attachmentBytes"
+          ]
+        },
         {
           "source": "../i18n.js",
           "specifiers": [
@@ -2466,19 +2598,19 @@
       "exports": [
         "useWorkspace"
       ],
-      "totalLines": 226,
+      "totalLines": 252,
       "hasStructuralAnalysis": true
     },
     "src/app/i18n-messages.js": {
       "filePath": "src/app/i18n-messages.js",
-      "contentHash": "844784116e769113dd458f0778b4d8687a764d08f9137260aee6122bf3341b4b",
+      "contentHash": "57a66ca397f61367fcf583ebb68a7b332741a1f162353d8de480a85111d9fb9a",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [
         "messages"
       ],
-      "totalLines": 420,
+      "totalLines": 446,
       "hasStructuralAnalysis": true
     },
     "src/app/i18n.js": {
@@ -2565,7 +2697,7 @@
     },
     "src/app/import-project.js": {
       "filePath": "src/app/import-project.js",
-      "contentHash": "8a11b21df3f6bf94de6fc78a83344125fe0368f63cc0b0dd629041752223b43d",
+      "contentHash": "e9d12a7342532caed33593f690ab9dcf5ffb8281020c2411401e9360a7cb41dc",
       "functions": [
         {
           "name": "fail",
@@ -2631,7 +2763,7 @@
             "raw"
           ],
           "exported": true,
-          "lineCount": 115
+          "lineCount": 127
         },
         {
           "name": "appendProjectImport",
@@ -2645,6 +2777,15 @@
       ],
       "classes": [],
       "imports": [
+        {
+          "source": "./attachments.js",
+          "specifiers": [
+            "attachmentLimits",
+            "attachmentMetadata",
+            "attachmentBytes",
+            "metadataSnapshot"
+          ]
+        },
         {
           "source": "./model.js",
           "specifiers": [
@@ -2666,7 +2807,7 @@
         "parseProjectImport",
         "appendProjectImport"
       ],
-      "totalLines": 226,
+      "totalLines": 244,
       "hasStructuralAnalysis": true
     },
     "src/app/markdown.jsx": {
@@ -2808,7 +2949,7 @@
     },
     "src/app/repository.js": {
       "filePath": "src/app/repository.js",
-      "contentHash": "30b66908883deafeec421f5e7703790b7ed30c97d83829254ccf678c48526315",
+      "contentHash": "43f83153ac8cf811be76f2cd27c83120acdc2fe60c2998b187a61ab66be955ea",
       "functions": [
         {
           "name": "createRepository",
@@ -2824,11 +2965,13 @@
             "constructor",
             "load",
             "subscribe",
+            "exportDraft",
+            "attachment",
             "save"
           ],
           "properties": [],
           "exported": true,
-          "lineCount": 25
+          "lineCount": 34
         }
       ],
       "imports": [
@@ -2836,6 +2979,12 @@
           "source": "./sync/remote-repository.js",
           "specifiers": [
             "RemoteRepository"
+          ]
+        },
+        {
+          "source": "./attachments.js",
+          "specifiers": [
+            "AttachmentStorage"
           ]
         },
         {
@@ -2850,7 +2999,7 @@
         "LocalRepository",
         "createRepository"
       ],
-      "totalLines": 35,
+      "totalLines": 45,
       "hasStructuralAnalysis": true
     },
     "src/app/selectors.js": {
@@ -2925,7 +3074,7 @@
     },
     "src/app/styles/dashboard.css": {
       "filePath": "src/app/styles/dashboard.css",
-      "contentHash": "7bd097be34601feb24e3d5da7cde9078366449a251d9f1ad9b9617375ed15050",
+      "contentHash": "bdbef6c7ba48032f5350c86f169820b53816805cb68421f613b84c8e0a805425",
       "functions": [],
       "classes": [],
       "imports": [],
@@ -2935,12 +3084,12 @@
     },
     "src/app/styles/dialogs.css": {
       "filePath": "src/app/styles/dialogs.css",
-      "contentHash": "4edce3c436d3388eb4ac0aaed3ad714181840d78620e87473e48d196ea1f5dbf",
+      "contentHash": "7e47d6e1bd35aacf69ed383099f23e70dac52e8109350eddd8c6d35e8333cfe2",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 156,
+      "totalLines": 182,
       "hasStructuralAnalysis": false
     },
     "src/app/styles/header.css": {
@@ -2965,22 +3114,22 @@
     },
     "src/app/styles/markdown.css": {
       "filePath": "src/app/styles/markdown.css",
-      "contentHash": "8bcbd41f7768ecfab38dca9c10712c37000a07bc9021136ebf3f6d8b9ea1b9bf",
+      "contentHash": "6c2c0f20f0fadbcff9880575bca13b675f37e9147a8350234fa8178af0ff8f66",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 86,
+      "totalLines": 94,
       "hasStructuralAnalysis": false
     },
     "src/app/styles/responsive.css": {
       "filePath": "src/app/styles/responsive.css",
-      "contentHash": "3ff1934318e6c3c133f13c9afb6a750a27612da60d3cf46a6dd30110fd84168c",
+      "contentHash": "7ab7c224029be8f3e68ed07a4034f1a0ff1359deade2837278f7e12fa5660484",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 246,
+      "totalLines": 254,
       "hasStructuralAnalysis": false
     },
     "src/app/styles/sidebar.css": {
@@ -3030,7 +3179,7 @@
     },
     "src/app/sync/http-repository.js": {
       "filePath": "src/app/sync/http-repository.js",
-      "contentHash": "626d3d06a866b8559e1e064616e364b9714970a037865f2ee96e91ae2cf1941c",
+      "contentHash": "1772696922d6278e044f31490987266271595c1011f7e13543bff27be9cd4b72",
       "functions": [],
       "classes": [
         {
@@ -3043,7 +3192,7 @@
           ],
           "properties": [],
           "exported": true,
-          "lineCount": 38
+          "lineCount": 39
         }
       ],
       "imports": [
@@ -3063,7 +3212,7 @@
       "exports": [
         "HttpRepository"
       ],
-      "totalLines": 41,
+      "totalLines": 42,
       "hasStructuralAnalysis": true
     },
     "src/app/sync/merge.js": {
@@ -3135,7 +3284,7 @@
     },
     "src/app/sync/remote-repository.js": {
       "filePath": "src/app/sync/remote-repository.js",
-      "contentHash": "454e1547706c13eacf06de1055bde35d8e0998a61875edfa4befe392a8c9a1b7",
+      "contentHash": "18bc98a4af82e995729e75f6be2a929bb096249265e05ba446cad2866d3b5c91",
       "functions": [],
       "classes": [
         {
@@ -3161,15 +3310,24 @@
             "subscribe",
             "resolveConflict",
             "logout",
+            "attachment",
+            "uploadAttachments",
             "exportDraft",
             "updateSettings"
           ],
           "properties": [],
           "exported": true,
-          "lineCount": 369
+          "lineCount": 441
         }
       ],
       "imports": [
+        {
+          "source": "../attachments.js",
+          "specifiers": [
+            "AttachmentStorage",
+            "snapshotFiles"
+          ]
+        },
         {
           "source": "../model.js",
           "specifiers": [
@@ -3208,12 +3366,12 @@
         "AuthenticationRequired",
         "RemoteRepository"
       ],
-      "totalLines": 381,
+      "totalLines": 454,
       "hasStructuralAnalysis": true
     },
     "src/app/sync/request.js": {
       "filePath": "src/app/sync/request.js",
-      "contentHash": "2d323c82ec9238ea2c587fd1930ea9f46026906d23aeb02d44d03354f13a1ba1",
+      "contentHash": "1441c11fdcf54eeee6a550f62e8d6ddd7ed45ba9e33b6c2f5d841d19eb723c0b",
       "functions": [
         {
           "name": "requestWithTimeout",
@@ -3222,7 +3380,7 @@
             "url"
           ],
           "exported": true,
-          "lineCount": 31
+          "lineCount": 30
         }
       ],
       "classes": [],
@@ -3230,7 +3388,7 @@
       "exports": [
         "requestWithTimeout"
       ],
-      "totalLines": 33,
+      "totalLines": 32,
       "hasStructuralAnalysis": true
     },
     "src/app/workspace.js": {
@@ -3387,6 +3545,145 @@
       "exports": [],
       "totalLines": 21,
       "hasStructuralAnalysis": false
+    },
+    "tests/attachments.spec.js": {
+      "filePath": "tests/attachments.spec.js",
+      "contentHash": "a0e58a59237c71a0c2f672da2a8fe9f9ff9bf36a0b451eaecf70f9ce5d7b2c5f",
+      "functions": [
+        {
+          "name": "createWithFile",
+          "params": [
+            "page"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "openDetail",
+          "params": [
+            "page"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "downloadFile",
+          "params": [
+            "page"
+          ],
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./fixtures/workspace.js",
+          "specifiers": [
+            "test",
+            "expect"
+          ]
+        },
+        {
+          "source": "@playwright/test",
+          "specifiers": [
+            "remoteTest"
+          ]
+        },
+        {
+          "source": "./fixtures/remote.js",
+          "specifiers": [
+            "login",
+            "base"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 179,
+      "hasStructuralAnalysis": true
+    },
+    "tests/attachments.test.js": {
+      "filePath": "tests/attachments.test.js",
+      "contentHash": "39757e1eb19fe653e508a5174cf643f289188316b75e54bd09485879cb0ddbe4",
+      "functions": [
+        {
+          "name": "withFile",
+          "params": [],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [
+        {
+          "name": "MemoryStore",
+          "methods": [
+            "read",
+            "change"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "imports": [
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "../src/app/attachments.js",
+          "specifiers": [
+            "AttachmentStorage",
+            "attachmentMetadata",
+            "attachmentBytes",
+            "attachmentId",
+            "attachmentLimits"
+          ]
+        },
+        {
+          "source": "../src/app/model.js",
+          "specifiers": [
+            "normalize"
+          ]
+        },
+        {
+          "source": "../src/app/import-project.js",
+          "specifiers": [
+            "parseProjectImport",
+            "appendProjectImport"
+          ]
+        },
+        {
+          "source": "../server/store.js",
+          "specifiers": [
+            "Store",
+            "hash"
+          ]
+        },
+        {
+          "source": "../server/app.js",
+          "specifiers": [
+            "createApp"
+          ]
+        },
+        {
+          "source": "../src/app/sync/remote-repository.js",
+          "specifiers": [
+            "RemoteRepository"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 333,
+      "hasStructuralAnalysis": true
     },
     "tests/deploy.test.js": {
       "filePath": "tests/deploy.test.js",
@@ -3682,7 +3979,7 @@
     },
     "tests/import.test.js": {
       "filePath": "tests/import.test.js",
-      "contentHash": "b7371e13b6f76f9c6669e3d3ff562dd9776f8d6fbd14196a08a22e7126789800",
+      "contentHash": "9a1cc96509b06cebb08d2a6c5b802528a40d4d642a4523ec0e5a7404aa23cf84",
       "functions": [
         {
           "name": "template",
@@ -3782,7 +4079,7 @@
     },
     "tests/layout.spec.js": {
       "filePath": "tests/layout.spec.js",
-      "contentHash": "9ac177a22fc90cd14677435436ce51688ea8347764fbd8077c9d34bb5823ec3d",
+      "contentHash": "cb5e7fd4c3f3b76bfef143f222684cc9e0463a7e8608f96e002a913e9a2fade9",
       "functions": [],
       "classes": [],
       "imports": [
@@ -4128,7 +4425,7 @@
     },
     "tests/server.test.js": {
       "filePath": "tests/server.test.js",
-      "contentHash": "7108e83fc349b83ce75f4c08324f2eb4fd7f8351f8022b249e14f8a42114882c",
+      "contentHash": "5fd9ec7d03246abaedb2dc0a0244a5e125fc3e5ea7d5a82ae8cda806d378f880",
       "functions": [
         {
           "name": "setup",
@@ -4202,7 +4499,7 @@
         }
       ],
       "exports": [],
-      "totalLines": 557,
+      "totalLines": 584,
       "hasStructuralAnalysis": true
     },
     "tests/sync.test.js": {
@@ -4250,7 +4547,7 @@
     },
     "tests/touch.spec.js": {
       "filePath": "tests/touch.spec.js",
-      "contentHash": "a2f73c1aa4afa97c40712bdf1229c0a6070f4850f72da89f198f3d33620cfaf6",
+      "contentHash": "8e1f70d1cc52ee1d94614e6ae961908dd9c25b7080fa96ff81f495790ae51029",
       "functions": [
         {
           "name": "touch",
@@ -4282,7 +4579,7 @@
         }
       ],
       "exports": [],
-      "totalLines": 177,
+      "totalLines": 189,
       "hasStructuralAnalysis": true
     },
     "tests/workflows.spec.js": {

@@ -85,6 +85,7 @@ export default function WorkspaceModal({
           onUpdate={workspace.updateTask}
           onEdit={workspace.editTask}
           onDelete={workspace.deleteTask}
+          onDownload={workspace.downloadAttachment}
         />
       )}
     </Modal>

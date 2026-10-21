@@ -25,6 +25,10 @@ test("touch drag moves a task to a collapsed column and persists its status", as
   await page
     .locator(".column-in-process .column-toggle")
     .scrollIntoViewIfNeeded();
+  test.skip(
+    page.context().browser().browserType().name() !== "chromium",
+    "Touch dispatch uses Chromium CDP.",
+  );
   const client = await page.context().newCDPSession(page);
   const start = await center(
     page.getByRole("button", { name: "Move Legacy task", exact: true }),
@@ -72,6 +76,10 @@ test("touch drag scrolls main near its edge; cancellation preserves the task", a
   const before = await page
     .locator("main")
     .evaluate((element) => element.scrollTop);
+  test.skip(
+    page.context().browser().browserType().name() !== "chromium",
+    "Touch dispatch uses Chromium CDP.",
+  );
   const client = await page.context().newCDPSession(page);
   await touch(client, "touchStart", await center(handle));
   await touch(client, "touchMove", { x: 180, y: 690 });
@@ -119,6 +127,10 @@ test("touch drag reaches a distant collapsed column by scrolling past other colu
     exact: true,
   });
   await handle.scrollIntoViewIfNeeded();
+  test.skip(
+    page.context().browser().browserType().name() !== "chromium",
+    "Touch dispatch uses Chromium CDP.",
+  );
   const client = await page.context().newCDPSession(page);
   await touch(client, "touchStart", await center(handle));
   const main = await page.locator("main").boundingBox();

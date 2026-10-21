@@ -1,4 +1,10 @@
 import {
+  attachmentLimits,
+  attachmentMetadata,
+  attachmentBytes,
+  metadataSnapshot,
+} from "./attachments.js";
+import {
   statuses,
   priorities,
   views,
@@ -39,8 +45,8 @@ function date(value, where) {
   return value;
 }
 export function parseProjectImport(raw) {
-  if (new TextEncoder().encode(raw).length > workspaceLimits.snapshotBytes)
-    throw new Error("Файл слишком большой. Максимум — 2 МБ.");
+  if (new TextEncoder().encode(raw).length > attachmentLimits.backup)
+    throw new Error("The backup is too large. Maximum: 285 MB.");
   let input;
   try {
     input = JSON.parse(raw.replace(/^\uFEFF/, ""));
@@ -110,8 +116,20 @@ export function parseProjectImport(raw) {
             ["title", "description", "dueDate", "status", "priority"],
             at,
           );
+        let attachments;
+        if (!template && task.task_attachments !== undefined) {
+          attachments = attachmentMetadata(task.task_attachments).map(
+            (file, index) => {
+              const data = task.task_attachments[index].data;
+              if (attachmentBytes(data).length !== file.size)
+                throw new Error("Invalid attachment.");
+              return { ...file, data };
+            },
+          );
+        }
         const created = template ? undefined : task.task_createdAt;
         return {
+          ...(attachments ? { task_attachments: attachments } : {}),
           task_title: text(
             template ? task.title : task.task_title,
             workspaceLimits.title,
@@ -214,7 +232,7 @@ export function appendProjectImport(current, imported) {
       "После импорта будет превышен лимит: 300 проектов или 10000 задач. Ничего не добавлено.",
     );
   if (
-    new TextEncoder().encode(JSON.stringify(next)).length >
+    new TextEncoder().encode(JSON.stringify(metadataSnapshot(next))).length >
     workspaceLimits.snapshotBytes
   )
     throw new Error(

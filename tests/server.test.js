@@ -554,3 +554,30 @@ test("Changing language while a command menu request is in flight preserves the 
     store.close();
   }
 });
+
+test("daily digest includes only unfinished Inbox tasks in the account language even without due tasks", () => {
+  const { store, bot } = setup();
+  try {
+    bot.processUpdate(message(1, 11, "Unassigned item"));
+    bot.processUpdate(message(2, 11, "Finished item"));
+    const current = store.workspace("11");
+    current.snapshot.projects[0].todoList[1].task_status = "completed";
+    store.save("11", current.snapshot, current.revision, "inbox-digest-test-1");
+    const russian = digest(
+      store,
+      store.user("11"),
+      new Date("2026-10-21T08:00:00Z"),
+    );
+    assert.match(russian, /Нераспределённые задачи во «Входящих»: 1/);
+    assert.match(russian, /Unassigned item/);
+    assert.doesNotMatch(russian, /Finished item/);
+    store.setSettings("11", { language: "en" });
+    assert.match(digest(store, store.user("11")), /Unassigned Inbox tasks: 1/);
+    const next = store.workspace("11");
+    next.snapshot.projects[0].todoList[0].task_status = "completed";
+    store.save("11", next.snapshot, next.revision, "inbox-digest-test-2");
+    assert.doesNotMatch(digest(store, store.user("11")), /Unassigned Inbox/);
+  } finally {
+    store.close();
+  }
+});

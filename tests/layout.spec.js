@@ -43,7 +43,7 @@ for (const width of [360, 398, 399, 600, 759, 760])
         .locator("main")
         .evaluate((e) => e.getBoundingClientRect().top);
       expect(top).toBeLessThan(170);
-      await toggle.click();
+      await toggle.press("Enter");
       const drawer = page.getByRole("dialog", { name: "Project navigation" });
       await expect(drawer).toBeVisible();
       await drawer.evaluate((element) =>

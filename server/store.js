@@ -3,6 +3,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { mkdirSync, chmodSync } from "node:fs";
 import path from "node:path";
 import { normalize, workspaceLimits } from "../src/app/model.js";
+import { attachmentLimits, snapshotFiles } from "../src/app/attachments.js";
 import { ApiError, validateSnapshot } from "./validation.js";
 import { accountLanguage, translate } from "../src/app/i18n.js";
 export const token = () => randomBytes(32).toString("base64url");
@@ -29,6 +30,7 @@ export class Store {
       CREATE TABLE IF NOT EXISTS updates(id TEXT PRIMARY KEY,created INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS outbox(id TEXT PRIMARY KEY,chat_id TEXT NOT NULL,payload TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,available INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS digests(user_id TEXT NOT NULL,day TEXT NOT NULL,PRIMARY KEY(user_id,day));
+      CREATE TABLE IF NOT EXISTS attachments(user_id TEXT NOT NULL REFERENCES users(id),id TEXT NOT NULL,data BLOB NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(user_id,id));
       PRAGMA user_version=1;`);
   }
   transaction(fn) {
@@ -119,6 +121,23 @@ export class Store {
       if (current.revision !== revision)
         throw new ApiError(409, "Данные изменились на другом устройстве.");
       const next = validateSnapshot(snapshot);
+      for (const file of snapshotFiles(next)) {
+        const row = this.db
+          .prepare(
+            "SELECT length(data) AS size FROM attachments WHERE user_id=? AND id=?",
+          )
+          .get(id, file.id);
+        if (!row || row.size !== file.size)
+          throw new ApiError(422, "Invalid attachment.");
+      }
+      if (
+        snapshotFiles(next).reduce((sum, file) => sum + file.size, 0) >
+        attachmentLimits.total
+      )
+        throw new ApiError(
+          422,
+          "Attachments exceed 200 MB. Remove some files.",
+        );
       const inbox = current.snapshot.projects.find(
         (p) => p.project_type === "inbox",
       );
@@ -139,6 +158,53 @@ export class Store {
         .prepare("INSERT INTO operations VALUES(?,?,?)")
         .run(id, operationId, Date.now());
       return this.workspace(id);
+    });
+  }
+  attachment(userId, id) {
+    const row = this.db
+      .prepare("SELECT data FROM attachments WHERE user_id=? AND id=?")
+      .get(userId, id);
+    if (!row)
+      throw new ApiError(
+        404,
+        "File unavailable. Connect to the server and try again.",
+      );
+    return { data: Buffer.from(row.data).toString("base64") };
+  }
+  putAttachment(userId, id, data) {
+    if (
+      typeof data !== "string" ||
+      data.length > Math.ceil(attachmentLimits.bytes / 3) * 4
+    )
+      throw new ApiError(422, "Invalid attachment.");
+    const bytes = Buffer.from(data, "base64");
+    if (
+      bytes.length > attachmentLimits.bytes ||
+      bytes.toString("base64") !== data ||
+      hash(bytes) !== id
+    )
+      throw new ApiError(422, "Invalid attachment.");
+    this.transaction(() => {
+      if (
+        this.db
+          .prepare("SELECT 1 FROM attachments WHERE user_id=? AND id=?")
+          .get(userId, id)
+      ) {
+        this.db
+          .prepare("UPDATE attachments SET created=? WHERE user_id=? AND id=?")
+          .run(Date.now(), userId, id);
+        return;
+      }
+      const total = this.db
+        .prepare(
+          "SELECT coalesce(sum(length(data)),0) AS size FROM attachments WHERE user_id=?",
+        )
+        .get(userId).size;
+      if (total + bytes.length > 2 * attachmentLimits.total)
+        throw new ApiError(422, "Attachment storage is full.");
+      this.db
+        .prepare("INSERT INTO attachments VALUES(?,?,?,?)")
+        .run(userId, id, bytes, Date.now());
     });
   }
   session(id) {
@@ -179,6 +245,25 @@ export class Store {
   }
   cleanup() {
     const now = Date.now();
+    const expired = this.db
+      .prepare("SELECT user_id,id FROM attachments WHERE created<?")
+      .all(now - 7 * 86400000);
+    const references = new Map();
+    for (const file of expired) {
+      if (!references.has(file.user_id))
+        references.set(
+          file.user_id,
+          new Set(
+            snapshotFiles(this.workspace(file.user_id).snapshot).map(
+              (item) => item.id,
+            ),
+          ),
+        );
+      if (!references.get(file.user_id).has(file.id))
+        this.db
+          .prepare("DELETE FROM attachments WHERE user_id=? AND id=?")
+          .run(file.user_id, file.id);
+    }
     this.db.prepare("DELETE FROM sessions WHERE expires<?").run(now);
     this.db
       .prepare("DELETE FROM challenges WHERE expires<?")

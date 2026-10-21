@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  overflow: hidden;
+  overflow: clip;
 }
 .app-shell > .header,
 .app-shell > .error {
@@ -21,7 +21,7 @@
 .workspace {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow: clip;
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);

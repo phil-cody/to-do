@@ -1,4 +1,29 @@
 export const messages = {
+  Attachments: "Вложения",
+  MB: "МБ",
+  "Up to 10 files per task, 20 MB each.":
+    "До 10 файлов на задачу, до 20 МБ каждый.",
+  "Maximum: 10 files per task, 20 MB per file.":
+    "Максимум 10 файлов на задачу, до 20 МБ каждый.",
+  "Invalid attachment.": "Некорректное вложение.",
+  "Could not read the file.": "Не удалось прочитать файл.",
+  "Attachments exceed 200 MB. Remove some files.":
+    "Общий объём вложений превышает 200 МБ. Удалите часть файлов.",
+  "Attachment storage is full.":
+    "Хранилище вложений заполнено. Повторите после очистки неиспользуемых файлов.",
+  "File unavailable. Connect to the server and try again.":
+    "Файл недоступен. Подключитесь к серверу и повторите попытку.",
+  "Reading files…": "Чтение файлов…",
+  "Preparing file…": "Подготовка файла…",
+  "Remove {name}": "Удалить {name}",
+  "Download {name}": "Скачать {name}",
+  Download: "Скачать",
+  "Unassigned Inbox tasks: {count}":
+    "Нераспределённые задачи во «Входящих»: {count}",
+  "The backup is too large. Maximum: 285 MB.":
+    "Резервная копия слишком большая. Максимум — 285 МБ.",
+  "Project or backup file (JSON, up to 285 MB)":
+    "Проект или резервная копия (JSON, до 285 МБ)",
   "The server took too long to respond. Try again.":
     "Сервер слишком долго не отвечает. Попробуйте ещё раз.",
   "Could not reach the server. Try again.":
@@ -129,7 +154,8 @@ export const messages = {
     "Отбросить все ожидающие изменения этого аккаунта и загрузить серверные данные? Сначала сохраните копию при необходимости.",
   "Use server data": "Использовать серверные данные",
   "Daily tasks in Telegram": "Ежедневные задачи в Telegram",
-  "Send today's tasks": "Отправлять задачи на сегодня",
+  "Send today's tasks and Inbox reminder":
+    "Задачи на сегодня и напоминание о «Входящих»",
   Time: "Время",
   "Save schedule": "Сохранить расписание",
   "Text messages to the bot become Inbox tasks. /today shows today's tasks; /stop disables delivery.":

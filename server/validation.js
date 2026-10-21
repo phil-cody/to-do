@@ -6,6 +6,7 @@ import {
   workspaceLimits,
   isDueDate,
 } from "../src/app/model.js";
+import { attachmentMetadata } from "../src/app/attachments.js";
 import { validLanguage } from "../src/app/i18n.js";
 export class ApiError extends Error {
   constructor(status, message) {
@@ -74,6 +75,11 @@ export function validateSnapshot(input) {
         !Object.keys(priorities).includes(t.task_priority)
       )
         fail("Некорректный статус или приоритет.");
+      try {
+        attachmentMetadata(t.task_attachments);
+      } catch {
+        fail("Invalid attachment.");
+      }
       if (!isDueDate(t.task_due_date)) fail("Некорректный срок.");
     }
   }
@@ -101,7 +107,11 @@ export function validateSnapshot(input) {
           "task_status",
           "task_priority",
           "task_createdAt",
-        ].map((k) => [k, t[k]]),
+          ...(t.task_attachments === undefined ? [] : ["task_attachments"]),
+        ].map((k) => [
+          k,
+          k === "task_attachments" ? attachmentMetadata(t[k]) : t[k],
+        ]),
       ),
     ),
   }));

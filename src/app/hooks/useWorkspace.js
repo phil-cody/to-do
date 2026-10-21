@@ -1,3 +1,4 @@
+import { attachmentBytes } from "../attachments.js";
 import { t } from "../i18n.js";
 import { useEffect, useRef, useState } from "react";
 import { createRepository } from "../repository.js";
@@ -214,6 +215,31 @@ export default function useWorkspace() {
       commit((data) => upsertTask(data, { ...task, ...changes }), false, true),
     preference: (key, value) =>
       commit((data) => setPreference(data, key, value), false, true),
+    downloadAttachment: async (file) => {
+      if (saving.current) return;
+      saving.current = true;
+      setBusy(true);
+      setActivity("Preparing file…");
+      setError("");
+      try {
+        const record = await repository.attachment(file);
+        const url = URL.createObjectURL(
+          new Blob([attachmentBytes(record.data)], {
+            type: "application/octet-stream",
+          }),
+        );
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = file.name;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error) {
+        setError(t(error.message));
+      } finally {
+        saving.current = false;
+        setBusy(false);
+      }
+    },
     saveEditor: (item) =>
       commit((data) => {
         const saved = saveItem(data, modal.kind, item);

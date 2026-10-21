@@ -2,6 +2,7 @@ import http from "node:http";
 import { isIP } from "node:net";
 import path from "node:path";
 import { readFile } from "node:fs/promises";
+import { attachmentLimits } from "../src/app/attachments.js";
 import { workspaceLimits } from "../src/app/model.js";
 import { ApiError, validateSettings } from "./validation.js";
 import { hash } from "./store.js";
@@ -14,13 +15,12 @@ const json = (res, status, body) => {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(body));
 };
-async function body(req) {
+async function body(req, limit = workspaceLimits.requestBytes) {
   let size = 0;
   const chunks = [];
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > workspaceLimits.requestBytes)
-      throw new ApiError(413, "Слишком большой запрос.");
+    if (size > limit) throw new ApiError(413, "Слишком большой запрос.");
     chunks.push(chunk);
   }
   try {
@@ -165,6 +165,26 @@ export function createApp({
         // A stale tab must never send its offline draft into a new session.
         if (pathname === "/api/workspace" && req.method === "PUT" && !accountId)
           throw new ApiError(428, "Обновите приложение перед сохранением.");
+        if (pathname.startsWith("/api/attachments/")) {
+          if (!accountId)
+            throw new ApiError(428, "Обновите приложение перед сохранением.");
+          const id = pathname.slice("/api/attachments/".length);
+          if (!/^[a-f0-9]{64}$/.test(id))
+            throw new ApiError(404, "Invalid attachment.");
+          if (req.method === "GET")
+            return json(res, 200, store.attachment(user.id, id));
+          if (req.method === "PUT") {
+            rate(req, "attachments", 60);
+            store.putAttachment(
+              user.id,
+              id,
+              (await body(req, Math.ceil(attachmentLimits.bytes / 3) * 4 + 100))
+                .data,
+            );
+            return json(res, 200, { ok: true });
+          }
+          throw new ApiError(405, "Метод не поддерживается.");
+        }
         if (pathname === "/api/auth/logout" && req.method === "POST") {
           store.revoke(cookies[sessionName]);
           res.setHeader("Set-Cookie", cookie(sessionName, "", 0));

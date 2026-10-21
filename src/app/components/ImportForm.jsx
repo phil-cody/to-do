@@ -1,8 +1,10 @@
+import { LocalRepository } from "../repository.js";
 import { t } from "../i18n.js";
 import React, { useEffect, useRef, useState } from "react";
 import template from "../../../docs/templates/project-template.json";
 import { parseProjectImport } from "../import-project.js";
-import { statuses, priorities, workspaceLimits } from "../model.js";
+import { attachmentLimits } from "../attachments.js";
+import { statuses, priorities } from "../model.js";
 import Description from "./Markdown.jsx";
 import { downloadJson } from "../files.js";
 
@@ -43,8 +45,8 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
     setPreview(null);
     setReading(true);
     try {
-      if (file.size > workspaceLimits.snapshotBytes)
-        throw new Error(t("The file is too large. Maximum: 2 MB."));
+      if (file.size > attachmentLimits.backup)
+        throw new Error(t("The backup is too large. Maximum: 285 MB."));
       const raw = await file.text();
       if (ticket === generation.current) prepare(raw, file.name);
     } catch (error) {
@@ -84,7 +86,8 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
           <button
             type="button"
             disabled={busy || reading}
-            onClick={() => {
+            onClick={async () => {
+              setReading(true);
               setError("");
               setPreview(null);
               try {
@@ -95,9 +98,14 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
                       "No local tasks exist at this address. Upload a backup file.",
                     ),
                   );
-                prepare(raw, t("Local tasks in this browser"));
+                prepare(
+                  JSON.stringify(await new LocalRepository().exportDraft()),
+                  t("Local tasks in this browser"),
+                );
               } catch (error) {
                 setError(error.message);
+              } finally {
+                setReading(false);
               }
             }}
           >
@@ -106,7 +114,7 @@ export default function ImportForm({ busy, remote, onImport, exportData }) {
         )}
       </div>
       <label>
-        {t("Project or backup file (JSON, up to 2 MB)")}
+        {t("Project or backup file (JSON, up to 285 MB)")}
         <input
           type="file"
           accept=".json,application/json"

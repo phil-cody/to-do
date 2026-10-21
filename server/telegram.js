@@ -21,10 +21,14 @@ export function calendar(now, timezone) {
 export function digest(store, user, now = new Date()) {
   const settings = JSON.parse(user.settings),
     { day } = calendar(now, settings.timezone);
-  const tasks = store
-    .workspace(user.id)
-    .snapshot.projects.flatMap((p) => p.todoList)
+  const projects = store.workspace(user.id).snapshot.projects;
+  const tasks = projects
+    .flatMap((p) => p.todoList)
     .filter((t) => t.task_due_date === day && t.task_status !== "completed");
+  const unassigned = projects
+    .filter((p) => p.project_type === "inbox")
+    .flatMap((p) => p.todoList)
+    .filter((t) => t.task_status !== "completed");
   return [
     translate("Tasks for {day} ({timezone})", accountLanguage(settings), {
       day,
@@ -38,6 +42,17 @@ export function digest(store, user, now = new Date()) {
             accountLanguage(settings),
           ),
         ]),
+    ...(unassigned.length
+      ? [
+          "",
+          translate(
+            "Unassigned Inbox tasks: {count}",
+            accountLanguage(settings),
+            { count: unassigned.length },
+          ),
+          ...unassigned.map((task, i) => `${i + 1}. ${task.task_title}`),
+        ]
+      : []),
   ].join("\n");
 }
 export function enqueueText(store, id, chatId, text, extra) {

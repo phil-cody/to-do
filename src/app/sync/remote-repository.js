@@ -1,3 +1,4 @@
+import { AttachmentStorage, snapshotFiles } from "../attachments.js";
 import { normalize } from "../model.js";
 import { HttpRepository } from "./http-repository.js";
 import { ClientStore } from "./client-store.js";
@@ -16,58 +17,95 @@ export class RemoteRepository extends HttpRepository {
   ) {
     super(url, request);
     this.store = store;
+    this.attachments = new AttachmentStorage(store);
     this.remote = true;
     this.user = null;
     this.listeners = new Set();
     this.status = { online: true, pending: 0, conflict: false };
     this.epoch = 0;
   }
-  async api(url, options = {}) {
-    const epoch = this.epoch;
-    let response;
+  async api(
+    url,
+    options = {},
+    timeout = url.startsWith("/api/attachments/") ? 120000 : 20000,
+  ) {
+    const controller = new AbortController();
+    const timer = setTimeout(
+      () =>
+        controller.abort(
+          new Error("The server took too long to respond. Try again."),
+        ),
+      timeout,
+    );
     try {
-      response = await this.request(url, {
-        credentials: "same-origin",
-        redirect: "error",
-        cache: "no-store",
-        ...options,
-        headers: {
-          ...options.headers,
-          "Accept-Language": getLanguage(),
-          ...(this.user ? { "X-Account-ID": this.user.id } : {}),
-        },
-      });
-    } catch (error) {
-      error.network = true;
-      throw error;
+      const epoch = this.epoch;
+      let response;
+      try {
+        response = await this.request(
+          url,
+          {
+            credentials: "same-origin",
+            redirect: "error",
+            cache: "no-store",
+            ...options,
+            signal: options.signal
+              ? AbortSignal.any([controller.signal, options.signal])
+              : controller.signal,
+            headers: {
+              ...options.headers,
+              "Accept-Language": getLanguage(),
+              ...(this.user ? { "X-Account-ID": this.user.id } : {}),
+            },
+          },
+          url.startsWith("/api/attachments/") ? 120000 : undefined,
+        );
+      } catch (error) {
+        error.network = true;
+        throw error;
+      }
+      if (epoch !== this.epoch) {
+        const error = new Error("Account changed");
+        error.cancelled = true;
+        error.authentication = !this.user;
+        throw error;
+      }
+      if (response.status === 401) {
+        await this.forget();
+        throw new AuthenticationRequired();
+      }
+      if (!response.ok) {
+        const error = new Error(
+          (await response.json().catch(() => null))?.error ||
+            `Ошибка сервера (${response.status}).`,
+        );
+        error.status = response.status;
+        throw error;
+      }
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        const error = new Error(
+          controller.signal.aborted
+            ? "The server took too long to respond. Try again."
+            : "Could not reach the server. Try again.",
+        );
+        error.network = true;
+        throw error;
+      }
+      if (epoch !== this.epoch) throw new AuthenticationRequired();
+      if (this.user && result.user && result.user.id !== this.user.id) {
+        await this.forget();
+        throw new AuthenticationRequired();
+      }
+      if (validLanguage(result.user?.language))
+        setLanguage(result.user.language);
+      return result;
+    } finally {
+      clearTimeout(timer);
     }
-    if (epoch !== this.epoch) {
-      const error = new Error("Account changed");
-      error.cancelled = true;
-      error.authentication = !this.user;
-      throw error;
-    }
-    if (response.status === 401) {
-      await this.forget();
-      throw new AuthenticationRequired();
-    }
-    if (!response.ok) {
-      const error = new Error(
-        (await response.json().catch(() => null))?.error ||
-          `Ошибка сервера (${response.status}).`,
-      );
-      error.status = response.status;
-      throw error;
-    }
-    const result = await response.json();
-    if (epoch !== this.epoch) throw new AuthenticationRequired();
-    if (this.user && result.user && result.user.id !== this.user.id) {
-      await this.forget();
-      throw new AuthenticationRequired();
-    }
-    if (validLanguage(result.user?.language)) setLanguage(result.user.language);
-    return result;
   }
+
   key() {
     return `user:${this.user.id}`;
   }
@@ -124,6 +162,10 @@ export class RemoteRepository extends HttpRepository {
   }
   async save(next, base) {
     if (!this.user) return super.save(next);
+    const epoch = this.epoch,
+      key = this.key();
+    next = await this.attachments.prepare(next, key);
+    if (epoch !== this.epoch) throw new AuthenticationRequired();
     const shared = ({ selectedProjectId, ...snapshot }) => snapshot;
     const navigationOnly =
       JSON.stringify(shared(next)) === JSON.stringify(shared(base));
@@ -248,6 +290,8 @@ export class RemoteRepository extends HttpRepository {
             return;
           }
           try {
+            await this.uploadAttachments(snapshot, key, state.remote, epoch);
+            if (epoch !== this.epoch) return;
             remote = await this.api(this.endpoint(), {
               method: "PUT",
               headers: {
@@ -358,8 +402,37 @@ export class RemoteRepository extends HttpRepository {
     });
     await this.forget(true);
   }
+  async attachment(file) {
+    const key = this.key();
+    return this.attachments.read(key, file, () =>
+      this.api(`/api/attachments/${file.id}`),
+    );
+  }
+  async uploadAttachments(snapshot, key, remote, epoch) {
+    const existing = new Set(snapshotFiles(remote).map((file) => file.id));
+    for (const file of snapshotFiles(snapshot)) {
+      const storageKey = this.attachments.key(key, file.id);
+      const record = await this.store.read(storageKey);
+      if (epoch !== this.epoch || !this.user || this.key() !== key)
+        throw new AuthenticationRequired();
+      if (!record || existing.has(file.id)) continue;
+      await this.api(`/api/attachments/${file.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: record.data }),
+      });
+      if (epoch !== this.epoch || !this.user || this.key() !== key)
+        throw new AuthenticationRequired();
+      existing.add(file.id);
+    }
+  }
   async exportDraft() {
-    return pendingSnapshot(await this.store.read(this.key()));
+    const key = this.key();
+    return this.attachments.export(
+      pendingSnapshot(await this.store.read(key)),
+      key,
+      (file) => this.api(`/api/attachments/${file.id}`),
+    );
   }
   async updateSettings(patch) {
     const result = await this.api("/api/settings", {

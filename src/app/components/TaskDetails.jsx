@@ -10,12 +10,34 @@ export default function TaskDetails({
   onUpdate,
   onEdit,
   onDelete,
+  onDownload,
 }) {
   return (
     <div className="details">
       <Description
         value={detail.task_description || t("No description yet.")}
       />
+      {!!detail.task_attachments?.length && (
+        <section className="attachments" aria-label={t("Attachments")}>
+          <h3>{t("Attachments")}</h3>
+          <ul>
+            {detail.task_attachments.map((file) => (
+              <li key={file.id}>
+                <span>
+                  {file.name} · {(file.size / 1024 / 1024).toFixed(2)} {t("MB")}
+                </span>
+                <button
+                  disabled={busy}
+                  onClick={() => onDownload(file)}
+                  aria-label={t("Download {name}", { name: file.name })}
+                >
+                  {t("Download")}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <div className="form-fields">
         <Select
           label={t("Project")}

@@ -170,7 +170,7 @@ export default function SyncPanel({ workspace }) {
                   setSettings({ ...settings, enabled: e.target.checked })
                 }
               />
-              {t("Send today's tasks")}
+              {t("Send today's tasks and Inbox reminder")}
             </label>
             <label>
               {t("Time")}

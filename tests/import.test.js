@@ -66,7 +66,7 @@ test("legacy backup merges Inbox, repairs ownership and never copies unknown pro
 test("import rejects malformed files and describes the exact invalid task field", () => {
   assert.throws(() => parseProjectImport("not json"), /JSON/);
   assert.throws(() => parseProjectImport('{"projects":[]}'), /от 1 до 300/);
-  assert.throws(() => parseProjectImport(" ".repeat(2_000_001)), /2 МБ/);
+  assert.throws(() => parseProjectImport(" ".repeat(2_000_001)), /JSON/);
   const value = template();
   value.project.tasks[1].dueDate = "2026-02-30";
   assert.throws(

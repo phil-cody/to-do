@@ -83,3 +83,11 @@
   padding: 0;
   border: 0;
 }
+
+/* Размер текста и подсветки совпадает: мобильный редактор не требует увеличения. */
+.description-field .w-md-editor-text,
+.description-field .w-md-editor-text-pre > code,
+.description-field .w-md-editor-text-input {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+}
