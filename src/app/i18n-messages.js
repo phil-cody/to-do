@@ -18,8 +18,6 @@ export const messages = {
   "Remove {name}": "Удалить {name}",
   "Download {name}": "Скачать {name}",
   Download: "Скачать",
-  "Unassigned Inbox tasks: {count}":
-    "Нераспределённые задачи во «Входящих»: {count}",
   "The backup is too large. Maximum: 285 MB.":
     "Резервная копия слишком большая. Максимум — 285 МБ.",
   "Project or backup file (JSON, up to 285 MB)":
@@ -289,7 +287,13 @@ export const messages = {
   "Example: /remind 09:00 Europe/Moscow": "Пример: /remind 09:00 Europe/Moscow",
   "Only text messages are supported. Send a task as text.":
     "Пока поддерживаются текстовые сообщения. Отправьте задачу текстом.",
-  "Tasks for {day} ({timezone})": "Задачи на {day} ({timezone})",
+  "Tasks for {day}:": "Задачи на {day}:",
+  "Unassigned tasks in {inbox}: {count}":
+    "Нераспределённые задачи во {inbox}: {count}",
+  '"Inbox"': '"Входящих"',
+  no: "нет",
+  "Unassigned tasks are absent.": "Нераспределённые задачи отсутствуют",
+  absent: "отсутствуют",
   "There are no unfinished tasks for today.":
     "На сегодня нет незавершённых задач.",
   "Added to Inbox: {title}": "Добавлено в Inbox: {title}",

@@ -7,6 +7,7 @@ import {
   calendar,
   digest,
   botCommands,
+  enqueueText,
 } from "../server/telegram.js";
 import { validateSnapshot, validateSettings } from "../server/validation.js";
 function setup() {
@@ -568,16 +569,136 @@ test("daily digest includes only unfinished Inbox tasks in the account language 
       store.user("11"),
       new Date("2026-10-21T08:00:00Z"),
     );
-    assert.match(russian, /Нераспределённые задачи во «Входящих»: 1/);
+    assert.match(russian, /Нераспределённые задачи во "Входящих": 1/);
     assert.match(russian, /Unassigned item/);
     assert.doesNotMatch(russian, /Finished item/);
     store.setSettings("11", { language: "en" });
-    assert.match(digest(store, store.user("11")), /Unassigned Inbox tasks: 1/);
+    assert.match(
+      digest(store, store.user("11")),
+      /Unassigned tasks in "Inbox": 1/,
+    );
     const next = store.workspace("11");
     next.snapshot.projects[0].todoList[0].task_status = "completed";
     store.save("11", next.snapshot, next.revision, "inbox-digest-test-2");
-    assert.doesNotMatch(digest(store, store.user("11")), /Unassigned Inbox/);
+    assert.match(
+      digest(store, store.user("11")),
+      /Unassigned tasks in "Inbox": 0\nUnassigned tasks are absent\./,
+    );
   } finally {
     store.close();
   }
+});
+
+test("daily digest sends dated sections and bold entities without interpreting task titles", async () => {
+  const { store, bot, sent } = setup();
+  try {
+    bot.processUpdate(message(1, 11, "/remind 09:00 Asia/Ho_Chi_Minh"));
+    bot.processUpdate(message(2, 11, "Inbox <b>literal</b> & **text** 😀"));
+    bot.processUpdate(message(3, 11, "Due task"));
+    const current = store.workspace("11");
+    const inbox = current.snapshot.projects[0];
+    const due = inbox.todoList.pop();
+    due.task_due_date = "2026-10-21";
+    due.task_project = "scheduled-project";
+    current.snapshot.projects.push({
+      ...inbox,
+      project_id: "scheduled-project",
+      project_type: "regular",
+      project_title: "Scheduled",
+      todoList: [due],
+    });
+    store.save("11", current.snapshot, current.revision, "digest-format");
+    const now = new Date("2026-10-20T23:00:00Z");
+    bot.schedule(new Date("2026-10-21T02:00:00Z"));
+    const scheduled = JSON.parse(
+      store.db
+        .prepare("SELECT payload FROM outbox WHERE id LIKE 'digest:%'")
+        .get().payload,
+    );
+    assert.equal(
+      scheduled.text,
+      'Задачи на 21 октября:\n1. Due task\n\n–––\n\nНераспределённые задачи во "Входящих": 1\n1. Inbox <b>literal</b> & **text** 😀',
+    );
+    assert.equal(digest(store, store.user("11"), now), scheduled.text);
+    assert.deepEqual(
+      scheduled.entities.map(({ offset, length }) =>
+        scheduled.text.slice(offset, offset + length),
+      ),
+      ["21 октября", "1.", '"Входящих"'],
+    );
+    bot.processUpdate(message(4, 11, "/today"));
+    await bot.deliver();
+    const replies = sent.filter((item) => item.text?.startsWith("Задачи на "));
+    assert.equal(replies.length, 2);
+    for (const reply of replies) {
+      assert.ok(
+        reply.entities.some(
+          (entity) =>
+            reply.text.slice(entity.offset, entity.offset + entity.length) ===
+            '"Входящих"',
+        ),
+      );
+      assert.equal(reply.parse_mode, undefined);
+    }
+    due.task_status = "completed";
+    inbox.todoList[0].task_status = "completed";
+    store.save(
+      "11",
+      current.snapshot,
+      store.workspace("11").revision,
+      "digest-empty",
+    );
+    assert.equal(
+      digest(store, store.user("11"), now),
+      'Задачи на 21 октября:\nНа сегодня нет незавершённых задач.\n\n–––\n\nНераспределённые задачи во "Входящих": 0\nНераспределённые задачи отсутствуют',
+    );
+    bot.schedule(new Date("2026-10-22T02:00:00Z"));
+    const empty = JSON.parse(
+      store.db
+        .prepare("SELECT payload FROM outbox WHERE id LIKE 'digest:%'")
+        .get().payload,
+    );
+    assert.deepEqual(
+      empty.entities.map(({ offset, length }) =>
+        empty.text.slice(offset, offset + length),
+      ),
+      ["22 октября", "нет", '"Входящих"', "отсутствуют"],
+    );
+    store.setSettings("11", { language: "en" });
+    assert.equal(
+      digest(store, store.user("11"), now),
+      'Tasks for October 21:\nThere are no unfinished tasks for today.\n\n–––\n\nUnassigned tasks in "Inbox": 0\nUnassigned tasks are absent.',
+    );
+  } finally {
+    store.close();
+  }
+});
+
+test("long formatted messages preserve Unicode and entity offsets across chunks", () => {
+  const rows = [];
+  const store = { enqueue: (...args) => rows.push(args) };
+  const text = "x".repeat(3499) + "😀bold" + "y".repeat(3500) + "end";
+  const entities = [
+    { type: "bold", offset: 3499, length: 6 },
+    { type: "bold", offset: text.length - 3, length: 3 },
+  ];
+  enqueueText(store, "test", "11", text, { entities });
+  assert.equal(rows.map((row) => row[2]).join(""), text);
+  assert.deepEqual(
+    rows
+      .map((row) => row[2].slice(-1))
+      .map((end) => /[\uD800-\uDBFF]/.test(end)),
+    [false, false, false],
+  );
+  assert.deepEqual(
+    rows.flatMap((row) =>
+      row[3].entities.map(({ offset, length }) =>
+        row[2].slice(offset, offset + length),
+      ),
+    ),
+    ["😀bold", "end"],
+  );
+  rows.length = 0;
+  enqueueText(store, "plain", "11", "Plain text");
+  assert.deepEqual(rows, [["plain:0", "11", "Plain text", undefined]]);
 });

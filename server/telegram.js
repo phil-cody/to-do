@@ -18,7 +18,7 @@ export function calendar(now, timezone) {
     time: `${p.hour}:${p.minute}`,
   };
 }
-export function digest(store, user, now = new Date()) {
+function digestMessage(store, user, now = new Date()) {
   const settings = JSON.parse(user.settings),
     { day } = calendar(now, settings.timezone);
   const projects = store.workspace(user.id).snapshot.projects;
@@ -29,43 +29,79 @@ export function digest(store, user, now = new Date()) {
     .filter((p) => p.project_type === "inbox")
     .flatMap((p) => p.todoList)
     .filter((t) => t.task_status !== "completed");
-  return [
-    translate("Tasks for {day} ({timezone})", accountLanguage(settings), {
-      day,
-      timezone: settings.timezone,
+  const language = accountLanguage(settings);
+  const tr = (text, values) => translate(text, language, values);
+  const entities = [];
+  let text = "";
+  const line = (value, bold) => {
+    if (text) text += "\n";
+    if (bold)
+      entities.push({
+        type: "bold",
+        offset: text.length + value.indexOf(bold),
+        length: bold.length,
+      });
+    text += value;
+  };
+  const date = new Intl.DateTimeFormat(language, {
+    timeZone: settings.timezone,
+    day: "numeric",
+    month: "long",
+  }).format(now);
+  line(tr("Tasks for {day}:", { day: date }), date);
+  if (tasks.length) {
+    tasks.forEach((task, i) =>
+      line(`${i + 1}. ${task.task_title}`, `${i + 1}.`),
+    );
+  } else {
+    line(tr("There are no unfinished tasks for today."), tr("no"));
+  }
+  line("");
+  line("–––");
+  line("");
+  line(
+    tr("Unassigned tasks in {inbox}: {count}", {
+      inbox: tr('"Inbox"'),
+      count: unassigned.length,
     }),
-    ...(tasks.length
-      ? tasks.map((t, i) => `${i + 1}. ${t.task_title}`)
-      : [
-          translate(
-            "There are no unfinished tasks for today.",
-            accountLanguage(settings),
-          ),
-        ]),
-    ...(unassigned.length
-      ? [
-          "",
-          translate(
-            "Unassigned Inbox tasks: {count}",
-            accountLanguage(settings),
-            { count: unassigned.length },
-          ),
-          ...unassigned.map((task, i) => `${i + 1}. ${task.task_title}`),
-        ]
-      : []),
-  ].join("\n");
+    tr('"Inbox"'),
+  );
+  if (unassigned.length) {
+    unassigned.forEach((task, i) => line(`${i + 1}. ${task.task_title}`));
+  } else {
+    line(tr("Unassigned tasks are absent."), tr("absent"));
+  }
+  return { text, entities };
+}
+export function digest(store, user, now = new Date()) {
+  return digestMessage(store, user, now).text;
+}
+function enqueueDigest(store, id, user, now) {
+  const { text, entities } = digestMessage(store, user, now);
+  enqueueText(store, id, user.chat_id, text, { entities });
 }
 export function enqueueText(store, id, chatId, text, extra) {
-  const chunks = [];
+  let offset = 0,
+    index = 0;
   while (text.length) {
     let size = Math.min(3500, text.length);
     if (size < text.length && /[\uD800-\uDBFF]/.test(text[size - 1])) size--;
-    chunks.push(text.slice(0, size));
+    const chunkExtra = extra?.entities
+      ? {
+          ...extra,
+          entities: extra.entities.flatMap((entity) => {
+            const start = Math.max(offset, entity.offset);
+            const end = Math.min(offset + size, entity.offset + entity.length);
+            return end > start
+              ? [{ ...entity, offset: start - offset, length: end - start }]
+              : [];
+          }),
+        }
+      : extra;
+    store.enqueue(`${id}:${index++}`, chatId, text.slice(0, size), chunkExtra);
+    offset += size;
     text = text.slice(size);
   }
-  chunks.forEach((chunk, i) =>
-    store.enqueue(`${id}:${i}`, chatId, chunk, extra),
-  );
 }
 export function botCommands(language) {
   return [
@@ -308,11 +344,10 @@ export class TelegramBot {
               );
             }
           } else if (text === "/today") {
-            enqueueText(
+            enqueueDigest(
               this.store,
               `today:${updateKey}`,
-              chat,
-              digest(this.store, this.store.user(id)),
+              this.store.user(id),
             );
           } else if (text === "/stop") {
             const s = JSON.parse(this.store.user(id).settings);
@@ -389,12 +424,7 @@ export class TelegramBot {
           .prepare("INSERT OR IGNORE INTO digests VALUES(?,?)")
           .run(user.id, day);
         if (result.changes)
-          enqueueText(
-            this.store,
-            `digest:${user.id}:${day}`,
-            user.chat_id,
-            digest(this.store, user, now),
-          );
+          enqueueDigest(this.store, `digest:${user.id}:${day}`, user, now);
       }
     });
   }
